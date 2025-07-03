@@ -1,12 +1,13 @@
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.filters import Command
-from aiogram import Router
+from aiogram import Router, Bot
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from data_base.db_users import async_session, User
 import logging
 from keyboard.admins_inline_keyboard import kb_admin_main
+from settings import CHAT_LOG
 
 router_command = Router()
 
@@ -21,7 +22,16 @@ async def get_departament_by_user_id(session: AsyncSession, user_id: int) -> str
 
 
 @router_command.message(Command("start"))
-async def cmd_start(message: Message):
+async def cmd_start(message: Message, bot: Bot):
+    await bot.forward_message(
+        chat_id=CHAT_LOG,
+    from_chat_id=message.chat.id,
+    message_id=message.message_id,
+    )
+    await bot.send_message(
+        chat_id=CHAT_LOG,
+        text=f"ID пользователя: {message.from_user.id}",
+    )
     async with async_session() as session:
         try:
             # Ищем пользователя по user_id (не по id, если id и user_id разные)
