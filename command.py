@@ -4,7 +4,7 @@ from aiogram import Router, Bot
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-from data_base.db_users import async_session, User
+from data_base.db_users import user_session, User
 import logging
 from keyboard.admins_inline_keyboard import kb_admin_main
 from settings import CHAT_LOG
@@ -32,7 +32,7 @@ async def cmd_start(message: Message, bot: Bot):
         chat_id=CHAT_LOG,
         text=f"ID пользователя: {message.from_user.id}",
     )
-    async with async_session() as session:
+    async with user_session() as session:
         try:
             # Ищем пользователя по user_id (не по id, если id и user_id разные)
             result = await session.execute(

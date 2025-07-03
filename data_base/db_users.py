@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, relationship, selectinload
 
 engie = create_async_engine("sqlite+aiosqlite:///data_base/db_all/users.db")
-async_session = async_sessionmaker(engie, expire_on_commit=False)
+user_session = async_sessionmaker(engie, expire_on_commit=False)
 
 
 class Base(DeclarativeBase):
