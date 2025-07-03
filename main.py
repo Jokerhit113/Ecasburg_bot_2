@@ -6,6 +6,7 @@ import asyncio
 from callback.callback_add_new_deal import add_new_deal_router
 from callback.callback_add_user import callback_add_user_router
 from callback.callback_delete_user import callback_delete_user_router
+from callback.callback_get_deals_list import callback_get_deals_list_router
 from callback.callback_other import callback_other_router
 from command import router_command
 from data_base.db_deals import init_deals_db
@@ -26,6 +27,7 @@ async def main():
     dp.include_router(callback_delete_user_router)
     dp.include_router(callback_other_router)
     dp.include_router(add_new_deal_router)
+    dp.include_router(callback_get_deals_list_router)
 
 
     await dp.start_polling(bot)

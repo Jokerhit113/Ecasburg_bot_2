@@ -20,6 +20,7 @@ class Deals(Base):
     car_photo_id = Column(String)
     provider_id = Column(Integer, unique=True)
     broker_id = Column(Integer, unique=True)
+    carrier_id = Column(Integer, unique=True)
     payment_photo_id = Column(String)
     payment_confirmation = Column(String)
     buy_car_photo_id = Column(String)

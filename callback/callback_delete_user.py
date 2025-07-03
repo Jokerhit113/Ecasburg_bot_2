@@ -1,12 +1,9 @@
-from aiogram import Router, F, Bot
-from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message
+from aiogram import Router, F
+from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from data_base.db_users import User, user_session
-from core.state_fsm import NewUser
-from keyboard.admins_inline_keyboard import kb_admin_main
 
 callback_delete_user_router = Router()
 
@@ -33,19 +30,13 @@ async def show_all_users(callback: CallbackQuery):
                 callback_data=f"user_detail_{user.id}"
             )
 
-        builder.button(text="❌ Закрыть", callback_data="close_users_list")
+        builder.button(text="❌ Закрыть", callback_data="back_to_menu")
         builder.adjust(1)  # По одной кнопке в ряд
 
         await callback.message.edit_text(
             "Список пользователей:",
             reply_markup=builder.as_markup()
         )
-
-
-@callback_delete_user_router.callback_query(F.data == "close_users_list")
-async def close_users_list(callback: CallbackQuery):
-    await callback.message.edit_text(text=f"ПАНЕЛЬ АДМИНИСТРАТОРА", reply_markup=kb_admin_main)
-    await callback.answer("Вы вернулись в меню администратора")
 
 
 @callback_delete_user_router.callback_query(F.data.startswith("user_detail_"))

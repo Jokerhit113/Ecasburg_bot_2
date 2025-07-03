@@ -60,7 +60,7 @@ async def get_new_deal_photo_car(message: Message, state: FSMContext):
 
     builder = InlineKeyboardBuilder()
     builder.button(text="✅ Добавить сделку ", callback_data="add_new_deal_ok")
-    builder.button(text="❌ Назад в меню", callback_data="back_to_menu")
+    builder.button(text="❌ Назад в меню", callback_data="back_to_menu_main")
     await message.answer_photo(
         photo=photo_car,
         caption=f"Новая сделка:\n\n"
