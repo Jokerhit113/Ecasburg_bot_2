@@ -22,7 +22,7 @@ kb_deal = InlineKeyboardMarkup(
         [InlineKeyboardButton(text="Выбрать Поставщика", callback_data="change_provider")],
         [InlineKeyboardButton(text="Выбрать Брокера", callback_data="change_broker")],
         [InlineKeyboardButton(text="Выбрать Логиста", callback_data="change_carrier")],
-        [InlineKeyboardButton(text="Выбрать покупателя", callback_data="4")],
+        [InlineKeyboardButton(text="Выбрать покупателя", callback_data="change_buyer")],
         [InlineKeyboardButton(text="Проверить статус", callback_data="check_status")],
         [InlineKeyboardButton(text="Действия со сделкой", callback_data="6")],
         [InlineKeyboardButton(text="Готов к Выдаче", callback_data="7")],
@@ -30,5 +30,14 @@ kb_deal = InlineKeyboardMarkup(
         [InlineKeyboardButton(text="Удалить Заказ", callback_data="delete_deal")],
         [InlineKeyboardButton(text="Назад к списку", callback_data="admin_all_orders_list")]
 
+    ]
+)
+
+kb_buyer_main = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Подтвердить Оплату", callback_data="payment_confirmation_buyer")],
+        [InlineKeyboardButton(text="Загрузить документы", callback_data="add_documents_buyer")],
+        [InlineKeyboardButton(text="Проверить Статус заказа", callback_data="check_status_deal_buyer")],
+        [InlineKeyboardButton(text="Связаться с Менеджером", callback_data="show_all_users")]
     ]
 )

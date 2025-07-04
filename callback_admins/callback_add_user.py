@@ -9,7 +9,7 @@ from core.state_fsm import NewUser
 
 import logging
 
-from keyboard.admins_inline_keyboard import kb_admin_main
+from keyboard.inline_keyboard import kb_admin_main
 
 callback_add_user_router = Router()
 

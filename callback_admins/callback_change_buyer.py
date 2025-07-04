@@ -7,27 +7,27 @@ from data_base.db_deals import deals_session, Deals
 from data_base.db_users import user_session, User
 
 
-callback_change_carrier_router = Router()
+callback_change_buyer_router = Router()
 
-async def get_all_carrier(session: AsyncSession):
-    result = await session.execute(select(User).where(User.departament == "carrier"))
+async def get_all_buyer(session: AsyncSession):
+    result = await session.execute(select(User).where(User.departament == "buyer"))
     return result.scalars().all()
 
 
-@callback_change_carrier_router.callback_query(F.data == "change_carrier")
-async def change_carrier(callback: CallbackQuery):
+@callback_change_buyer_router.callback_query(F.data == "change_buyer")
+async def change_buyer(callback: CallbackQuery):
     async with user_session() as session:
-        carriers = await get_all_carrier(session)
+        buyers = await get_all_buyer(session)
 
-        if not carriers:
-            await callback.answer("В Базе нет Брокеров>")
+        if not buyers:
+            await callback.answer("В Базе нет Покупателей")
             return
         builder = InlineKeyboardBuilder()
 
-        for carrier in carriers:
+        for buyer in buyers:
             builder.button(
-                text=f"{carrier.name}",
-                callback_data=f"carrier_{carrier.id}",
+                text=f"{buyer.name}",
+                callback_data=f"buyer_{buyer.id}",
             )
         builder.button(text="Назад к списку сделок", callback_data="admin_all_orders_list")
         builder.adjust(1)
@@ -36,38 +36,38 @@ async def change_carrier(callback: CallbackQuery):
             reply_markup=builder.as_markup()
         )
 
-@callback_change_carrier_router.callback_query(F.data.startswith("carrier_"))
-async def change_carrier_add(callback: CallbackQuery):
+@callback_change_buyer_router.callback_query(F.data.startswith("buyer_"))
+async def change_buyer_add(callback: CallbackQuery):
     async with user_session() as session:
-        carrier_data = await session.execute(select(User).where(User.id == callback.data.split("_")[-1]))
-        carrier_data_ = carrier_data.scalar_one_or_none()
-        carrier = callback.data.split("_")[1]
+        buyer_data = await session.execute(select(User).where(User.id == callback.data.split("_")[-1]))
+        buyer_data_ = buyer_data.scalar_one_or_none()
+        buyer = callback.data.split("_")[1]
         builder = InlineKeyboardBuilder()
-        builder.button(text=f"Добавить к сделке", callback_data=f"add_carrier_{carrier}")
+        builder.button(text=f"Добавить к сделке", callback_data=f"add_buyer_{buyer}")
         builder.button(text="Назад к списку сделок", callback_data="admin_all_orders_list")
         builder.adjust(1)
         await callback.message.edit_caption(
             caption=f"{callback.message.caption}"
-                    f"\n\nВы хотите добавить к сделке Поставщика:\n\n"
-                 f"{carrier_data_.name}",
+                    f"\n\nВы хотите добавить к сделке Покупателя:\n\n"
+                 f"{buyer_data_.name}",
             reply_markup=builder.as_markup()
         )
 
 
-@callback_change_carrier_router.callback_query(F.data.startswith("add_carrier_"))
-async def change_carrier_add_to_deal(callback: CallbackQuery):
+@callback_change_buyer_router.callback_query(F.data.startswith("add_buyer_"))
+async def change_buyer_add_to_deal(callback: CallbackQuery):
     async with user_session() as session_user:
         # Получаем данные поставщика
         result_user = await session_user.execute(
             select(User).where(User.id == callback.data.split("_")[-1])
         )
-        carrier = result_user.scalar_one_or_none()
+        buyer = result_user.scalar_one_or_none()
 
-        if not carrier:
-            await callback.answer("Брокер не найден", show_alert=True)
+        if not buyer:
+            await callback.answer("Покупатель не найден", show_alert=True)
             return
 
-        carrier_id_tg = carrier.user_id
+        buyer_id_tg = buyer.user_id
 
         # Извлекаем ID сделки из текста сообщения
         try:
@@ -84,14 +84,18 @@ async def change_carrier_add_to_deal(callback: CallbackQuery):
                 await callback.answer("Сделка не найдена", show_alert=True)
                 return
 
-            deal.carrier_id = carrier_id_tg
+            deal.buyer_id = buyer_id_tg
             await session_deals.commit()
 
             # Обновляем текст сообщения
+            builder = InlineKeyboardBuilder()
+            builder.button(text="◀ Назад к списку", callback_data="admin_all_orders_list")
+            builder.adjust(1)
             await callback.message.edit_caption(
                 caption=f"{callback.message.caption}\n\n"
-                        f"Поставщик: {carrier.name}\n"
-                        f"ID_TG: {carrier_id_tg}\n"
-                        f"Добавлен к сделке."
+                        f"Покупатель: {buyer.name}\n"
+                        f"ID_TG: {buyer_id_tg}\n"
+                        f"Добавлен к сделке.",
+                reply_markup=builder.as_markup()
             )
-            await callback.answer("Поставщик успешно добавлен")
+            await callback.answer("Покупатель успешно добавлен")

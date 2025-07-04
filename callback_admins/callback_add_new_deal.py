@@ -7,7 +7,7 @@ from sqlalchemy import select
 
 from core.state_fsm import NewDeals
 from data_base.db_deals import deals_session, Deals
-from keyboard.admins_inline_keyboard import kb_back_to_menu, kb_admin_main
+from keyboard.inline_keyboard import kb_back_to_menu, kb_admin_main
 
 add_new_deal_router = Router()
 

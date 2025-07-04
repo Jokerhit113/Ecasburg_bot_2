@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from data_base.db_users import user_session, User
 import logging
-from keyboard.admins_inline_keyboard import kb_admin_main
+from keyboard.inline_keyboard import kb_admin_main, kb_buyer_main
 from settings import CHAT_LOG
 
 router_command = Router()
@@ -50,7 +50,10 @@ async def cmd_start(message: Message, bot: Bot):
             department = user.departament  # Прямой доступ к атрибуту
 
             if department == "admin":
-                await message.answer(f"ПАНЕЛЬ АДМИНИСТРАТОРА", reply_markup=kb_admin_main)
+                await message.answer(text=f"ПАНЕЛЬ АДМИНИСТРАТОРА", reply_markup=kb_admin_main)
+            elif department == "buyer":
+                await message.answer(text=f"Добро пожаловать в панель Заказчика, благодарим Вас за выбор E-CarsBurg",
+                                     reply_markup=kb_buyer_main)
             else:
                 await message.answer("Отдел не указан в вашем профиле")
 

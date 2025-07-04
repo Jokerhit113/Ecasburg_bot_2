@@ -1,12 +1,10 @@
-import re
-
 from aiogram import Router, F
-from aiogram.types import CallbackQuery, InlineKeyboardMarkup
+from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from data_base.db_deals import deals_session, Deals
-from keyboard.admins_inline_keyboard import kb_deal
+from keyboard.inline_keyboard import kb_deal
 
 callback_get_deals_list_router = Router()
 
@@ -83,51 +81,6 @@ async def callback_get_deals_list(callback: CallbackQuery):
             text="СПИСОК СДЕЛОК:",
             reply_markup=builder.as_markup()
         )
-
-@callback_get_deals_list_router.callback_query(F.data == "check_status")
-async def callback_get_deals_check_status(callback: CallbackQuery):
-    async with deals_session() as session:
-        caption = callback.message.caption
-        deal_id = caption.split('\n')[0].split('ID: ')[1]
-        deal = await session.get(Deals, deal_id)
-        if not deal:
-            await callback.answer("Сделка не найдена", show_alert=True)
-            return
-        builder = InlineKeyboardBuilder()
-        builder.button(text="Чек об оплате", callback_data="1")
-        builder.button(text="Фото/Видео Выкупа авто", callback_data="1")
-        builder.button(text="Доставка до ТК на Границу", callback_data="1")
-        builder.button(text="Документы на авто от Поставщика", callback_data="1")
-        builder.button(text="Кнопка", callback_data="1")
-        builder.button(text="Кнопка", callback_data="1")
-        builder.button(text="Кнопка", callback_data="1")
-        builder.button(text="Кнопка", callback_data="1")
-        builder.button(text="Кнопка", callback_data="1")
-        builder.button(text="Назад к Списку", callback_data="admin_all_orders_list")
-
-        builder.adjust(1)
-        await callback.message.edit_caption(caption = f"ID: {deal.id}\n"
-                                                      f"Данные по сделке:\n\n"
-                                                      f"Покупатель: {deal.buy_user}\n"
-                                                      f"Автомобиль: {deal.march_model}\n"
-                                                      f"Vin code: {deal.vin_code}\n"
-                                                      f"Поставщик: {deal.provider_id}\n"
-                                                      f"Брокер: {deal.broker_id}\n"
-                                                      f"Перевозчик: {deal.carrier_id}\n",
-                                            reply_markup=builder.as_markup())
-
-@callback_get_deals_list_router.callback_query(F.data == "delete_deal")
-async def callback_get_deals_delete(callback: CallbackQuery):
-    caption = callback.message.caption
-    deal_id = caption.split('\n')[0].split('ID: ')[1]
-    print(deal_id)
-
-    builder = InlineKeyboardBuilder()
-    builder.button(text="🗑 Удалить", callback_data=f"delete_deal_{deal_id}")  # Теперь передаем user_id
-    builder.button(text="◀ Назад", callback_data="admin_all_orders_list")
-    builder.adjust(1)
-    await callback.message.edit_reply_markup(inline_message_id=callback.inline_message_id,
-                                             reply_markup=builder.as_markup())
 
 
 @callback_get_deals_list_router.callback_query(F.data.startswith("delete_deal_"))

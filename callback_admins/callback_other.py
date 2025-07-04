@@ -2,7 +2,7 @@ from aiogram import Router, Bot, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup
 
-from keyboard.admins_inline_keyboard import kb_admin_main
+from keyboard.inline_keyboard import kb_admin_main
 
 callback_other_router = Router()
 

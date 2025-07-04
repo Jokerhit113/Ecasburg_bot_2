@@ -3,14 +3,17 @@ import logging
 from aiogram import Bot, Router, Dispatcher
 import asyncio
 
-from callback.callback_add_new_deal import add_new_deal_router
-from callback.callback_add_user import callback_add_user_router
-from callback.callback_change_broker import callback_change_broker_router
-from callback.callback_change_carrier import callback_change_carrier_router
-from callback.callback_change_provider import callback_change_provider_router
-from callback.callback_delete_user import callback_delete_user_router
-from callback.callback_get_deals_list import callback_get_deals_list_router
-from callback.callback_other import callback_other_router
+from callback_admins.callback_add_new_deal import add_new_deal_router
+from callback_admins.callback_add_user import callback_add_user_router
+from callback_admins.callback_change_broker import callback_change_broker_router
+from callback_admins.callback_change_buyer import callback_change_buyer_router
+from callback_admins.callback_change_carrier import callback_change_carrier_router
+from callback_admins.callback_change_provider import callback_change_provider_router
+from callback_admins.callback_delete_user import callback_delete_user_router
+from callback_admins.callback_get_deals_list import callback_get_deals_list_router
+from callback_admins.callback_other import callback_other_router
+from callback_admins.callback_status_deal import callback_status_deal_router
+from callback_buyer.callback_payment_confirmation import callback_payment_confirmation_buyer_router
 from command import router_command
 from data_base.db_deals import init_deals_db
 from data_base.db_users import init_users_db
@@ -34,6 +37,9 @@ async def main():
     dp.include_router(callback_change_provider_router)
     dp.include_router(callback_change_broker_router)
     dp.include_router(callback_change_carrier_router)
+    dp.include_router(callback_change_buyer_router)
+    dp.include_router(callback_status_deal_router)
+    dp.include_router(callback_payment_confirmation_buyer_router)
 
 
     await dp.start_polling(bot)
