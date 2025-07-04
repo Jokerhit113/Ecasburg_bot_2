@@ -5,6 +5,9 @@ import asyncio
 
 from callback.callback_add_new_deal import add_new_deal_router
 from callback.callback_add_user import callback_add_user_router
+from callback.callback_change_broker import callback_change_broker_router
+from callback.callback_change_carrier import callback_change_carrier_router
+from callback.callback_change_provider import callback_change_provider_router
 from callback.callback_delete_user import callback_delete_user_router
 from callback.callback_get_deals_list import callback_get_deals_list_router
 from callback.callback_other import callback_other_router
@@ -28,6 +31,9 @@ async def main():
     dp.include_router(callback_other_router)
     dp.include_router(add_new_deal_router)
     dp.include_router(callback_get_deals_list_router)
+    dp.include_router(callback_change_provider_router)
+    dp.include_router(callback_change_broker_router)
+    dp.include_router(callback_change_carrier_router)
 
 
     await dp.start_polling(bot)

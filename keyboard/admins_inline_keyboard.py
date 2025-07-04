@@ -19,15 +19,15 @@ kb_back_to_menu = InlineKeyboardMarkup(
 
 kb_deal = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton(text="Выбрать Поставщика", callback_data="1")],
-        [InlineKeyboardButton(text="Выбрать Брокера", callback_data="2")],
-        [InlineKeyboardButton(text="Выбрать Логиста", callback_data="3")],
+        [InlineKeyboardButton(text="Выбрать Поставщика", callback_data="change_provider")],
+        [InlineKeyboardButton(text="Выбрать Брокера", callback_data="change_broker")],
+        [InlineKeyboardButton(text="Выбрать Логиста", callback_data="change_carrier")],
         [InlineKeyboardButton(text="Выбрать покупателя", callback_data="4")],
         [InlineKeyboardButton(text="Проверить статус", callback_data="check_status")],
         [InlineKeyboardButton(text="Действия со сделкой", callback_data="6")],
         [InlineKeyboardButton(text="Готов к Выдаче", callback_data="7")],
         [InlineKeyboardButton(text="Завершить Заказ", callback_data="9")],
-        [InlineKeyboardButton(text="Удалить Заказ", callback_data="10")],
+        [InlineKeyboardButton(text="Удалить Заказ", callback_data="delete_deal")],
         [InlineKeyboardButton(text="Назад к списку", callback_data="admin_all_orders_list")]
 
     ]

@@ -94,7 +94,17 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
             await callback.answer("Сделка не найдена", show_alert=True)
             return
         builder = InlineKeyboardBuilder()
+        builder.button(text="Чек об оплате", callback_data="1")
+        builder.button(text="Фото/Видео Выкупа авто", callback_data="1")
+        builder.button(text="Доставка до ТК на Границу", callback_data="1")
+        builder.button(text="Документы на авто от Поставщика", callback_data="1")
+        builder.button(text="Кнопка", callback_data="1")
+        builder.button(text="Кнопка", callback_data="1")
+        builder.button(text="Кнопка", callback_data="1")
+        builder.button(text="Кнопка", callback_data="1")
+        builder.button(text="Кнопка", callback_data="1")
         builder.button(text="Назад к Списку", callback_data="admin_all_orders_list")
+
         builder.adjust(1)
         await callback.message.edit_caption(caption = f"ID: {deal.id}\n"
                                                       f"Данные по сделке:\n\n"
@@ -105,3 +115,30 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                                                       f"Брокер: {deal.broker_id}\n"
                                                       f"Перевозчик: {deal.carrier_id}\n",
                                             reply_markup=builder.as_markup())
+
+@callback_get_deals_list_router.callback_query(F.data == "delete_deal")
+async def callback_get_deals_delete(callback: CallbackQuery):
+    caption = callback.message.caption
+    deal_id = caption.split('\n')[0].split('ID: ')[1]
+    print(deal_id)
+
+    builder = InlineKeyboardBuilder()
+    builder.button(text="🗑 Удалить", callback_data=f"delete_deal_{deal_id}")  # Теперь передаем user_id
+    builder.button(text="◀ Назад", callback_data="admin_all_orders_list")
+    builder.adjust(1)
+    await callback.message.edit_reply_markup(inline_message_id=callback.inline_message_id,
+                                             reply_markup=builder.as_markup())
+
+
+@callback_get_deals_list_router.callback_query(F.data.startswith("delete_deal_"))
+async def callback_get_deals_confirm_delete(callback: CallbackQuery):
+    async with deals_session() as session:
+        result = await session.execute(select(Deals).where(Deals.id == callback.data.split("_")[-1]))
+        deal = result.scalar_one_or_none()
+        if deal:
+            await session.delete(deal)
+            await session.commit()
+            await callback.answer("Сделка Удалена!", show_alert=True)
+            await callback.message.delete()
+        else:
+            await callback.answer("Ошибка при удалении сделки.", show_alert=True)
