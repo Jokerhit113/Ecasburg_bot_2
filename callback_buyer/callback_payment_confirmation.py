@@ -92,4 +92,4 @@ async def payment_confirmation_buyer_get_photo(message: Message, state: FSMConte
 async def back_main_buyer(callback: CallbackQuery):
     await callback.message.answer(text=f"Добро пожаловать в панель Заказчика, благодарим Вас за выбор E-CarsBurg",
                          reply_markup=kb_buyer_main)
-    await callback.message.edit_reply_markup(reply_markup=None)
+    await callback.message.delete()

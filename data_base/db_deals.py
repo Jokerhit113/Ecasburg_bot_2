@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, select, ForeignKey
+from sqlalchemy import Column, Integer, String, select, ForeignKey, JSON
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import DeclarativeBase, relationship, selectinload
 
 engie = create_async_engine("sqlite+aiosqlite:///data_base/db_all/deals.db")
@@ -13,24 +14,26 @@ class Base(DeclarativeBase):
 class Deals(Base):
     __tablename__ = "deals"
     id = Column(Integer, primary_key=True)  # ТОЛЬКО этот столбец должен быть primary_key
-    deal_id = Column(Integer, unique=True)
-    buy_user = Column(String)
-    march_model = Column(String)
-    vin_code = Column(String)
-    car_photo_id = Column(String)
-    provider_id = Column(Integer, unique=True)
-    broker_id = Column(Integer, unique=True)
-    buyer_id = Column(Integer, unique=True)
-    carrier_id = Column(Integer, unique=True)
-    payment_photo_id = Column(String)
-    payment_document_id = Column(String)
-    payment_confirmation_photo_id = Column(String)
-    buy_car_photo_id = Column(String)
-    buy_car_video_id = Column(String)
-    provider_photo_car_border_id = Column(String)
-    provider_video_car_border_id = Column(String)
-    document_docs_car_provider_id = Column(String)
-    photo_docs_car_provider_id = Column(String)
+    deal_id = Column(Integer, unique=True) #
+    buy_user = Column(String) #
+    march_model = Column(String) #
+    vin_code = Column(String) #
+    car_photo_id = Column(String) #
+    provider_id = Column(Integer, unique=True) #
+    broker_id = Column(Integer, unique=True) #
+    buyer_id = Column(Integer, unique=True) #
+    carrier_id = Column(Integer, unique=True) #
+    payment_photo_id = Column(String) #
+    payment_document_id = Column(String) #
+    passport_photos = Column(MutableList.as_mutable(JSON), default=list) # Фотографии паспорта
+    passport_documents = Column(MutableList.as_mutable(JSON), default=list) # Документы / файлы паспорта
+    payment_confirmation_photo_id = Column(String) #
+    buy_car_photo_id = Column(String) #
+    buy_car_video_id = Column(String) #
+    provider_photo_car_border_id = Column(String) #
+    provider_video_car_border_id = Column(String) #
+    document_docs_car_provider_id = Column(String) #
+    photo_docs_car_provider_id = Column(String) #
 
 
 
