@@ -21,6 +21,7 @@ from callback_buyer.callback_foreign_currency_account_statement import \
     callback_foreign_currency_account_statement_router
 from callback_buyer.callback_get_elpts_registration import callback_get_elpts_registration_router
 from callback_buyer.callback_payment_confirmation import callback_payment_confirmation_buyer_router
+from callback_provider.callback_check_deals_provider import callback_check_deals_provider_router
 from command import router_command
 from data_base.db_deals import init_deals_db
 from data_base.db_users import init_users_db
@@ -53,6 +54,7 @@ async def main():
     dp.include_router(callback_cash_flow_statement_router)
     dp.include_router(callback_fill_out_the_questionnaire_router)
     dp.include_router(callback_get_elpts_registration_router)
+    dp.include_router(callback_check_deals_provider_router)
 
 
     await dp.start_polling(bot)

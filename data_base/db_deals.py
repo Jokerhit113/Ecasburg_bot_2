@@ -20,10 +20,10 @@ class Deals(Base):
     march_model = Column(String) # Марка, модель автомобиля
     vin_code = Column(String) # Вин код автомобиля
     car_photo_id = Column(String) # Фото автомобиля
-    provider_id = Column(Integer, unique=True) # Назначенный поставщик
-    broker_id = Column(Integer, unique=True) # Назначенный брокер
-    buyer_id = Column(Integer, unique=True) # ID покупателя
-    carrier_id = Column(Integer, unique=True) # ID Перевозчика
+    provider_id = Column(Integer) # Назначенный поставщик
+    broker_id = Column(Integer) # Назначенный брокер
+    buyer_id = Column(Integer) # ID покупателя
+    carrier_id = Column(Integer) # ID Перевозчика
     # Данные от Покупателя
     payment_photo_id = Column(String) # Фото оплаты автомобиля покупателем
     payment_document_id = Column(String) # Документ оплаты автомобиля покупателем
@@ -42,13 +42,19 @@ class Deals(Base):
     elpts_registration_photo = Column(String) # Фото регистрации в ЭПТС
 
     # Данные от Поставщика
-    payment_confirmation_photo_id = Column(String) # Подтверждение выкупа автомобиля поставщиком
-    buy_car_photo_id = Column(String) # Фото выкупа автомобиля поставщиком
-    buy_car_video_id = Column(String) # Видео выкупа автомобиля поставщиком
+    payment_confirmation_yes_no = Column(String) # Подтверждение получения денег от покупателя
+
+    buy_car_provider_photo_id = Column(String) # Фото выкупа автомобиля поставщиком
+    buy_car_provider_video_id = Column(String) # Видео выкупа автомобиля поставщиком
+
+    provider_photo_car_before_border_id = Column(String)  # Фото автомобиля до отправки на границу от поставщика
+    provider_video_car_before_border_id = Column(String)  # Видео автомобиля до отправки на границу от поставщика
+
     provider_photo_car_border_id = Column(String) # Фото автомобиля на границе от поставщика
     provider_video_car_border_id = Column(String) # Видео автомобиля на границе от поставщика
+
     document_docs_car_provider_id = Column(String) # Документы по автомобилю от поставщика
-    photo_docs_car_provider_id = Column(String) # Фото
+    photo_docs_car_provider_id = Column(String) # Фото документы по автомобилю от поставщика
 
 async def init_deals_db():
     async with engie.begin() as conn:
