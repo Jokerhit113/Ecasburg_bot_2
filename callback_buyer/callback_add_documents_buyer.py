@@ -15,6 +15,7 @@ async def add_documents_buyer_info(callback: CallbackQuery):
     builder = InlineKeyboardBuilder()
     builder.button(text="Инструкция по загрузке документов", callback_data="info_add_documents_buyer")
     builder.button(text="Загрузка документов", callback_data="kb_menu_load_docs")
+    builder.button(text="Регистрация на портале ЭПТС", url="https://dp.elpts.ru/#/auth/")
 
     builder.button(text="В главное меню", callback_data="back_main_buyer")
     builder.adjust(1)
@@ -43,6 +44,7 @@ async def kb_menu_load_docs(callback: CallbackQuery):
     builder.button(text="2 Выписка по валютному счету", callback_data="foreign_currency_account_statement")
     builder.button(text="3 Справка о движении денежных средств по ВС", callback_data="cash_flow_statement")
     builder.button(text="4 Заполнить Анкету", callback_data="fill_out_the_questionnaire")
+    builder.button(text="5 Скрин с сайта ЭПТС", callback_data="get_elpts_registration")
 
     builder.button(text="В главное меню", callback_data="back_main_buyer")
     builder.adjust(1)

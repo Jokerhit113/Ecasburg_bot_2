@@ -4,7 +4,6 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.state_fsm import NewDeals, Buyer
 from data_base.db_deals import deals_session, Deals
@@ -63,8 +62,10 @@ async def payment_confirmation_buyer_get_photo(message: Message, state: FSMConte
             # Обновляем данные о платеже
             if message.photo:
                 deal.payment_photo_id = file_id
-            else:
+            elif message.document:
                 deal.payment_document_id = file_id
+            else:
+                await message.answer("Пожалуйста, отправьте фото или документ с подтверждением оплаты")
 
             await session.commit()
 

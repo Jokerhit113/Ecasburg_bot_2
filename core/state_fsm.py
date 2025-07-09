@@ -14,6 +14,15 @@ class NewDeals(StatesGroup):
     waiting_for_photo_car = State()
 
 class Buyer(StatesGroup):
-    waiting_for_complete_load = State
+    waiting_for_get_registration_elpts = State()
+    waiting_for_have_car = State()
+    waiting_for_imported_yes_no = State()
+    waiting_for_driver_license = State()
+    waiting_for_email_address = State()
+    waiting_for_actual_address_of_residence = State()
+    waiting_for_get_cash_flow_statement = State()
+    waiting_for_get_foreign_currency_account_statement = State()
+    waiting_for_complete_load = State()
     waiting_for_payment = State()
     waiting_for_get_passport = State()
+    waiting_phone_number_buyer = State()

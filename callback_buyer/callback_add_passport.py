@@ -96,4 +96,4 @@ async def get_photo_or_doc_passport(message: Message, state: FSMContext):
         await message.answer(text=f"Загрузка завершена",
                              reply_markup=ReplyKeyboardRemove())
     else:
-        await message.answer("Загрузите Фото или Скан документов, по завершению нажмите кнопу ЗАВЕРШИТЬ ЗАГРУЗКУ!")
+        await message.answer("Загрузите Фото или Скан документов, по завершению нажмите кнопку ЗАВЕРШИТЬ ЗАГРУЗКУ!")

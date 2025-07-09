@@ -1,0 +1,84 @@
+import logging
+from aiogram import Router, Bot, F
+from aiogram.types import CallbackQuery, Message
+from aiogram.fsm.context import FSMContext
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from core.state_fsm import NewDeals, Buyer
+from data_base.db_deals import deals_session, Deals
+from keyboard.inline_keyboard import kb_buyer_main
+
+callback_get_elpts_registration_router = Router()
+
+
+@callback_get_elpts_registration_router.callback_query(F.data == "get_elpts_registration")
+async def get_elpts_registration_buyer(callback: CallbackQuery, state: FSMContext):
+    """Обработчик начала процесса подтверждения оплаты"""
+    try:
+        builder = InlineKeyboardBuilder()
+        builder.button(
+            text="Назад в Меню",
+            callback_data="back_main_buyer"
+        )
+        builder.adjust(1)
+
+        await callback.message.edit_text(
+            text="Загрузите Фото Скрин с сайта ЭПТС:",
+            reply_markup=builder.as_markup()
+        )
+        await state.set_state(Buyer.waiting_for_get_registration_elpts)
+        await callback.answer()
+
+    except Exception as e:
+        logging.error(f"Error in get_elpts_registration: {e}", exc_info=True)
+        await callback.answer("Произошла ошибка", show_alert=True)
+
+
+@callback_get_elpts_registration_router.message(Buyer.waiting_for_get_registration_elpts)
+async def get_elpts_registration_buyer_get_photo(message: Message, state: FSMContext, bot: Bot):
+    """Обработчик получения подтверждения оплаты"""
+    try:
+        # Проверяем тип содержимого
+        if not (message.photo or message.document):
+            await message.answer("Пожалуйста, отправьте Скрин с сайта ЭПТС")
+            return
+
+        # Сохраняем файл в состояние
+        file_id = message.photo[-1].file_id
+        await state.update_data(payment_file_id=file_id)
+
+        async with deals_session() as session:
+            # Ищем сделку по user_id покупателя
+            deal = await session.execute(
+                select(Deals).where(Deals.buyer_id == message.from_user.id)
+            )
+            deal = deal.scalar_one_or_none()
+
+            if not deal:
+                await message.answer("❌ Сделка не найдена")
+                return
+
+            # Обновляем данные о платеже
+            if message.photo:
+                deal.elpts_registration_photo = file_id
+            else:
+                await message.answer("Отправьте Скрин")
+
+            await session.commit()
+
+            # Отправляем подтверждение
+            builder = InlineKeyboardBuilder()
+            builder.button(text="В главное меню", callback_data="back_main_buyer")
+
+            await message.answer(
+                "✅ Скрин принят!\n",
+                reply_markup=builder.as_markup()
+            )
+            await state.clear()
+
+    except Exception as e:
+        logging.error(f"Error in payment_confirmation_buyer_get_photo: {e}", exc_info=True)
+        await message.answer("⚠️ Произошла ошибка при загрузке скрина")
+

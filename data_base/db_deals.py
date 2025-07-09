@@ -13,32 +13,42 @@ class Base(DeclarativeBase):
 
 class Deals(Base):
     __tablename__ = "deals"
+    # Сделка
     id = Column(Integer, primary_key=True)  # ТОЛЬКО этот столбец должен быть primary_key
-    deal_id = Column(Integer, unique=True) #
-    buy_user = Column(String) #
-    march_model = Column(String) #
-    vin_code = Column(String) #
-    car_photo_id = Column(String) #
-    provider_id = Column(Integer, unique=True) #
-    broker_id = Column(Integer, unique=True) #
-    buyer_id = Column(Integer, unique=True) #
-    carrier_id = Column(Integer, unique=True) #
-    payment_photo_id = Column(String) #
-    payment_document_id = Column(String) #
+    deal_id = Column(Integer, unique=True) # Номер сделки
+    buy_user = Column(String) # Назначеный покупатель администратором
+    march_model = Column(String) # Марка, модель автомобиля
+    vin_code = Column(String) # Вин код автомобиля
+    car_photo_id = Column(String) # Фото автомобиля
+    provider_id = Column(Integer, unique=True) # Назначенный поставщик
+    broker_id = Column(Integer, unique=True) # Назначенный брокер
+    buyer_id = Column(Integer, unique=True) # ID покупателя
+    carrier_id = Column(Integer, unique=True) # ID Перевозчика
+    # Данные от Покупателя
+    payment_photo_id = Column(String) # Фото оплаты автомобиля покупателем
+    payment_document_id = Column(String) # Документ оплаты автомобиля покупателем
     passport_photos = Column(MutableList.as_mutable(JSON), default=list) # Фотографии паспорта
     passport_documents = Column(MutableList.as_mutable(JSON), default=list) # Документы / файлы паспорта
-    payment_confirmation_photo_id = Column(String) #
-    buy_car_photo_id = Column(String) #
-    buy_car_video_id = Column(String) #
-    provider_photo_car_border_id = Column(String) #
-    provider_video_car_border_id = Column(String) #
-    document_docs_car_provider_id = Column(String) #
-    photo_docs_car_provider_id = Column(String) #
+    foreign_currency_account_statement_photo = Column(MutableList.as_mutable(JSON), default=list) # Фото Выписки по валютному счёту
+    foreign_currency_account_statement_docs = Column(MutableList.as_mutable(JSON), default=list)  # Документы Выписки по валютному счёту
+    cash_flow_statement_photos = Column(MutableList.as_mutable(JSON), default=list)# Фото Выписки по валютному счёту
+    cash_flow_statement_docs = Column(MutableList.as_mutable(JSON), default=list)# Документы Выписки по валютному счёту
+    buyer_phone_number = Column(String) # Номер телефона покупателя
+    buyer_actual_address_of_residence = Column(String) # Фактический адрес проживания
+    buyer_email_address = Column(String) # E-mail
+    buyer_driver_license = Column(String) # Водительское удостоверение
+    buyer_imported_yes_no = Column(String) # Был ли ввоз автомобиля из-за границы за последние 3 года
+    buyer_have_car = Column(String) # Есть ли автомобиль в пользовании в данный момент
+    elpts_registration_photo = Column(String) # Фото регистрации в ЭПТС
 
-
-
-    user_id = Column(Integer, unique=True)
-    departament = Column(String)
+    # Данные от Поставщика
+    payment_confirmation_photo_id = Column(String) # Подтверждение выкупа автомобиля поставщиком
+    buy_car_photo_id = Column(String) # Фото выкупа автомобиля поставщиком
+    buy_car_video_id = Column(String) # Видео выкупа автомобиля поставщиком
+    provider_photo_car_border_id = Column(String) # Фото автомобиля на границе от поставщика
+    provider_video_car_border_id = Column(String) # Видео автомобиля на границе от поставщика
+    document_docs_car_provider_id = Column(String) # Документы по автомобилю от поставщика
+    photo_docs_car_provider_id = Column(String) # Фото
 
 async def init_deals_db():
     async with engie.begin() as conn:
