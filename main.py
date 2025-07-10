@@ -21,7 +21,10 @@ from callback_buyer.callback_foreign_currency_account_statement import \
 from callback_buyer.callback_get_elpts_registration import callback_get_elpts_registration_router
 from callback_buyer.callback_payment_confirmation import callback_payment_confirmation_buyer_router
 from callback_provider.callback_buy_car_provider import callback_buy_car_provider_router
+from callback_provider.callback_car_before_border import callback_car_before_border_router
+from callback_provider.callback_car_delivered_border import callback_car_delivered_border_router
 from callback_provider.callback_check_deals_provider import callback_check_deals_provider_router
+from callback_provider.callback_load_docs_car_provider import callback_load_docs_car_provider_router
 from command import router_command
 from data_base.db_deals import init_deals_db
 from data_base.db_users import init_users_db
@@ -56,6 +59,9 @@ async def main():
     dp.include_router(callback_get_elpts_registration_router)
     dp.include_router(callback_check_deals_provider_router)
     dp.include_router(callback_buy_car_provider_router)
+    dp.include_router(callback_car_before_border_router)
+    dp.include_router(callback_car_delivered_border_router)
+    dp.include_router(callback_load_docs_car_provider_router)
 
 
     await dp.start_polling(bot)

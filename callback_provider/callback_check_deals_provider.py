@@ -56,9 +56,9 @@ async def show_deal_details(callback: CallbackQuery):
             # Создаем клавиатуру для возврата
             builder = InlineKeyboardBuilder()
             builder.button(text="Подтверждение выкупа автомобиля", callback_data=f"buy_car_provider")
-            builder.button(text="Отчёт отправки авто до границы", callback_data=f"provider_photo_car_before_border")
-            builder.button(text="Отчёт доставки авто на границу", callback_data=f"provider_photo_car_border")
-            builder.button(text="Загрузить документы по автомобилю", callback_data=f"document_docs_car_provider")
+            builder.button(text="Отчёт отправки авто до границы", callback_data=f"media_car_before_border")
+            builder.button(text="Отчёт доставки авто на границу", callback_data=f"media_car_delivered_border")
+            builder.button(text="Загрузить документы по автомобилю", callback_data=f"load_docs_car_provider")
             builder.button(text="Назад к списку", callback_data="back_check_deals_provider")
             builder.adjust(1)
             await callback.message.delete()
