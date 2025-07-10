@@ -44,17 +44,17 @@ class Deals(Base):
     # Данные от Поставщика
     payment_confirmation_yes_no = Column(String) # Подтверждение получения денег от покупателя
 
-    buy_car_provider_photo_id = Column(String) # Фото выкупа автомобиля поставщиком
-    buy_car_provider_video_id = Column(String) # Видео выкупа автомобиля поставщиком
+    buy_car_provider_photo_id = Column(MutableList.as_mutable(JSON), default=list) # Фото выкупа автомобиля поставщиком
+    buy_car_provider_video_id = Column(MutableList.as_mutable(JSON), default=list) # Видео выкупа автомобиля поставщиком
 
-    provider_photo_car_before_border_id = Column(String)  # Фото автомобиля до отправки на границу от поставщика
-    provider_video_car_before_border_id = Column(String)  # Видео автомобиля до отправки на границу от поставщика
+    provider_photo_car_before_border_id = Column(MutableList.as_mutable(JSON), default=list)  # Фото автомобиля до отправки на границу от поставщика
+    provider_video_car_before_border_id = Column(MutableList.as_mutable(JSON), default=list)  # Видео автомобиля до отправки на границу от поставщика
 
-    provider_photo_car_border_id = Column(String) # Фото автомобиля на границе от поставщика
-    provider_video_car_border_id = Column(String) # Видео автомобиля на границе от поставщика
+    provider_photo_car_border_id = Column(MutableList.as_mutable(JSON), default=list) # Фото автомобиля на границе от поставщика
+    provider_video_car_border_id = Column(MutableList.as_mutable(JSON), default=list) # Видео автомобиля на границе от поставщика
 
-    document_docs_car_provider_id = Column(String) # Документы по автомобилю от поставщика
-    photo_docs_car_provider_id = Column(String) # Фото документы по автомобилю от поставщика
+    document_docs_car_provider_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
+    photo_docs_car_provider_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от поставщика
 
 async def init_deals_db():
     async with engie.begin() as conn:

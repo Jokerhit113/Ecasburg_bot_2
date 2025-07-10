@@ -26,3 +26,6 @@ class Buyer(StatesGroup):
     waiting_for_payment = State()
     waiting_for_get_passport = State()
     waiting_phone_number_buyer = State()
+
+class Provider(StatesGroup):
+    waiting_for_photo_buy_car = State()
