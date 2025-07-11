@@ -45,6 +45,31 @@ async def show_deal_details(callback: CallbackQuery):
                 await callback.answer("Сделка не найдена", show_alert=True)
                 return
 
+            # Подтверждение выкупа автомобиля
+            if not deal.buy_car_provider_photo_id and not deal.buy_car_provider_video_id:
+                payment_btn = "⚠️"  # Нет ни фото, ни видео
+            else:
+                payment_btn = "✅"  # Есть хотя бы что-то из этого
+
+            # Отчёт отправки авто до границы
+            if not deal.provider_photo_car_before_border_id and not deal.provider_video_car_before_border_id:
+                video_car_before_btn = "⚠️"  # Нет ни фото, ни видео
+            else:
+                video_car_before_btn = "✅"  # Есть хотя бы что-то из этого
+
+            # Отчёт доставки авто на границу
+            if not deal.provider_photo_car_border_id and not deal.provider_video_car_border_id:
+                video_car_border_btn = "⚠️"  # Нет ни фото, ни видео
+            else:
+                video_car_border_btn = "✅"  # Есть хотя бы что-то из этого
+
+            # Загрузить документы по автомобилю
+            if not deal.document_docs_car_provider_id and not deal.photo_docs_car_provider_id:
+                docs_car_provider_btn = "⚠️"  # Нет ни фото, ни видео
+            else:
+                docs_car_provider_btn = "✅"  # Есть хотя бы что-то из этого
+
+
             # Формируем текст сообщения
             message_text = (
                 f"Сделка №: {deal.deal_id}\n"
@@ -55,10 +80,10 @@ async def show_deal_details(callback: CallbackQuery):
 
             # Создаем клавиатуру для возврата
             builder = InlineKeyboardBuilder()
-            builder.button(text="Подтверждение выкупа автомобиля", callback_data=f"buy_car_provider")
-            builder.button(text="Отчёт отправки авто до границы", callback_data=f"media_car_before_border")
-            builder.button(text="Отчёт доставки авто на границу", callback_data=f"media_car_delivered_border")
-            builder.button(text="Загрузить документы по автомобилю", callback_data=f"load_docs_car_provider")
+            builder.button(text=f"{payment_btn} Подтверждение выкупа автомобиля {payment_btn}", callback_data=f"buy_car_provider")
+            builder.button(text=f"{video_car_before_btn} Отчёт отправки авто до границы {video_car_before_btn}", callback_data=f"media_car_before_border")
+            builder.button(text=f"{video_car_border_btn} Отчёт доставки авто на границу {video_car_border_btn}", callback_data=f"media_car_delivered_border")
+            builder.button(text=f"{docs_car_provider_btn} Загрузить документы по автомобилю {docs_car_provider_btn}", callback_data=f"load_docs_car_provider")
             builder.button(text="Назад к списку", callback_data="back_check_deals_provider")
             builder.adjust(1)
             await callback.message.delete()
