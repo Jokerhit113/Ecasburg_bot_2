@@ -52,7 +52,7 @@ async def cmd_start(message: Message, bot: Bot):
             if department == "admin":
                 await message.answer(text=f"ПАНЕЛЬ АДМИНИСТРАТОРА", reply_markup=kb_admin_main)
             elif department == "buyer":
-                await message.answer(text=f"Добро пожаловать в панель Заказчика, благодарим Вас за выбор E-CarsBurg",
+                await message.answer(text=f"Добро пожаловать в панель Покупателя, благодарим Вас за выбор E-CarsBurg",
                                      reply_markup=kb_buyer_main)
             elif department == "provider":
                 await message.answer(text="Welcome to the partner menu of E-CarsBurg.\n\n"

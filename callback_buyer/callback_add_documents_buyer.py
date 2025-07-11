@@ -10,32 +10,17 @@ from sqlalchemy import select
 
 callback_add_documents_buyer_router = Router()
 
-@callback_add_documents_buyer_router.callback_query(F.data == "add_documents_buyer")
-async def add_documents_buyer_info(callback: CallbackQuery):
-    builder = InlineKeyboardBuilder()
-    builder.button(text="Инструкция по загрузке документов", callback_data="info_add_documents_buyer")
-    builder.button(text="Загрузка документов", callback_data="kb_menu_load_docs")
-    builder.button(text="Регистрация на портале ЭПТС", url="https://dp.elpts.ru/#/auth/")
-
-    builder.button(text="В главное меню", callback_data="back_main_buyer")
-    builder.adjust(1)
-    await callback.message.edit_text(
-        text="Перед загрузкой документов, ознакомьтесь с ИНСТРУКЦИЕЙ",
-        reply_markup=builder.as_markup()
-
-    )
-    await callback.answer()
 
 @callback_add_documents_buyer_router.callback_query(F.data == "info_add_documents_buyer")
 async def info_add_documents_buyer_info(callback: CallbackQuery):
     file = Path(f"setting/info_load_documents")
     text = file.read_text(encoding='utf-8')
     builder = InlineKeyboardBuilder()
-    builder.button(text="Назад", callback_data="add_documents_buyer")
+    builder.button(text=f"УДАЛИТЬ СООБЩЕНИЕ", callback_data=f"delete_message")
     builder.adjust(1)
-    await callback.message.edit_text(
-        text=text,
-        reply_markup=builder.as_markup())
+
+    await callback.message.answer(text=text, reply_markup=builder.as_markup())
+    await callback.answer()
 
 @callback_add_documents_buyer_router.callback_query(F.data == "kb_menu_load_docs")
 async def kb_menu_load_docs(callback: CallbackQuery):
@@ -50,8 +35,12 @@ async def kb_menu_load_docs(callback: CallbackQuery):
     builder.adjust(1)
     await callback.answer(text="Для Загрузки документов, выберите нужный пункт меню, и строго следуйте инструкциям.",
                           show_alert=True)
-    await callback.message.edit_text(
-        text="Для Загрузки документов, выберите нужный пункт меню, и строго следуйте инструкциям.",
+    await callback.message.edit_caption(
+        caption=f"{callback.message.caption}\n\n"
+                f"Для Загрузки документов, выберите нужный пункт меню, и строго следуйте инструкциям.",
         reply_markup=builder.as_markup()
     )
 
+@callback_add_documents_buyer_router.callback_query(F.data == "delete_message")
+async def delete_message(callback: CallbackQuery):
+    await callback.message.delete()

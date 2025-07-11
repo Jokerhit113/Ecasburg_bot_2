@@ -26,6 +26,8 @@ async def check_deals_provider(callback: CallbackQuery):
             builder.adjust(1)
             await callback.message.edit_text(text="Выберете сделку:",
                                              reply_markup=builder.as_markup())
+        else:
+            await callback.answer(text="У Вас пока что нет сделок!")
 
 
 @callback_check_deals_provider_router.callback_query(F.data.startswith("check_deal_"))
@@ -80,10 +82,10 @@ async def show_deal_details(callback: CallbackQuery):
 
             # Создаем клавиатуру для возврата
             builder = InlineKeyboardBuilder()
-            builder.button(text=f"{payment_btn} Подтверждение выкупа автомобиля {payment_btn}", callback_data=f"buy_car_provider")
-            builder.button(text=f"{video_car_before_btn} Отчёт отправки авто до границы {video_car_before_btn}", callback_data=f"media_car_before_border")
-            builder.button(text=f"{video_car_border_btn} Отчёт доставки авто на границу {video_car_border_btn}", callback_data=f"media_car_delivered_border")
-            builder.button(text=f"{docs_car_provider_btn} Загрузить документы по автомобилю {docs_car_provider_btn}", callback_data=f"load_docs_car_provider")
+            builder.button(text=f"Подтверждение выкупа автомобиля {payment_btn}", callback_data=f"buy_car_provider")
+            builder.button(text=f"Отчёт отправки авто до границы {video_car_before_btn}", callback_data=f"media_car_before_border")
+            builder.button(text=f"Отчёт доставки авто на границу {video_car_border_btn}", callback_data=f"media_car_delivered_border")
+            builder.button(text=f"Загрузить документы по автомобилю {docs_car_provider_btn}", callback_data=f"load_docs_car_provider")
             builder.button(text="Назад к списку", callback_data="back_check_deals_provider")
             builder.adjust(1)
             await callback.message.delete()
