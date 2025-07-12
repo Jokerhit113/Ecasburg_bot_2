@@ -19,6 +19,7 @@ kb_back_to_menu = InlineKeyboardMarkup(
 
 kb_deal = InlineKeyboardMarkup(
     inline_keyboard=[
+        [InlineKeyboardButton(text="Загрузить договор", callback_data="add_contract")],
         [InlineKeyboardButton(text="Выбрать Поставщика", callback_data="change_provider")],
         [InlineKeyboardButton(text="Выбрать Брокера", callback_data="change_broker")],
         [InlineKeyboardButton(text="Выбрать Логиста", callback_data="change_carrier")],

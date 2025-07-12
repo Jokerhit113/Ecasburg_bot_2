@@ -20,11 +20,14 @@ from callback_buyer.callback_fill_out_the_questionnaire import callback_fill_out
 from callback_buyer.callback_foreign_currency_account_statement import \
     callback_foreign_currency_account_statement_router
 from callback_buyer.callback_get_elpts_registration import callback_get_elpts_registration_router
+from callback_buyer.callback_get_snils_buyer import callback_get_snils_buyer_router
 from callback_buyer.callback_payment_confirmation import callback_payment_confirmation_buyer_router
 from callback_provider.callback_buy_car_provider import callback_buy_car_provider_router
 from callback_provider.callback_car_before_border import callback_car_before_border_router
 from callback_provider.callback_car_delivered_border import callback_car_delivered_border_router
 from callback_provider.callback_check_deals_provider import callback_check_deals_provider_router
+from callback_provider.callback_confirmation_payment_buyer_provider import \
+    callback_confirmation_payment_buyer_provider_router
 from callback_provider.callback_load_docs_car_provider import callback_load_docs_car_provider_router
 from command import router_command
 from data_base.db_deals import init_deals_db
@@ -52,6 +55,7 @@ async def main():
     dp.include_router(callback_change_buyer_router)
     dp.include_router(callback_status_deal_router)
     dp.include_router(callback_payment_confirmation_buyer_router)
+    dp.include_router(callback_confirmation_payment_buyer_provider_router)
     dp.include_router(callback_add_documents_buyer_router)
     dp.include_router(callback_add_passport_router)
     dp.include_router(callback_foreign_currency_account_statement_router)
@@ -64,6 +68,7 @@ async def main():
     dp.include_router(callback_car_delivered_border_router)
     dp.include_router(callback_load_docs_car_provider_router)
     dp.include_router(callback_check_deals_buyer_router)
+    dp.include_router(callback_get_snils_buyer_router)
 
 
     await dp.start_polling(bot)

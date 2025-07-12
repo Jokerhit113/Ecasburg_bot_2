@@ -14,6 +14,7 @@ class NewDeals(StatesGroup):
     waiting_for_photo_car = State()
 
 class Buyer(StatesGroup):
+    waiting_for_get_snils = State()
     waiting_for_get_registration_elpts = State()
     waiting_for_have_car = State()
     waiting_for_imported_yes_no = State()

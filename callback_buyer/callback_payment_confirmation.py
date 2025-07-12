@@ -1,6 +1,6 @@
 import logging
 from aiogram import Router, Bot, F
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, InputMediaPhoto
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
@@ -80,6 +80,42 @@ async def payment_confirmation_buyer_get_photo(message: Message, state: FSMConte
                 "Ожидайте подтверждения от поставщика",
                 reply_markup=builder.as_markup()
             )
+
+            try:
+                builder = InlineKeyboardBuilder()
+                builder.button(text="✅ Деньги получены!", callback_data="confirmation_payment_buyer_provider")
+                if message.photo:
+                    media_group = [
+                        InputMediaPhoto(media=message.photo[-1].file_id),
+                        InputMediaPhoto(media=deal.car_photo_id)
+                    ]
+                    await bot.send_media_group(
+                        chat_id=deal.provider_id,
+                        media=media_group
+                    )
+
+                elif message.document:
+                    await bot.send_photo(
+                        chat_id=deal.provider_id,
+                        photo=deal.car_photo_id
+                    )
+                    await bot.send_document(
+                        chat_id=deal.provider_id,
+                        document=message.document.file_id,
+                    )
+
+
+                await bot.send_message(
+                    chat_id=deal.provider_id,
+                    text=f"Сделка №: {deal.deal_id}\n"
+                            f"Покупатель: {deal.buy_user}\n"
+                            f"Автомобиль: {deal.march_model}\n"
+                            f"VIN: {deal.vin_code}\n\n"
+                            f"Подтвердите получение денежных средств.",
+                    reply_markup=builder.as_markup())
+            except Exception as e:
+                logging.error(f"Error in forward message for provider {e}", exc_info=True)
+                await message.answer("Поставщик ещё не назначен")
             await state.clear()
 
             # Можно добавить уведомление администратору/поставщику

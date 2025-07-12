@@ -24,6 +24,8 @@ class Deals(Base):
     broker_id = Column(Integer) # Назначенный брокер
     buyer_id = Column(Integer) # ID покупателя
     carrier_id = Column(Integer) # ID Перевозчика
+
+
     # Данные от Покупателя
     payment_photo_id = Column(String) # Фото оплаты автомобиля покупателем
     payment_document_id = Column(String) # Документ оплаты автомобиля покупателем
@@ -33,6 +35,8 @@ class Deals(Base):
     foreign_currency_account_statement_docs = Column(MutableList.as_mutable(JSON), default=list)  # Документы Выписки по валютному счёту
     cash_flow_statement_photos = Column(MutableList.as_mutable(JSON), default=list)# Фото Выписки по валютному счёту
     cash_flow_statement_docs = Column(MutableList.as_mutable(JSON), default=list)# Документы Выписки по валютному счёту
+    snils_buyer_photos = Column(MutableList.as_mutable(JSON), default=list)# СНИЛС фото Покупателя
+    snils_buyer_docs = Column(MutableList.as_mutable(JSON), default=list)# СНИЛС документ Покупателя
     buyer_phone_number = Column(String) # Номер телефона покупателя
     buyer_actual_address_of_residence = Column(String) # Фактический адрес проживания
     buyer_email_address = Column(String) # E-mail
