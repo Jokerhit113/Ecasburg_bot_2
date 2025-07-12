@@ -14,9 +14,12 @@ text_cash_flow_statement_get = (f"Загрузите Фотографии СПР
                                 f"ДВИЖЕНИИ ДЕНЕЖНЫХ СРЕДСТВ ВАЛЮТНОМУ СЧЁТУ")
 
 @callback_cash_flow_statement_router.callback_query(F.data == "cash_flow_statement")
-async def callback_add_passport(callback: CallbackQuery, state: FSMContext):
+async def add_cash_flow_statement(callback: CallbackQuery, state: FSMContext):
+    caption = callback.message.caption
+    deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
+    await state.update_data(deal_id=deal_id)
     builder = InlineKeyboardBuilder()
-    builder.button(text="Назад к списку документов", callback_data="kb_menu_load_docs")
+    builder.button(text="Назад в Меню", callback_data="back_main_buyer")
     builder.adjust(1)
 
     # Создаем Reply-клавиатуру для "Завершить загрузку"
@@ -25,7 +28,7 @@ async def callback_add_passport(callback: CallbackQuery, state: FSMContext):
     reply_markup = reply_builder.as_markup(resize_keyboard=True)
 
     await callback.answer(text="ВНИМАТЕЛЬНО ПРОЧИТАЙТЕ ПРАВИЛА ЗАГРУЗКИ СПРАВКИ О ДВИЖЕНИИ ДЕНЕЖНЫХ СРЕДСТВ ВАЛЮТНОМУ СЧЁТУ!", show_alert=True)
-    await callback.message.edit_text(text=text_cash_flow_statement_get,
+    await callback.message.edit_caption(caption=text_cash_flow_statement_get,
                                      reply_markup=builder.as_markup())
     await callback.message.answer(text="Загрузите Фото или Скан документов, по завершению нажмите кнопу ЗАВЕРШИТЬ ЗАГРУЗКУ!",
                                   reply_markup=reply_markup)
@@ -34,7 +37,9 @@ async def callback_add_passport(callback: CallbackQuery, state: FSMContext):
     await state.set_state(Buyer.waiting_for_get_cash_flow_statement)
 
 @callback_cash_flow_statement_router.message(Buyer.waiting_for_get_cash_flow_statement)
-async def get_photo_or_doc_passport(message: Message, state: FSMContext):
+async def get_cash_flow_statement(message: Message, state: FSMContext):
+    data = await state.get_data()
+    deal_id = data.get('deal_id')
     reply_builder = ReplyKeyboardBuilder()
     reply_builder.add(KeyboardButton(text="ЗАВЕРШИТЬ ЗАГРУЗКУ"))
     reply_markup = reply_builder.as_markup(resize_keyboard=True)
@@ -62,7 +67,7 @@ async def get_photo_or_doc_passport(message: Message, state: FSMContext):
             return
         async with deals_session() as session:
             deal = await session.execute(
-                select(Deals).where(Deals.buyer_id == message.from_user.id)
+                select(Deals).where(Deals.deal_id == deal_id)
             )
             deal = deal.scalar_one_or_none()
 
@@ -71,7 +76,7 @@ async def get_photo_or_doc_passport(message: Message, state: FSMContext):
                 deal.cash_flow_statement_docs = documents
                 await session.commit()
                 builder = InlineKeyboardBuilder()
-                builder.button(text="Назад к списку документов", callback_data="add_documents_buyer")
+                builder.button(text="Назад к списку Сделок", callback_data="check_deals_buyer")
                 builder.adjust(1)
                 await message.answer(
                     text=f"✅ Успешно сохранено:\n"

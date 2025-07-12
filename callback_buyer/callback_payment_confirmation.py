@@ -15,16 +15,16 @@ callback_payment_confirmation_buyer_router = Router()
 @callback_payment_confirmation_buyer_router.callback_query(F.data == "payment_confirmation_buyer")
 async def payment_confirmation_buyer(callback: CallbackQuery, state: FSMContext):
     """Обработчик начала процесса подтверждения оплаты"""
+    caption = callback.message.caption
+    deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
+    await state.update_data(deal_id=deal_id)
     try:
         builder = InlineKeyboardBuilder()
-        builder.button(
-            text="Назад в Меню",
-            callback_data="back_main_buyer"
-        )
+        builder.button(text="Назад в Меню", callback_data="back_main_buyer")
         builder.adjust(1)
 
-        await callback.message.edit_text(
-            text="Загрузите Фото/Скан подтверждения оплаты:",
+        await callback.message.edit_caption(
+            caption="Загрузите Фото/Скан подтверждения оплаты:",
             reply_markup=builder.as_markup()
         )
         await state.set_state(Buyer.waiting_for_payment)
@@ -39,6 +39,8 @@ async def payment_confirmation_buyer(callback: CallbackQuery, state: FSMContext)
 async def payment_confirmation_buyer_get_photo(message: Message, state: FSMContext, bot: Bot):
     """Обработчик получения подтверждения оплаты"""
     try:
+        data = await state.get_data()
+        deal_id = data.get('deal_id')
         # Проверяем тип содержимого
         if not (message.photo or message.document):
             await message.answer("Пожалуйста, отправьте фото или документ с подтверждением оплаты")
@@ -51,7 +53,7 @@ async def payment_confirmation_buyer_get_photo(message: Message, state: FSMConte
         async with deals_session() as session:
             # Ищем сделку по user_id покупателя
             deal = await session.execute(
-                select(Deals).where(Deals.buyer_id == message.from_user.id)
+                select(Deals).where(Deals.deal_id == deal_id)
             )
             deal = deal.scalar_one_or_none()
 

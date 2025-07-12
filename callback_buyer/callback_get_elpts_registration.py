@@ -16,16 +16,16 @@ callback_get_elpts_registration_router = Router()
 @callback_get_elpts_registration_router.callback_query(F.data == "get_elpts_registration")
 async def get_elpts_registration_buyer(callback: CallbackQuery, state: FSMContext):
     """Обработчик начала процесса подтверждения оплаты"""
+    caption = callback.message.caption
+    deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
+    await state.update_data(deal_id=deal_id)
     try:
         builder = InlineKeyboardBuilder()
-        builder.button(
-            text="Назад в Меню",
-            callback_data="back_main_buyer"
-        )
+        builder.button(text="Назад в Меню", callback_data="back_main_buyer")
         builder.adjust(1)
 
-        await callback.message.edit_text(
-            text="Загрузите Фото Скрин с сайта ЭПТС:",
+        await callback.message.edit_caption(
+            caption="Загрузите Фото Скрин с сайта ЭПТС:",
             reply_markup=builder.as_markup()
         )
         await state.set_state(Buyer.waiting_for_get_registration_elpts)
@@ -39,6 +39,8 @@ async def get_elpts_registration_buyer(callback: CallbackQuery, state: FSMContex
 @callback_get_elpts_registration_router.message(Buyer.waiting_for_get_registration_elpts)
 async def get_elpts_registration_buyer_get_photo(message: Message, state: FSMContext, bot: Bot):
     """Обработчик получения подтверждения оплаты"""
+    data = await state.get_data()
+    deal_id = data.get('deal_id')
     try:
         # Проверяем тип содержимого
         if not (message.photo or message.document):
@@ -52,7 +54,7 @@ async def get_elpts_registration_buyer_get_photo(message: Message, state: FSMCon
         async with deals_session() as session:
             # Ищем сделку по user_id покупателя
             deal = await session.execute(
-                select(Deals).where(Deals.buyer_id == message.from_user.id)
+                select(Deals).where(Deals.deal_id == deal_id)
             )
             deal = deal.scalar_one_or_none()
 
@@ -70,7 +72,7 @@ async def get_elpts_registration_buyer_get_photo(message: Message, state: FSMCon
 
             # Отправляем подтверждение
             builder = InlineKeyboardBuilder()
-            builder.button(text="В главное меню", callback_data="back_main_buyer")
+            builder.button(text="Назад к списку Сделок", callback_data="check_deals_buyer")
 
             await message.answer(
                 "✅ Скрин принят!\n",

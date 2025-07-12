@@ -21,13 +21,16 @@ text = ("Для заполнения анкеты понадобятся сле�
         "- информация о наличии авто в личном пользовании (если есть, надо указать марку/модель и год выпуска авто)")
 
 @callback_fill_out_the_questionnaire_router.callback_query(F.data == "fill_out_the_questionnaire")
-async def fill_out_the_questionnaire(callback_query: CallbackQuery, state: FSMContext):
+async def fill_out_the_questionnaire(callback: CallbackQuery, state: FSMContext):
+    caption = callback.message.caption
+    deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
+    await state.update_data(deal_id=deal_id)
     builder = InlineKeyboardBuilder()
-    builder.button(text="Назад", callback_data="add_documents_buyer")
+    builder.button(text="Назад в Меню", callback_data="back_main_buyer")
     builder.adjust(1)
-    await callback_query.message.edit_text(text=text,
+    await callback.message.edit_caption(caption=text,
                                       reply_markup=builder.as_markup())
-    await callback_query.message.answer(text="Напишите Ваш номер телефона:\n\n"
+    await callback.message.answer(text="Напишите Ваш номер телефона:\n\n"
                                              "Например: 89123456789")
     await state.set_state(Buyer.waiting_phone_number_buyer)
 
@@ -80,8 +83,7 @@ async def get_have_car(message: Message, state: FSMContext):
     have_car = data['have_car']
     builder = InlineKeyboardBuilder()
     builder.button(text="✅ Всё верно", callback_data="add_questionnaire_to_db")
-    builder.button(text="❌ Заполнить Заново", callback_data="fill_out_the_questionnaire")
-    builder.button(text="Назад в меню", callback_data="back_main_buyer")
+    builder.button(text="❌ Заполнить Заново", callback_data="back_main_buyer")
     builder.adjust(1)
     await message.answer(text=f"Вы заполнили данные:\n\n"
                          f"Ваш номер телефона: {phone_number}\n"
@@ -95,6 +97,7 @@ async def get_have_car(message: Message, state: FSMContext):
 @callback_fill_out_the_questionnaire_router.callback_query(F.data == "add_questionnaire_to_db")
 async def add_questionnaire_to_db(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
+    deal_id = data.get('deal_id')
     phone_number = data['phone_number']
     actual_address_of_residence = data['actual_address_of_residence']
     email_address = data['email_address']
@@ -103,7 +106,7 @@ async def add_questionnaire_to_db(callback: CallbackQuery, state: FSMContext):
     have_car = data['have_car']
     async with deals_session() as session:
         deal = await session.execute(
-            select(Deals).where(Deals.buyer_id == callback.from_user.id)
+            select(Deals).where(Deals.deal_id == deal_id)
         )
         deal = deal.scalar_one_or_none()
         if deal:
@@ -115,7 +118,7 @@ async def add_questionnaire_to_db(callback: CallbackQuery, state: FSMContext):
             deal.buyer_have_car = have_car
             await session.commit()
             builder = InlineKeyboardBuilder()
-            builder.button(text="Назад к списку документов", callback_data="add_documents_buyer")
+            builder.button(text="Назад к списку Сделок", callback_data="check_deals_buyer")
             builder.adjust(1)
             await callback.answer(text="Все данные успешно сохранены в базе данных")
             await callback.message.edit_text(text="Все данные успешно сохранены в базе данных",

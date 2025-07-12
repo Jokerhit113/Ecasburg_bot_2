@@ -25,11 +25,12 @@ async def info_add_documents_buyer_info(callback: CallbackQuery):
 @callback_add_documents_buyer_router.callback_query(F.data == "kb_menu_load_docs")
 async def kb_menu_load_docs(callback: CallbackQuery):
     builder = InlineKeyboardBuilder()
-    builder.button(text="1 Паспорт", callback_data="add_passport")
-    builder.button(text="2 Выписка по валютному счету", callback_data="foreign_currency_account_statement")
-    builder.button(text="3 Справка о движении денежных средств по ВС", callback_data="cash_flow_statement")
-    builder.button(text="4 Заполнить Анкету", callback_data="fill_out_the_questionnaire")
-    builder.button(text="5 Скрин с сайта ЭПТС", callback_data="get_elpts_registration")
+    builder.button(text="1 Подтвердить Оплату", callback_data="payment_confirmation_buyer")
+    builder.button(text="2 Паспорт", callback_data="add_passport")
+    builder.button(text="3 Выписка по валютному счету", callback_data="foreign_currency_account_statement")
+    builder.button(text="4 Справка о движении денежных средств по ВС", callback_data="cash_flow_statement")
+    builder.button(text="5 Заполнить Анкету", callback_data="fill_out_the_questionnaire")
+    builder.button(text="6 Скрин с сайта ЭПТС", callback_data="get_elpts_registration")
 
     builder.button(text="В главное меню", callback_data="back_main_buyer")
     builder.adjust(1)
@@ -42,5 +43,5 @@ async def kb_menu_load_docs(callback: CallbackQuery):
     )
 
 @callback_add_documents_buyer_router.callback_query(F.data == "delete_message")
-async def delete_message(callback: CallbackQuery):
+async def delete_message(callback: CallbackQuery, state: FSMContext):
     await callback.message.delete()
