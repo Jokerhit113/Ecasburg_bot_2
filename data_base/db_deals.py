@@ -56,6 +56,10 @@ class Deals(Base):
     document_docs_car_provider_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
     photo_docs_car_provider_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от поставщика
 
+    # Данные от Брокера
+    confirmation_of_acceptance_of_documents_from_suppliers = Column(String) # Подтверждение получения документов от поставщика
+    confirmation_of_acceptance_of_documents_from_buyer = Column(String) # Подтверждение получения документов от Покупателя
+
 async def init_deals_db():
     async with engie.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

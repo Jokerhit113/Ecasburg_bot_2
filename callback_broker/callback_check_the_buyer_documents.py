@@ -25,10 +25,10 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
                 await callback.answer("Документы ещё не загружены Поставщиком", show_alert=True)
                 return
 
-            if not deals.buyer_phone_number:
+            if deals.buyer_phone_number:
                 await callback.message.answer(
                     text="Анкета Покупателя:\n\n"
-                         f"Заказчик: {deals.buy_user}"
+                         f"Заказчик: {deals.buy_user}\n"
                          f"Номер телефона: {deals.buyer_phone_number}\n"
                          f"Фактический адрес проживания: {deals.buyer_actual_address_of_residence}\n"
                          f"E-mail: {deals.buyer_email_address}\n"

@@ -33,3 +33,7 @@ class Provider(StatesGroup):
     waiting_for_car_before_border = State()
     waiting_for_car_delivered_border = State()
     waiting_for_load_docs_car_provider = State()
+
+class Broker(StatesGroup):
+    waiting_for_reason_provider = State()
+    waiting_for_reason_buyer = State()
