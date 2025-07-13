@@ -40,12 +40,9 @@ kb_buyer_main = InlineKeyboardMarkup(
     ]
 )
 
-buyer_main = InlineKeyboardMarkup(
+kb_broker_main = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton(text="Подтвердить Оплату", callback_data="payment_confirmation_buyer")],
-        [InlineKeyboardButton(text="Загрузить документы", callback_data="add_documents_buyer")],
-        [InlineKeyboardButton(text="Проверить Статус заказа", callback_data="check_status_deal_buyer")],
-        [InlineKeyboardButton(text="Связаться с Менеджером", callback_data="show_all_users")]
+        [InlineKeyboardButton(text="Выбрать сделку", callback_data="check_deals_broker")]
     ]
 )
 

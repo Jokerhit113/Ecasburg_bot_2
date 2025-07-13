@@ -33,8 +33,8 @@ class Deals(Base):
     passport_documents = Column(MutableList.as_mutable(JSON), default=list) # Документы / файлы паспорта
     foreign_currency_account_statement_photo = Column(MutableList.as_mutable(JSON), default=list) # Фото Выписки по валютному счёту
     foreign_currency_account_statement_docs = Column(MutableList.as_mutable(JSON), default=list)  # Документы Выписки по валютному счёту
-    cash_flow_statement_photos = Column(MutableList.as_mutable(JSON), default=list)# Фото Выписки по валютному счёту
-    cash_flow_statement_docs = Column(MutableList.as_mutable(JSON), default=list)# Документы Выписки по валютному счёту
+    cash_flow_statement_photos = Column(MutableList.as_mutable(JSON), default=list)# Фото Выписки движения денег по валютному счёту
+    cash_flow_statement_docs = Column(MutableList.as_mutable(JSON), default=list)# Документы Выписки движения денег по валютному счёту
     snils_buyer_photos = Column(MutableList.as_mutable(JSON), default=list)# СНИЛС фото Покупателя
     snils_buyer_docs = Column(MutableList.as_mutable(JSON), default=list)# СНИЛС документ Покупателя
     buyer_phone_number = Column(String) # Номер телефона покупателя
@@ -47,16 +47,12 @@ class Deals(Base):
 
     # Данные от Поставщика
     payment_confirmation_yes_no = Column(String) # Подтверждение получения денег от покупателя
-
     buy_car_provider_photo_id = Column(MutableList.as_mutable(JSON), default=list) # Фото выкупа автомобиля поставщиком
     buy_car_provider_video_id = Column(MutableList.as_mutable(JSON), default=list) # Видео выкупа автомобиля поставщиком
-
     provider_photo_car_before_border_id = Column(MutableList.as_mutable(JSON), default=list)  # Фото автомобиля до отправки на границу от поставщика
     provider_video_car_before_border_id = Column(MutableList.as_mutable(JSON), default=list)  # Видео автомобиля до отправки на границу от поставщика
-
     provider_photo_car_border_id = Column(MutableList.as_mutable(JSON), default=list) # Фото автомобиля на границе от поставщика
     provider_video_car_border_id = Column(MutableList.as_mutable(JSON), default=list) # Видео автомобиля на границе от поставщика
-
     document_docs_car_provider_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
     photo_docs_car_provider_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от поставщика
 
