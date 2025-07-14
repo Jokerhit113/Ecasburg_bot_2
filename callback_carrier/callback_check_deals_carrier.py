@@ -85,7 +85,7 @@ async def back_check_deals_carrier(callback: CallbackQuery):
             builder = InlineKeyboardBuilder()
             for deal in deals:
                 builder.button(text=f"{deal.deal_id} {deal.buy_user}",
-                               callback_data=f"check_deal_{deal.deal_id}")
+                               callback_data=f"deal_list_carrier_{deal.deal_id}")
             builder.button(text="Вернуться в меню", callback_data="back_to_main_menu_carrier")
             builder.adjust(1)
             await callback.message.answer(text="Выберете сделку:",

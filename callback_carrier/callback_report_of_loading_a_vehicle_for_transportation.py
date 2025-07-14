@@ -11,7 +11,7 @@ callback_report_of_loading_a_vehicle_for_transportation_router = Router()
 
 
 @callback_report_of_loading_a_vehicle_for_transportation_router.callback_query(F.data == "report_of_loading_a_vehicle_for_transportation")
-async def buy_car_provider(callback: CallbackQuery, state: FSMContext):
+async def report_of_loading_a_vehicle_for_transportation(callback: CallbackQuery, state: FSMContext):
     caption = callback.message.caption
     deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
     await state.update_data(deal_id=deal_id)
