@@ -49,7 +49,7 @@ async def callback_get_deals_switch(callback: CallbackQuery):
         await callback.message.answer_photo(
             photo=deal.car_photo_id,
             caption=f"ID: {deal.id}\n"
-                    f"Сделка № {deal.deal_id}\n"
+                    f"Сделка №: {deal.deal_id}\n"
                     f"Покупатель: {deal.buy_user}\n"
                     f"Автомобиль: {deal.march_model}\n"
                     f"Vin code: {deal.vin_code}\n",

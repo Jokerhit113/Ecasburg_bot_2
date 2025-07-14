@@ -24,6 +24,8 @@ class Deals(Base):
     broker_id = Column(Integer) # Назначенный брокер
     buyer_id = Column(Integer) # ID покупателя
     carrier_id = Column(Integer) # ID Перевозчика
+    contract_photo_id = Column(MutableList.as_mutable(JSON), default=list)
+    contract_docs_id = Column(MutableList.as_mutable(JSON), default=list)
 
 
     # Данные от Покупателя

@@ -2,6 +2,7 @@ import logging
 from aiogram import Bot, Router, Dispatcher
 import asyncio
 
+from callback_admins.callback_add_contract import callback_add_contract_router
 from callback_admins.callback_add_new_deal import add_new_deal_router
 from callback_admins.callback_add_user import callback_add_user_router
 from callback_admins.callback_change_broker import callback_change_broker_router
@@ -77,6 +78,7 @@ async def main():
     dp.include_router(callback_check_the_documents_for_the_car_router)
     dp.include_router(callback_check_the_buyer_documents_router)
     dp.include_router(callback_load_docs_broker_router)
+    dp.include_router(callback_add_contract_router)
 
 
     await dp.start_polling(bot)

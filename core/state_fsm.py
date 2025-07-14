@@ -13,6 +13,9 @@ class NewDeals(StatesGroup):
     waiting_for_vin_code = State()
     waiting_for_photo_car = State()
 
+class Admin(StatesGroup):
+    waiting_for_load_contract = State()
+
 class Buyer(StatesGroup):
     waiting_for_get_snils = State()
     waiting_for_get_registration_elpts = State()
