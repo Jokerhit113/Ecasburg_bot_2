@@ -15,6 +15,7 @@ from callback_admins.callback_status_deal import callback_status_deal_router
 from callback_broker.callback_check_deals_broker import callback_check_deals_broker_router
 from callback_broker.callback_check_the_buyer_documents import callback_check_the_buyer_documents_router
 from callback_broker.callback_check_the_documents_for_the_car import callback_check_the_documents_for_the_car_router
+from callback_broker.callback_load_docs_broker import callback_load_docs_broker_router
 from callback_buyer.callback_add_documents_buyer import callback_add_documents_buyer_router
 from callback_buyer.callback_add_passport import callback_add_passport_router
 from callback_buyer.callback_cash_flow_statement import callback_cash_flow_statement_router
@@ -75,6 +76,7 @@ async def main():
     dp.include_router(callback_check_deals_broker_router)
     dp.include_router(callback_check_the_documents_for_the_car_router)
     dp.include_router(callback_check_the_buyer_documents_router)
+    dp.include_router(callback_load_docs_broker_router)
 
 
     await dp.start_polling(bot)

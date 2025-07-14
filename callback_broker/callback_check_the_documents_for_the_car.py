@@ -1,6 +1,4 @@
 import logging
-from email.policy import default
-
 from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message

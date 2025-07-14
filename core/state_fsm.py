@@ -37,3 +37,4 @@ class Provider(StatesGroup):
 class Broker(StatesGroup):
     waiting_for_reason_provider = State()
     waiting_for_reason_buyer = State()
+    waiting_for_documents_broker = State()
