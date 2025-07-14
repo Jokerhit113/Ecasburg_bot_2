@@ -51,3 +51,9 @@ kb_provider_main = InlineKeyboardMarkup(
         [InlineKeyboardButton(text="View my deals", callback_data="check_deals_provider")]
     ]
 )
+
+kb_carrier_main = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Выбрать сделку", callback_data="check_deals_carrier")]
+    ]
+)

@@ -64,6 +64,15 @@ class Deals(Base):
     document_doc_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
     photo_docs_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от поставщика
 
+    # Данные от Перевозчика
+    photo_car_get_border = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
+    video_car_get_border = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
+    photo_car_load_transportation = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
+    video_car_load_transportation = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
+    photo_docs_car_carrier = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
+    docs_docs_car_carrier = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
+
+
 async def init_deals_db():
     async with engie.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

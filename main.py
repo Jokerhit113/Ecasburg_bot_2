@@ -27,6 +27,12 @@ from callback_buyer.callback_foreign_currency_account_statement import \
 from callback_buyer.callback_get_elpts_registration import callback_get_elpts_registration_router
 from callback_buyer.callback_get_snils_buyer import callback_get_snils_buyer_router
 from callback_buyer.callback_payment_confirmation import callback_payment_confirmation_buyer_router
+from callback_carrier.callback_check_deals_carrier import callback_check_deals_carrier_router
+from callback_carrier.callback_load_docs_carrier import callback_load_docs_carrier_router
+from callback_carrier.callback_report_of_loading_a_vehicle_for_transportation import \
+    callback_report_of_loading_a_vehicle_for_transportation_router
+from callback_carrier.callback_report_of_receiving_a_car_at_the_border import \
+    callback_report_of_receiving_a_car_at_the_border_router
 from callback_provider.callback_buy_car_provider import callback_buy_car_provider_router
 from callback_provider.callback_car_before_border import callback_car_before_border_router
 from callback_provider.callback_car_delivered_border import callback_car_delivered_border_router
@@ -79,6 +85,10 @@ async def main():
     dp.include_router(callback_check_the_buyer_documents_router)
     dp.include_router(callback_load_docs_broker_router)
     dp.include_router(callback_add_contract_router)
+    dp.include_router(callback_check_deals_carrier_router)
+    dp.include_router(callback_report_of_receiving_a_car_at_the_border_router)
+    dp.include_router(callback_report_of_loading_a_vehicle_for_transportation_router)
+    dp.include_router(callback_load_docs_carrier_router)
 
 
     await dp.start_polling(bot)

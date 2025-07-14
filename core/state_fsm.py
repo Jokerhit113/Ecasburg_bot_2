@@ -41,3 +41,8 @@ class Broker(StatesGroup):
     waiting_for_reason_provider = State()
     waiting_for_reason_buyer = State()
     waiting_for_documents_broker = State()
+
+class Carrier(StatesGroup):
+    waiting_for_get_report_get_car = State()
+    waiting_for_get_report_load_car = State()
+    waiting_for_get_docs_car_carrier = State()

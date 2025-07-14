@@ -83,4 +83,4 @@ async def photo_video_buy_car(message: Message, state: FSMContext):
 
 
     else:
-        await message.answer("Отправьте Фото или Видео")
+        await message.answer("Отправьте Фото или Сканы")

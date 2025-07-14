@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from data_base.db_users import user_session, User
 import logging
-from keyboard.inline_keyboard import kb_admin_main, kb_buyer_main, kb_provider_main, kb_broker_main
+from keyboard.inline_keyboard import kb_admin_main, kb_buyer_main, kb_provider_main, kb_broker_main, kb_carrier_main
 from settings import CHAT_LOG
 
 router_command = Router()
@@ -62,6 +62,10 @@ async def cmd_start(message: Message, bot: Bot):
                 await message.answer(text="Добро пожаловать в меню Брокера E-CarsBurg.\n\n"
                                           "Воспользуйтесь кнопкой ниже для получения списка Ваших сделок.",
                                      reply_markup=kb_broker_main)
+            elif department == "carrier":
+                await message.answer(text="Добро пожаловать в меню Перевозчика автомобилей компании E-CarsBurg.\n\n"
+                                          "Воспользуйтесь кнопкой ниже для получения списка Ваших сделок.",
+                                     reply_markup=kb_carrier_main)
             else:
                 await message.answer("Отдел не указан в вашем профиле")
 
