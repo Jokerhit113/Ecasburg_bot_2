@@ -26,13 +26,13 @@ async def info_add_documents_buyer_info(callback: CallbackQuery):
 async def kb_menu_load_docs(callback: CallbackQuery):
     builder = InlineKeyboardBuilder()
     builder.button(text="1 Подтвердить Оплату", callback_data="payment_confirmation_buyer")
-    builder.button(text="2 Загрузить Паспорт", callback_data="add_passport")
-    builder.button(text="3 Загрузить СНИЛС", callback_data="add_snils_buyer")
-    builder.button(text="4 Загрузить Выписку по валютному счету", callback_data="foreign_currency_account_statement")
-    builder.button(text="5 Загрузить Справку о движении денежных средств по ВС", callback_data="cash_flow_statement")
-    builder.button(text="6 Заполнить Анкету", callback_data="fill_out_the_questionnaire")
-    builder.button(text="7 Загрузить Скрин с сайта ЭПТС", callback_data="get_elpts_registration")
-
+    builder.button(text="2 Паспорт", callback_data="add_passport")
+    builder.button(text="3 Водительское Удостоверение", callback_data="driver_license_load_buyer")
+    builder.button(text="4 СНИЛС", callback_data="add_snils_buyer")
+    builder.button(text="5 Выписка по валютному счету", callback_data="foreign_currency_account_statement")
+    builder.button(text="6 Справка о движении денежных средств по ВС", callback_data="cash_flow_statement")
+    builder.button(text="7 Заполнить Анкету", callback_data="fill_out_the_questionnaire")
+    builder.button(text="8 Загрузить Скрин с сайта ЭПТС", callback_data="get_elpts_registration")
     builder.button(text="В главное меню", callback_data="back_main_buyer")
     builder.adjust(1)
     await callback.answer(text="Для Загрузки документов, выберите нужный пункт меню, и строго следуйте инструкциям.",
@@ -44,5 +44,5 @@ async def kb_menu_load_docs(callback: CallbackQuery):
     )
 
 @callback_add_documents_buyer_router.callback_query(F.data == "delete_message")
-async def delete_message(callback: CallbackQuery, state: FSMContext):
+async def delete_message(callback: CallbackQuery):
     await callback.message.delete()

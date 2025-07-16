@@ -23,7 +23,7 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
             builder.button(text="❌ Отклонить Документы", callback_data="reject_the_documents_buyer")
             builder.adjust(1)
             deals = await session.execute(
-                select(Deals).where(Deals.deal_id == deal_id)
+                select(Deals).where(deal_id == Deals.deal_id)
             )
             deals = deals.scalar_one_or_none()
 
@@ -45,6 +45,19 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
 
                 )
 
+            # Квитанция об оплате автомобиля
+            if deals.payment_photo_id:
+                photo_group = MediaGroupBuilder(caption="Фото Квитанции об оплате автомобиля:")
+                for photo_id in deals.payment_photo_id:
+                    photo_group.add_photo(media=photo_id)
+                await callback.message.answer_media_group(media=photo_group.build())
+
+            if deals.payment_document_id:
+                doc_group = MediaGroupBuilder(caption="Скан Квитанции об оплате автомобиля:")
+                for doc_id in deals.payment_document_id:
+                    doc_group.add_document(media=doc_id)
+                await callback.message.answer_media_group(media=doc_group.build())
+
             # ПАСПОРТ
             if deals.passport_photos:
                 photo_group = MediaGroupBuilder(caption="Фото ПАСПОРТА:")
@@ -57,6 +70,19 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
                 for doc_id in deals.passport_documents:
                     doc_group.add_document(media=doc_id)
                 await callback.message.answer_media_group(media=doc_group.build())
+
+            # Водительское Удостоверение
+            if deals.buyer_driver_license_photo:
+                photo_group = MediaGroupBuilder(caption="Фото Водительского Удостоверения:")
+                for photo_id in deals.buyer_driver_license_photo:
+                    photo_group.add_photo(media=photo_id)
+                await callback.message.answer_media_group(media=photo_group.build())
+
+            if deals.buyer_driver_license_docs:
+                photo_group = MediaGroupBuilder(caption="Сканы Водительского Удостоверения:")
+                for photo_id in deals.buyer_driver_license_docs:
+                    photo_group.add_photo(media=photo_id)
+                await callback.message.answer_media_group(media=photo_group.build())
 
             # Выписки по валютному счёту
             if deals.foreign_currency_account_statement_photo:
@@ -128,7 +154,7 @@ async def accept_the_documents_buyer(callback: CallbackQuery):
         text = callback.message.text
         deal_id = int(text.split('\n')[0].split('Сделка №: ')[1])
         deals = await session.execute(
-            select(Deals).where(Deals.deal_id == deal_id)
+            select(Deals).where(deal_id == Deals.deal_id)
         )
         deals = deals.scalar_one_or_none()
 
@@ -146,7 +172,7 @@ async def reject_the_documents_buyer(callback: CallbackQuery, state: FSMContext)
         text = callback.message.text
         deal_id = int(text.split('\n')[0].split('Сделка №: ')[1])
         deals = await session.execute(
-            select(Deals).where(Deals.deal_id == deal_id)
+            select(Deals).where(deal_id == Deals.deal_id)
         )
         deals = deals.scalar_one_or_none()
 
@@ -186,7 +212,7 @@ async def accept_the_reason_buyer(callback: CallbackQuery, state: FSMContext, bo
     reason = data["reason"]
     async with deals_session() as session:
         deals = await session.execute(
-            select(Deals).where(Deals.deal_id == deal_id)
+            select(Deals).where(deal_id == Deals.deal_id)
         )
         deals = deals.scalar_one_or_none()
         message_text = (

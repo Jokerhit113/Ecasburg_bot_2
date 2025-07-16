@@ -58,7 +58,6 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                     f"Данные по сделке:\n\n"
                     f"Сделка №: {deal.deal_id}\n"
                     f"Покупатель: {users.get(deal.buyer_id, User(name='Не указан')).name}\n"
-                    f"Покупатель tg_id: {deal.buyer_id}\n"
                     f"Автомобиль: {deal.march_model}\n"
                     f"Vin code: {deal.vin_code}\n"
                     f"Поставщик: {users.get(deal.provider_id, User(name='Не указан')).name}\n"

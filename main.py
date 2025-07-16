@@ -17,6 +17,7 @@ from callback_broker.callback_check_deals_broker import callback_check_deals_bro
 from callback_broker.callback_check_the_buyer_documents import callback_check_the_buyer_documents_router
 from callback_broker.callback_check_the_documents_for_the_car import callback_check_the_documents_for_the_car_router
 from callback_broker.callback_load_docs_broker import callback_load_docs_broker_router
+from callback_buyer.callback_add_buyer_driver_license import callback_add_buyer_driver_license_router
 from callback_buyer.callback_add_documents_buyer import callback_add_documents_buyer_router
 from callback_buyer.callback_add_passport import callback_add_passport_router
 from callback_buyer.callback_cash_flow_statement import callback_cash_flow_statement_router
@@ -89,6 +90,7 @@ async def main():
     dp.include_router(callback_report_of_receiving_a_car_at_the_border_router)
     dp.include_router(callback_report_of_loading_a_vehicle_for_transportation_router)
     dp.include_router(callback_load_docs_carrier_router)
+    dp.include_router(callback_add_buyer_driver_license_router)
 
 
     await dp.start_polling(bot)

@@ -14,7 +14,7 @@ callback_check_deals_buyer_router = Router()
 async def check_deals_buyer(callback: CallbackQuery):
     async with deals_session() as session:
         deals = await session.execute(
-            select(Deals).where(Deals.buyer_id == callback.from_user.id)
+            select(Deals).where(callback.from_user.id == Deals.buyer_id)
         )
         deals = deals.scalars().all()
         if deals:
@@ -38,7 +38,7 @@ async def show_deal_list_buyer(callback: CallbackQuery):
 
             # Получаем сделку по ID
             result = await session.execute(
-                select(Deals).where(Deals.deal_id == deal_id)
+                select(Deals).where(deal_id == Deals.deal_id)
             )
             deal = result.scalar_one_or_none()
 

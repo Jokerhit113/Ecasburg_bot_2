@@ -30,7 +30,7 @@ async def cmd_start(message: Message, bot: Bot):
     )
     await bot.send_message(
         chat_id=CHAT_LOG,
-        text=f"ID пользователя: {message.from_user.id}",
+        text=f"{message.from_user.id}",
     )
     async with user_session() as session:
         try:

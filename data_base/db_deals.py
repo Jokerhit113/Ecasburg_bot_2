@@ -33,6 +33,8 @@ class Deals(Base):
     payment_document_id = Column(String) # Документ оплаты автомобиля покупателем
     passport_photos = Column(MutableList.as_mutable(JSON), default=list) # Фотографии паспорта
     passport_documents = Column(MutableList.as_mutable(JSON), default=list) # Документы / файлы паспорта
+    buyer_driver_license_photo = Column(MutableList.as_mutable(JSON), default=list) # Фото Водительского Удостоверения
+    buyer_driver_license_docs = Column(MutableList.as_mutable(JSON), default=list) # Документы Водительского Удостоверения
     foreign_currency_account_statement_photo = Column(MutableList.as_mutable(JSON), default=list) # Фото Выписки по валютному счёту
     foreign_currency_account_statement_docs = Column(MutableList.as_mutable(JSON), default=list)  # Документы Выписки по валютному счёту
     cash_flow_statement_photos = Column(MutableList.as_mutable(JSON), default=list)# Фото Выписки движения денег по валютному счёту
@@ -42,7 +44,6 @@ class Deals(Base):
     buyer_phone_number = Column(String) # Номер телефона покупателя
     buyer_actual_address_of_residence = Column(String) # Фактический адрес проживания
     buyer_email_address = Column(String) # E-mail
-    buyer_driver_license = Column(String) # Водительское удостоверение
     buyer_imported_yes_no = Column(String) # Был ли ввоз автомобиля из-за границы за последние 3 года
     buyer_have_car = Column(String) # Есть ли автомобиль в пользовании в данный момент
     elpts_registration_photo = Column(String) # Фото регистрации в ЭПТС
