@@ -8,6 +8,7 @@ from sqlalchemy import select
 
 from core.state_fsm import Provider
 from data_base.db_deals import deals_session, Deals
+from keyboard.inline_keyboard import kb_provider_main
 
 callback_buy_car_provider_router = Router()
 
@@ -66,22 +67,58 @@ async def photo_video_buy_car(message: Message, state: FSMContext):
                 deal.buy_car_provider_photo_id = photos
                 deal.buy_car_provider_video_id = videos
                 await session.commit()
-                builder = InlineKeyboardBuilder()
-                builder.button(text="Back to list deals", callback_data="check_deals_provider")
-                builder.adjust(1)
                 await message.answer(
                     text=f"✅ Успешно сохранено:\n"
                          f" {len(photos)} Фото\n"
-                         f"{len(videos)} Видео",
-                    reply_markup=builder.as_markup()
+                         f"{len(videos)} Видео"
                 )
+                await message.answer(text=f"Загрузка завершена",
+                                     reply_markup=ReplyKeyboardRemove())
+                await message.answer(text="Напишите срок доставки выкупленного автомобиля до Вас:\n\n"
+                                          "Например: 5 - 7 дней")
+                await state.set_state(Provider.waiting_for_delivery_time_car_to_provider)
+
             else:
                 await message.answer(text="Сделка не найдена")
 
-            await state.clear()
-            await message.answer(text=f"Загрузка завершена",
-                                 reply_markup=ReplyKeyboardRemove())
+
 
 
     else:
         await message.answer("Отправьте Фото или Видео")
+
+@callback_buy_car_provider_router.message(Provider.waiting_for_delivery_time_car_to_provider)
+async def delivery_time_car_to_provider(message: Message, state: FSMContext):
+    await state.update_data(delivery_time_car_to_provider=message.text)
+    builder = InlineKeyboardBuilder()
+    builder.button(text="✅ Всё верно", callback_data="add_delivery_time_car_to_provider")
+    builder.button(text="❌ Заполнить Заново", callback_data="again_text")
+    builder.adjust(1)
+    await message.answer(text="Вы указали что выкупленный Вами автомобиль будет доставлен к Вам через:\n\n"
+                              f"{message.text}\n\n"
+                              f"Верно?",
+                         reply_markup=builder.as_markup())
+
+@callback_buy_car_provider_router.callback_query(F.data == "add_delivery_time_car_to_provider")
+async def add_delivery_time_car_to_provider(callback: CallbackQuery, state: FSMContext):
+    async with deals_session() as session:
+        data = await state.get_data()
+        deal = data.get('deal_id')
+        delivery_time_car_to_provider_user = data.get('delivery_time_car_to_provider')
+        deal = await session.execute(select(Deals).where(Deals.deal_id == deal))
+        deal = deal.scalar_one_or_none()
+        if deal:
+            deal.delivery_time_car_to_provider = delivery_time_car_to_provider_user
+            await session.commit()
+            await callback.answer(f"Срок доставки авто {delivery_time_car_to_provider_user}")
+            await callback.message.edit_text(text=f"{callback.message.text}\n\n"
+                                                  f"Срок доставки подтверждён!",
+                                             reply_markup=kb_provider_main)
+            await state.clear()
+        else:
+            await callback.answer(text="Сделка не найдена")
+
+@callback_buy_car_provider_router.callback_query(F.data == "again_text")
+async def again_text(callback: CallbackQuery):
+    await callback.message.delete()
+    await callback.message.answer(text="Напишите срок доставки ещё раз")

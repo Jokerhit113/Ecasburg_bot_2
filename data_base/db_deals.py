@@ -58,6 +58,7 @@ class Deals(Base):
     provider_video_car_border_id = Column(MutableList.as_mutable(JSON), default=list) # Видео автомобиля на границе от поставщика
     document_docs_car_provider_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
     photo_docs_car_provider_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от поставщика
+    delivery_time_car_to_provider = Column(String) # Срок доставки автомобиля до Поставщика
 
     # Данные от Брокера
     confirmation_of_acceptance_of_documents_from_suppliers = Column(String) # Подтверждение получения документов от поставщика

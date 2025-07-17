@@ -1,4 +1,6 @@
 import logging
+from typing import List, Union
+
 from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
@@ -10,6 +12,49 @@ from core.state_fsm import Broker
 from data_base.db_deals import deals_session, Deals
 
 callback_check_the_documents_for_the_car_router = Router()
+
+
+async def send_media_chunks(
+        bot: Bot,
+        chat_id: int,
+        media_items: Union[List[str], str, None],
+        caption: str,
+        media_type: str = "photo"
+) -> None:
+    """Отправляет медиафайлы частями по 10 штук с обработкой ошибок"""
+    if not media_items:
+        return
+
+    # Нормализуем входные данные в список
+    if isinstance(media_items, str):
+        media_items = [media_items]
+    elif not isinstance(media_items, list):
+        logging.error(f"Invalid media_items type: {type(media_items)}")
+        return
+
+    # Фильтруем невалидные file_id
+    valid_media = [m for m in media_items if m and isinstance(m, str) and len(m) > 20]
+
+    if not valid_media:
+        logging.warning("No valid media items found")
+        return
+
+    # Разбиваем на группы по 10 элементов
+    chunk_size = 10
+    for i in range(0, len(valid_media), chunk_size):
+        chunk = valid_media[i:i + chunk_size]
+        try:
+            media_group = MediaGroupBuilder(caption=caption if i == 0 else "")
+
+            for media_id in chunk:
+                if media_type == "photo":
+                    media_group.add_photo(media=media_id)
+                elif media_type == "document":
+                    media_group.add_document(media=media_id)
+
+            await bot.send_media_group(chat_id=chat_id, media=media_group.build())
+        except Exception as e:
+            logging.error(f"Error sending media chunk {i}-{i + chunk_size}: {e}")
 
 
 @callback_check_the_documents_for_the_car_router.callback_query(F.data == "сheck_the_documents_for_the_car")
@@ -28,23 +73,35 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
             )
             deals = deals.scalar_one_or_none()
 
-            # Если нет ни фото, ни документов
+            if not deals:
+                await callback.answer("Сделка не найдена", show_alert=True)
+                return
+
+            # Проверка наличия документов
             if not deals.photo_docs_car_provider_id and not deals.document_docs_car_provider_id:
                 await callback.answer("Документы ещё не загружены Поставщиком", show_alert=True)
                 return
 
-            # Создаем отдельные медиагруппы для фото и документов
+            # Отправка фото документов с разбивкой на группы
             if deals.photo_docs_car_provider_id:
-                photo_group = MediaGroupBuilder(caption="Фото документов:")
-                for photo_id in deals.photo_docs_car_provider_id:
-                    photo_group.add_photo(media=photo_id)
-                await callback.message.answer_media_group(media=photo_group.build())
+                await send_media_chunks(
+                    bot=callback.bot,
+                    chat_id=callback.message.chat.id,
+                    media_items=deals.photo_docs_car_provider_id,
+                    caption="Фото документов:",
+                    media_type="photo"
+                )
 
+            # Отправка сканов документов с разбивкой на группы
             if deals.document_docs_car_provider_id:
-                doc_group = MediaGroupBuilder(caption="Сканы документов:")
-                for doc_id in deals.document_docs_car_provider_id:
-                    doc_group.add_document(media=doc_id)
-                await callback.message.answer_media_group(media=doc_group.build())
+                await send_media_chunks(
+                    bot=callback.bot,
+                    chat_id=callback.message.chat.id,
+                    media_items=deals.document_docs_car_provider_id,
+                    caption="Сканы документов:",
+                    media_type="document"
+                )
+
             message_text = (
                 f"Сделка №: {deals.deal_id}\n"
                 f"Покупатель: {deals.buy_user}\n"
@@ -57,11 +114,12 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
                     text=message_text,
                     reply_markup=builder.as_markup()
                 )
+
             await callback.answer()
 
     except Exception as e:
-        logging.error(f"Error in сheck_the_documents_for_the_car: {e}")
-        await callback.answer("Произошла ошибка", show_alert=True)
+        logging.error(f"Error in сheck_the_documents_for_the_car: {e}", exc_info=True)
+        await callback.answer("Произошла ошибка при обработке документов", show_alert=True)
 
 @callback_check_the_documents_for_the_car_router.callback_query(F.data == "accept_the_documents_car_provider")
 async def accept_the_documents_car_provider(callback: CallbackQuery):
@@ -137,12 +195,16 @@ async def accept_the_reason_provider(callback: CallbackQuery, state: FSMContext,
             f"Автомобиль: {deals.march_model}\n"
             f"VIN: {deals.vin_code}\n"
         )
+        builder = InlineKeyboardBuilder()
+        builder.button(text="Исправлено ✅", callback_data="fixed_it_document_provider")
         await bot.send_photo(
             chat_id=deals.provider_id,
             photo=deals.car_photo_id,
             caption=f"{message_text}\n\n"
                     f"⚠️ДОКУМЕНТЫ ПО АВТО НЕ ПРИНЯТЫ ❌ БРОКЕРОМ ⚠️\n\n"
-                    f"{reason}"
+                    f"{reason}\n\n"
+                    f"Исправьте все прописанные Брокером исправления и нажмите кнопку ниже Исправлено ✅",
+            reply_markup=builder.as_markup()
         )
         await callback.message.edit_text(
             text=f"{callback.message.text}\n\n"
@@ -150,6 +212,32 @@ async def accept_the_reason_provider(callback: CallbackQuery, state: FSMContext,
             reply_markup=None
         )
         await state.clear()
+
+@callback_check_the_documents_for_the_car_router.callback_query(F.data == "fixed_it_document_provider")
+async def fixed_it_document_provider(callback: CallbackQuery, bot: Bot):
+    async with deals_session() as session:
+        text = callback.message.caption
+        deal_id = int(text.split('\n')[0].split('Сделка №: ')[1])
+        deals = await session.execute(
+            select(Deals).where(deal_id == Deals.deal_id)
+        )
+        deals = deals.scalar_one_or_none()
+        message_text = (
+            f"Сделка №: {deals.deal_id}\n"
+            f"Покупатель: {deals.buy_user}\n"
+            f"Автомобиль: {deals.march_model}\n"
+            f"VIN: {deals.vin_code}\n"
+        )
+        await bot.send_photo(
+            chat_id=deals.provider_id,
+            photo=deals.car_photo_id,
+            caption=f"{message_text}\n\n"
+                    f"Поставщик исправил недочёты ✅\n"
+                    f"Пожалуйста проверьте документы снова",
+        )
+        await callback.message.edit_reply_markup()
+        await callback.message.answer(text=f"{message_text}\n\n"
+                                              f"Брокер получил уведомление об исправлении документов ✅")
 
 @callback_check_the_documents_for_the_car_router.callback_query(F.data == "reject_the_reason_provider")
 async def reject_the_reason_provider(callback: CallbackQuery):
