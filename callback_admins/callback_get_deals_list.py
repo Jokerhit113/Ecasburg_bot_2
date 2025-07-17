@@ -4,7 +4,6 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from data_base.db_deals import deals_session, Deals
-from keyboard.inline_keyboard import kb_deal
 
 callback_get_deals_list_router = Router()
 
@@ -46,14 +45,21 @@ async def callback_get_deals_switch(callback: CallbackQuery):
         if not deal:
             await callback.answer("Сделка не найдена", show_alert=True)
             return
+        builder = InlineKeyboardBuilder()
+        builder.button(text="Проверить статус", callback_data="check_status")
+        builder.button(text="Действия со сделкой", callback_data="transaction_actions")
+        builder.button(text="Назад к списку", callback_data="admin_all_orders_list")
+        builder.adjust(1)
+
         await callback.message.answer_photo(
             photo=deal.car_photo_id,
             caption=f"ID: {deal.id}\n"
                     f"Сделка №: {deal.deal_id}\n"
                     f"Покупатель: {deal.buy_user}\n"
                     f"Автомобиль: {deal.march_model}\n"
-                    f"Vin code: {deal.vin_code}\n",
-            reply_markup=kb_deal
+                    f"Vin code: {deal.vin_code}\n"
+                    f"Доп опции:\n {deal.additional_options}",
+            reply_markup=builder.as_markup()
         )
         await callback.message.delete()
 

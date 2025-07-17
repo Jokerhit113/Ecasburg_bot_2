@@ -84,6 +84,7 @@ async def show_deal_details(callback: CallbackQuery, state: FSMContext):
                 f"Покупатель: {deal.buy_user}\n"
                 f"Автомобиль: {deal.march_model}\n"
                 f"VIN: {deal.vin_code}\n"
+                f"Доп опции:\n {deal.additional_options}"
             )
 
             # Создаем клавиатуру для возврата

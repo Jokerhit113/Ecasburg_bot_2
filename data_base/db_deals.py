@@ -26,6 +26,7 @@ class Deals(Base):
     carrier_id = Column(Integer) # ID Перевозчика
     contract_photo_id = Column(MutableList.as_mutable(JSON), default=list)
     contract_docs_id = Column(MutableList.as_mutable(JSON), default=list)
+    additional_options = Column(String)
 
 
     # Данные от Покупателя

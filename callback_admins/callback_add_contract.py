@@ -15,7 +15,6 @@ async def add_contract(callback: CallbackQuery, state: FSMContext):
     for line in lines:
         if line.startswith("Сделка №: "):
             deal_id = line.split('№: ')[-1].strip()
-            print(deal_id)
 
     await state.update_data(deal_id=deal_id)
     await state.update_data(photos=[])

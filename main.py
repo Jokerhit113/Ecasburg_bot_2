@@ -2,6 +2,7 @@ import logging
 from aiogram import Bot, Router, Dispatcher
 import asyncio
 
+from callback_admins.callback_add_additional_options import callback_add_additional_options_router
 from callback_admins.callback_add_contract import callback_add_contract_router
 from callback_admins.callback_add_new_deal import add_new_deal_router
 from callback_admins.callback_add_user import callback_add_user_router
@@ -13,6 +14,7 @@ from callback_admins.callback_delete_user import callback_delete_user_router
 from callback_admins.callback_get_deals_list import callback_get_deals_list_router
 from callback_admins.callback_other import callback_other_router
 from callback_admins.callback_status_deal import callback_status_deal_router
+from callback_admins.callback_transaction_actions import callback_transaction_actions_router
 from callback_broker.callback_check_deals_broker import callback_check_deals_broker_router
 from callback_broker.callback_check_the_buyer_documents import callback_check_the_buyer_documents_router
 from callback_broker.callback_check_the_documents_for_the_car import callback_check_the_documents_for_the_car_router
@@ -100,6 +102,8 @@ async def main():
     dp.include_router(callback_request_check_docs_from_the_broker_router)
     dp.include_router(callback_call_manager_router)
     dp.include_router(callback_check_status_buyer_router)
+    dp.include_router(callback_transaction_actions_router)
+    dp.include_router(callback_add_additional_options_router)
 
     await dp.start_polling(bot)
 
