@@ -1,0 +1,153 @@
+import logging
+
+from aiogram import Router, F, Bot
+from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+from sqlalchemy import select
+
+from core.state_fsm import Broker, Buyer
+from data_base.db_deals import deals_session, Deals
+
+callback_upload_a_payment_invoice_to_buyer_router = Router()
+
+@callback_upload_a_payment_invoice_to_buyer_router.callback_query(F.data == "upload_a_payment_invoice_to_buyer")
+async def upload_a_payment_invoice_to_buyer(callback: CallbackQuery, state: FSMContext):
+    caption = callback.message.caption
+    deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
+    await state.update_data(deal_id=deal_id)
+    try:
+        builder = InlineKeyboardBuilder()
+        builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
+        builder.adjust(1)
+
+        await callback.message.delete()
+        await callback.message.answer(
+            text="Загрузите Скан счёта на оплату для Покупателя:",
+            reply_markup=builder.as_markup()
+        )
+        await state.set_state(Broker.waiting_for_payment_invoice_to_buyer)
+        await callback.answer()
+
+    except Exception as e:
+        logging.error(f"Error in upload_a_payment_invoice_to_buyer: {e}", exc_info=True)
+        await callback.answer("Произошла ошибка", show_alert=True)
+
+
+@callback_upload_a_payment_invoice_to_buyer_router.message(Broker.waiting_for_payment_invoice_to_buyer)
+async def get_payment_invoice_to_buyer(message: Message, state: FSMContext, bot: Bot):
+    data = await state.get_data()
+    deal_id = data['deal_id']
+
+    if not message.document:
+        await message.answer("Отправьте Файл скан счёта на оплату")
+        return
+
+    async with deals_session() as session:
+        deal = await session.execute(
+            select(Deals).where(Deals.deal_id == deal_id)
+        )
+        deal = deal.scalar_one_or_none()
+
+        if not deal:
+            await message.answer("❌ Сделка не найдена")
+            return
+
+        deal.payment_invoice_to_buyer = message.document.file_id
+        await session.commit()
+        message_text = (
+            f"Сделка №: {deal.deal_id}\n"
+            f"Покупатель: {deal.buy_user}\n"
+            f"Автомобиль: {deal.march_model}\n"
+            f"VIN: {deal.vin_code}\n"
+        )
+        builder = InlineKeyboardBuilder()
+        builder.button(text="✅ Подтвердить оплату", callback_data="accept_payment_invoice_to_buyer")
+
+        await bot.send_document(
+            chat_id=deal.buyer_id,
+            document=deal.payment_invoice_to_buyer,
+            caption=f"{message_text}\n\n"
+                    f"Счёт на оплату от Брокера",
+            reply_markup=builder.as_markup()
+        )
+
+        await message.answer("Счёт на оплату загружен и отправлен Покупателю, ожидайте подтверждение оплаты.")
+
+@callback_upload_a_payment_invoice_to_buyer_router.callback_query(F.data == "accept_payment_invoice_to_buyer")
+async def accept_payment_invoice_to_buyer(callback: CallbackQuery, state: FSMContext):
+    caption = callback.message.caption
+    deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
+    await state.update_data(deal_id=deal_id)
+    await callback.answer("Загрузите квитанцию об оплате", show_alert=True)
+    await callback.message.answer("Загрузите документ с подтверждением оплаты")
+    await state.set_state(Buyer.waiting_for_upload_payment_document_invoice_to_buyer)
+
+@callback_upload_a_payment_invoice_to_buyer_router.message(Buyer.waiting_for_upload_payment_document_invoice_to_buyer)
+async def upload_payment_document_invoice_to_buyer(message: Message, state: FSMContext, bot: Bot):
+    data = await state.get_data()
+    deal_id = data['deal_id']
+    if not message.document:
+        await message.answer("Отправьте Файл подтверждения оплаты")
+        return
+    async with deals_session() as session:
+        deal = await session.execute(
+            select(Deals).where(Deals.deal_id == deal_id)
+        )
+        deal = deal.scalar_one_or_none()
+        if not deal:
+            await message.answer("Сделка не найдена")
+            return
+        deal.payment_document_invoice_to_buyer = message.document.file_id
+        await session.commit()
+
+        message_text = (
+            f"Сделка №: {deal.deal_id}\n"
+            f"Покупатель: {deal.buy_user}\n"
+            f"Автомобиль: {deal.march_model}\n"
+            f"VIN: {deal.vin_code}\n"
+        )
+        builder = InlineKeyboardBuilder()
+        builder.button(text="✅ Подтвердить получение оплаты", callback_data="accept_payment_document_invoice_to_buyer")
+
+        await bot.send_document(
+            chat_id=deal.broker_id,
+            document=deal.payment_document_invoice_to_buyer,
+            caption=f"{message_text}\n\n"
+                    f"Квитанция об оплате счёта",
+            reply_markup=builder.as_markup()
+
+        )
+        await message.answer("Квитанция об оплате счёта отправлена Брокеру ✅\n\n"
+                             "Ожидайте подтверждения от Брокера")
+        await state.clear()
+
+@callback_upload_a_payment_invoice_to_buyer_router.callback_query(F.data == "accept_payment_document_invoice_to_buyer")
+async def accept_payment_document_invoice_to_buyer(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    caption = callback.message.caption
+    deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
+    async with deals_session() as session:
+        deal = await session.execute(
+            select(Deals).where(Deals.deal_id == deal_id)
+        )
+        deal = deal.scalar_one_or_none()
+        if not deal:
+            await callback.answer("Сделка не найдена")
+            return
+        deal.payment_document_invoice_to_buyer_yes_no == "Оплата по счёту получена"
+        message_text = (
+            f"Сделка №: {deal.deal_id}\n"
+            f"Покупатель: {deal.buy_user}\n"
+            f"Автомобиль: {deal.march_model}\n"
+            f"VIN: {deal.vin_code}\n"
+        )
+        await bot.send_message(
+            chat_id=deal.buyer_id,
+            text=f"{message_text}\n\n"
+                 f"Оплата счёта подтверждена Брокером ✅")
+        await callback.message.edit_caption(
+            caption=f"{callback.message.caption}\n\n"
+                    f"Оплата подтверждена ✅",
+        reply_markup=None)
+
+

@@ -53,8 +53,8 @@ async def show_deal_list_buyer(callback: CallbackQuery):
                 f"VIN: {deal.vin_code}\n"
             )
             builder = InlineKeyboardBuilder()
-            builder.button(text="Инструкция по загрузке документов", callback_data="info_add_documents_buyer")
-            builder.button(text="Загрузка документов", callback_data="kb_menu_load_docs")
+            builder.button(text="❕ Инструкция по загрузке документов", callback_data="info_add_documents_buyer")
+            builder.button(text="📥 Загрузка документов", callback_data="kb_menu_load_docs")
             builder.button(text="Регистрация на портале ЭПТС", url="https://dp.elpts.ru/#/auth/")
             builder.button(text="В главное меню", callback_data="back_to_main_menu_buyer")
             builder.adjust(1)

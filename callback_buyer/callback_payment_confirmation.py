@@ -5,9 +5,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 
-from core.state_fsm import NewDeals, Buyer
+from core.state_fsm import Buyer
 from data_base.db_deals import deals_session, Deals
-from keyboard.inline_keyboard import kb_back_to_menu, kb_admin_main, kb_buyer_main
+from keyboard.inline_keyboard import kb_buyer_main
 
 callback_payment_confirmation_buyer_router = Router()
 

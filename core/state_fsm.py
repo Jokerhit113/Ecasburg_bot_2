@@ -17,6 +17,7 @@ class Admin(StatesGroup):
     waiting_for_load_contract = State()
 
 class Buyer(StatesGroup):
+    waiting_for_upload_payment_document_invoice_to_buyer = State()
     waiting_for_get_snils = State()
     waiting_for_get_registration_elpts = State()
     waiting_for_have_car = State()
@@ -40,6 +41,7 @@ class Provider(StatesGroup):
     waiting_for_delivery_time_car_to_border = State()
 
 class Broker(StatesGroup):
+    waiting_for_payment_invoice_to_buyer = State()
     waiting_for_uin_text = State()
     waiting_for_cmr_file = State()
     waiting_for_reason_provider = State()

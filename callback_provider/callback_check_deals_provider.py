@@ -1,6 +1,7 @@
 import logging
 
-from aiogram import Router, F
+from aiogram import Router, F, Bot
+from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
@@ -31,7 +32,7 @@ async def check_deals_provider(callback: CallbackQuery):
 
 
 @callback_check_deals_provider_router.callback_query(F.data.startswith("check_deal_"))
-async def show_deal_details(callback: CallbackQuery):
+async def show_deal_details(callback: CallbackQuery, state: FSMContext):
     """Показывает детали конкретной сделки"""
     async with deals_session() as session:
         try:
@@ -71,6 +72,11 @@ async def show_deal_details(callback: CallbackQuery):
             else:
                 docs_car_provider_btn = "✅"  # Есть хотя бы что-то из этого
 
+            await state.update_data(payment_btn=payment_btn,
+                                    video_car_before_btn = video_car_before_btn,
+                                    video_car_border_btn = video_car_border_btn,
+                                    docs_car_provider_btn = docs_car_provider_btn)
+
 
             # Формируем текст сообщения
             message_text = (
@@ -102,8 +108,44 @@ async def show_deal_details(callback: CallbackQuery):
             await callback.answer("Произошла ошибка", show_alert=True)
 
 @callback_check_deals_provider_router.callback_query(F.data == "request_crm_and_uin_from_the_broker")
-async def request_crm_and_uin_from_the_broker(callback: CallbackQuery):
-    pass
+async def request_crm_and_uin_from_the_broker(callback: CallbackQuery, bot: Bot, state: FSMContext):
+    async with deals_session() as session:
+        caption = callback.message.caption
+        deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
+        deal = await session.execute(
+            select(Deals).where(Deals.deal_id == deal_id)
+                                )
+        deal = deal.scalar_one_or_none()
+        data = await state.get_data()
+        payment_btn = data.get("payment_btn")
+        video_car_before_btn = data.get("video_car_before_btn")
+        video_car_border_btn = data.get("video_car_border_btn")
+        docs_car_provider_btn = data.get("docs_car_provider_btn")
+        if payment_btn and video_car_before_btn and video_car_border_btn and docs_car_provider_btn == "✅":
+
+            message_text = (
+                f"Сделка №: {deal.deal_id}\n"
+                f"Покупатель: {deal.buy_user}\n"
+                f"Автомобиль: {deal.march_model}\n"
+                f"VIN: {deal.vin_code}\n"
+            )
+            builder = InlineKeyboardBuilder()
+            builder.button(text="🔍 Проверить документы", callback_data="сheck_the_documents_for_the_car")
+            await bot.send_photo(
+                chat_id=deal.broker_id,
+                photo=deal.car_photo_id,
+                caption=f"{message_text}\n\n"
+                        f"⚠️ Поставщик загрузил все документы и фото по автомобилю и Ожидает CMR и УИН",
+                reply_markup=builder.as_markup()
+            )
+            await callback.answer()
+            await callback.message.answer("Запрос Брокеру на получение CMR и УИН Отправлен ✅")
+        else:
+            await callback.answer(
+                text="Не все документы по автомобилю загружены",
+                show_alert=True)
+            return
+
 
 
 @callback_check_deals_provider_router.callback_query(F.data == "back_check_deals_provider")

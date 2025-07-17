@@ -47,6 +47,7 @@ class Deals(Base):
     buyer_imported_yes_no = Column(String) # Был ли ввоз автомобиля из-за границы за последние 3 года
     buyer_have_car = Column(String) # Есть ли автомобиль в пользовании в данный момент
     elpts_registration_photo = Column(String) # Фото регистрации в ЭПТС
+    payment_document_invoice_to_buyer = Column(String) # Файл квитанция подтверждения оплаты счёта от Брокера
 
     # Данные от Поставщика
     payment_confirmation_yes_no = Column(String) # Подтверждение получения денег от покупателя
@@ -64,8 +65,10 @@ class Deals(Base):
     # Данные от Брокера
     confirmation_of_acceptance_of_documents_from_suppliers = Column(String) # Подтверждение получения документов от поставщика
     confirmation_of_acceptance_of_documents_from_buyer = Column(String) # Подтверждение получения документов от Покупателя
-    document_doc_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
-    photo_docs_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от поставщика
+    document_doc_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от Брокера ⚠️
+    photo_docs_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от Брокера ⚠️
+    payment_invoice_to_buyer = Column(String) # Счёт на оплату покупателем чего - то там
+    payment_document_invoice_to_buyer_yes_no = Column(String) # Подтверждение получения оплаты счёта Покупателем
     cmr_file = Column(String) # CMR Файл от брокера
     uin_text = Column(String) # УИН код от брокера
 

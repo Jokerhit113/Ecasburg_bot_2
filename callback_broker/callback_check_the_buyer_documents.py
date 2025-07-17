@@ -367,12 +367,15 @@ async def fixed_it_document_buyer(callback: CallbackQuery, bot: Bot):
             f"Автомобиль: {deals.march_model}\n"
             f"VIN: {deals.vin_code}\n"
         )
+        builder = InlineKeyboardBuilder()
+        builder.button(text="🔍 Проверить документы", callback_data="check_the_buyer_documents")
         await bot.send_photo(
             chat_id=deals.broker_id,
             photo=deals.car_photo_id,
             caption=f"{message_text}\n\n"
                     f"Покупатель исправил недочёты ✅\n"
                     f"Пожалуйста проверьте документы снова",
+            reply_markup=builder.as_markup()
         )
         await callback.message.edit_reply_markup()
         await callback.message.answer(text=f"{message_text}\n\n"

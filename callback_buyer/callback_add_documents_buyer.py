@@ -33,6 +33,7 @@ async def kb_menu_load_docs(callback: CallbackQuery):
     builder.button(text="6 Справка о движении денежных средств по ВС", callback_data="cash_flow_statement")
     builder.button(text="7 Заполнить Анкету", callback_data="fill_out_the_questionnaire")
     builder.button(text="8 Загрузить Скрин с сайта ЭПТС", callback_data="get_elpts_registration")
+    builder.button(text="9 Запросить проверку документов", callback_data="request_check_docs_from_the_broker")
     builder.button(text="В главное меню", callback_data="back_main_buyer")
     builder.adjust(1)
     await callback.answer(text="Для Загрузки документов, выберите нужный пункт меню, и строго следуйте инструкциям.",

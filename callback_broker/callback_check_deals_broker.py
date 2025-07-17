@@ -55,6 +55,8 @@ async def show_deal_broker_list(callback: CallbackQuery):
                            callback_data=f"сheck_the_documents_for_the_car")
             builder.button(text=f"Проверить документы покупателя",
                            callback_data=f"check_the_buyer_documents")
+            builder.button(text=f"Загрузить Счёт на оплату чего то там",
+                           callback_data=f"upload_a_payment_invoice_to_buyer")
             builder.button(text=f"Загрузить документы",
                            callback_data=f"load_docs_broker")
             builder.button(text=f"Завершить работу по сделке",
