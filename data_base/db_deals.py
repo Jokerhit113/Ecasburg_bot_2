@@ -59,12 +59,15 @@ class Deals(Base):
     document_docs_car_provider_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
     photo_docs_car_provider_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от поставщика
     delivery_time_car_to_provider = Column(String) # Срок доставки автомобиля до Поставщика
+    delivery_time_car_to_border = Column(String) # Срок доставки автомобиля до Границы
 
     # Данные от Брокера
     confirmation_of_acceptance_of_documents_from_suppliers = Column(String) # Подтверждение получения документов от поставщика
     confirmation_of_acceptance_of_documents_from_buyer = Column(String) # Подтверждение получения документов от Покупателя
     document_doc_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
     photo_docs_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от поставщика
+    cmr_file = Column(String) # CMR Файл от брокера
+    uin_text = Column(String) # УИН код от брокера
 
     # Данные от Перевозчика
     photo_car_get_border = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика

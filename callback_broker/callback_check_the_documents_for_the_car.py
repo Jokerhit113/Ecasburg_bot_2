@@ -51,6 +51,8 @@ async def send_media_chunks(
                     media_group.add_photo(media=media_id)
                 elif media_type == "document":
                     media_group.add_document(media=media_id)
+                elif media_type == "video":
+                    media_group.add_video(media=media_id)
 
             await bot.send_media_group(chat_id=chat_id, media=media_group.build())
         except Exception as e:
@@ -102,6 +104,25 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
                     media_type="document"
                 )
 
+            # Отправка фото автомобиля на границе
+            if deals.provider_photo_car_border_id:
+                await send_media_chunks(
+                    bot=callback.bot,
+                    chat_id=callback.message.chat.id,
+                    media_items=deals.provider_photo_car_border_id,
+                    caption="Фото автомобиля на границе:",
+                    media_type="photo"
+                )
+            # Отправка Видео автомобиля на границе
+            if deals.provider_video_car_border_id:
+                await send_media_chunks(
+                    bot=callback.bot,
+                    chat_id=callback.message.chat.id,
+                    media_items=deals.provider_video_car_border_id,
+                    caption="Видео автомобиля на границе:",
+                    media_type="video"
+                )
+
             message_text = (
                 f"Сделка №: {deals.deal_id}\n"
                 f"Покупатель: {deals.buy_user}\n"
@@ -122,10 +143,11 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
         await callback.answer("Произошла ошибка при обработке документов", show_alert=True)
 
 @callback_check_the_documents_for_the_car_router.callback_query(F.data == "accept_the_documents_car_provider")
-async def accept_the_documents_car_provider(callback: CallbackQuery):
+async def accept_the_documents_car_provider(callback: CallbackQuery, state: FSMContext):
     async with deals_session() as session:
         text = callback.message.text
         deal_id = int(text.split('\n')[0].split('Сделка №: ')[1])
+        await state.update_data(deal_id=deal_id)
         deals = await session.execute(
             select(Deals).where(Deals.deal_id == deal_id)
         )
@@ -134,10 +156,111 @@ async def accept_the_documents_car_provider(callback: CallbackQuery):
         deals.confirmation_of_acceptance_of_documents_from_suppliers = "Документы приняты"
 
         await session.commit()
+        builder = InlineKeyboardBuilder()
+        builder.button(text="Загрузить CMR", callback_data="load_cmr_file")
+        builder.button(text="Написать УИН", callback_data="load_uin_text")
+        builder.adjust(1)
         await callback.message.edit_text(
             text=f"{callback.message.text}\n\n"
-                 f"Документы Приняты ✅"
+                 f"Документы Приняты ✅",
+            reply_markup=builder.as_markup()
         )
+
+@callback_check_the_documents_for_the_car_router.callback_query(F.data == "load_cmr_file")
+async def load_cmr_file(callback: CallbackQuery, state: FSMContext):
+    await callback.message.answer(text="Загрузите СMR файл")
+    await callback.answer(text="Загрузите СMR файл", show_alert=True)
+    await state.set_state(Broker.waiting_for_cmr_file)
+
+@callback_check_the_documents_for_the_car_router.message(Broker.waiting_for_cmr_file)
+async def waiting_for_cmr_file(message: Message, state: FSMContext, bot: Bot):
+    if not message.document:
+        await message.answer(text="Нужно отправить файл")
+        return
+    data = await state.get_data()
+    deal_id = data["deal_id"]
+    async with deals_session() as session:
+        deal = await session.execute(
+            select(Deals).where(Deals.deal_id == deal_id)
+        )
+        deal = deal.scalar_one_or_none()
+        if deal:
+            message_text = (
+                f"Сделка №: {deal.deal_id}\n"
+                f"Покупатель: {deal.buy_user}\n"
+                f"Автомобиль: {deal.march_model}\n"
+                f"VIN: {deal.vin_code}\n"
+            )
+            deal.cmr_file = message.document.file_id
+            await session.commit()
+            await bot.send_document(
+                chat_id=deal.provider_id,
+                document=deal.cmr_file,
+                caption=f"CMR Файл для автомобиля:\n\n"
+                        f"{deal.march_model}\n\n"
+                        f"{deal.vin_code}"
+            )
+            if deal.uin_text:
+                await message.answer("Документ Загружен и отправлен Поставщику")
+            else:
+                builder = InlineKeyboardBuilder()
+                builder.button(text="Написать УИН", callback_data="load_uin_text")
+                await message.answer(text=f"{message_text}\n\n"
+                                          f"Документ Загружен и отправлен Поставщику\n\n"
+                                          "Поставщик ожидает УИН, нажмите кнопку <Написать УИН> и напишите код",
+                                     reply_markup=builder.as_markup())
+
+
+
+
+
+
+@callback_check_the_documents_for_the_car_router.callback_query(F.data == "load_uin_text")
+async def load_uin_text(callback: CallbackQuery, state: FSMContext):
+    await callback.message.answer(text="Напишите УИН код 1 сообщением:")
+    await callback.answer(text="Напишите УИН код 1 сообщением", show_alert=True)
+    await state.set_state(Broker.waiting_for_uin_text)
+
+@callback_check_the_documents_for_the_car_router.message(Broker.waiting_for_uin_text)
+async def waiting_for_uin_text(message: Message, state: FSMContext, bot: Bot):
+    if not message.text:
+        await message.answer(text="Нужно Написать код 1 сообщением")
+        return
+    data = await state.get_data()
+    deal_id = data["deal_id"]
+    async with deals_session() as session:
+        deal = await session.execute(
+            select(Deals).where(Deals.deal_id == deal_id)
+        )
+        deal = deal.scalar_one_or_none()
+        if deal:
+            message_text = (
+                f"Сделка №: {deal.deal_id}\n"
+                f"Покупатель: {deal.buy_user}\n"
+                f"Автомобиль: {deal.march_model}\n"
+                f"VIN: {deal.vin_code}\n"
+            )
+            deal.uin_text = message.text
+            await session.commit()
+            await bot.send_message(
+                chat_id=deal.provider_id,
+                text=f"УИН код:\n\n"
+                     f"{message.text}\n\n"
+                     f"Для Автомобиля:\n"
+                     f"{deal.march_model}\n"
+                     f"{deal.vin_code}"
+            )
+            if deal.cmr_file:
+                await message.answer(f"УИН: {message.text} отправлен Поставщику")
+            else:
+                builder = InlineKeyboardBuilder()
+                builder.button(text="Загрузить CMR", callback_data="load_cmr_file")
+                await message.answer(text=f"{message_text}\n\n"
+                                          f"УИН код < {message.text} > отправлен Поставщику\n\n"
+                                          "Поставщик ожидает CMR файл, нажмите кнопку ниже <Загрузить CMR> и отправьте файл",
+                                     reply_markup=builder.as_markup())
+
+
 
 @callback_check_the_documents_for_the_car_router.callback_query(F.data == "reject_the_documents_car_provider")
 async def reject_the_documents_car_provider(callback: CallbackQuery, state: FSMContext):

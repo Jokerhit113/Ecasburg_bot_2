@@ -92,7 +92,7 @@ async def delivery_time_car_to_provider(message: Message, state: FSMContext):
     await state.update_data(delivery_time_car_to_provider=message.text)
     builder = InlineKeyboardBuilder()
     builder.button(text="✅ Всё верно", callback_data="add_delivery_time_car_to_provider")
-    builder.button(text="❌ Заполнить Заново", callback_data="again_text")
+    builder.button(text="❌ Заполнить Заново", callback_data="again_text_to_provider")
     builder.adjust(1)
     await message.answer(text="Вы указали что выкупленный Вами автомобиль будет доставлен к Вам через:\n\n"
                               f"{message.text}\n\n"
@@ -112,13 +112,13 @@ async def add_delivery_time_car_to_provider(callback: CallbackQuery, state: FSMC
             await session.commit()
             await callback.answer(f"Срок доставки авто {delivery_time_car_to_provider_user}")
             await callback.message.edit_text(text=f"{callback.message.text}\n\n"
-                                                  f"Срок доставки подтверждён!",
+                                                  f"Срок доставки до Поставщика подтверждён!",
                                              reply_markup=kb_provider_main)
             await state.clear()
         else:
             await callback.answer(text="Сделка не найдена")
 
-@callback_buy_car_provider_router.callback_query(F.data == "again_text")
+@callback_buy_car_provider_router.callback_query(F.data == "again_text_to_provider")
 async def again_text(callback: CallbackQuery):
     await callback.message.delete()
     await callback.message.answer(text="Напишите срок доставки ещё раз")

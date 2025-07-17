@@ -6,6 +6,7 @@ from sqlalchemy import select
 
 from core.state_fsm import Provider
 from data_base.db_deals import deals_session, Deals
+from keyboard.inline_keyboard import kb_provider_main
 
 callback_car_before_border_router = Router()
 
@@ -73,13 +74,45 @@ async def photo_video_buy_car(message: Message, state: FSMContext):
                          f"{len(videos)} Видео",
                     reply_markup=builder.as_markup()
                 )
+                await message.answer(text=f"Загрузка завершена",
+                                     reply_markup=ReplyKeyboardRemove())
+                await message.answer(text="Напишите срок доставки автомобиля до Границы:\n\n"
+                                          "Например: 5 - 7 дней")
+                await state.set_state(Provider.waiting_for_delivery_time_car_to_border)
+
             else:
                 await message.answer(text="Сделка не найдена")
 
-            await state.clear()
-            await message.answer(text=f"Загрузка завершена",
-                                 reply_markup=ReplyKeyboardRemove())
-
-
     else:
         await message.answer("Отправьте Фото или Видео")
+
+@callback_car_before_border_router.message(Provider.waiting_for_delivery_time_car_to_border)
+async def delivery_time_car_to_border(message: Message, state: FSMContext):
+    await state.update_data(delivery_time_car_to_border=message.text)
+    builder = InlineKeyboardBuilder()
+    builder.button(text="✅ Всё верно", callback_data="add_delivery_time_car_to_border")
+    builder.button(text="❌ Заполнить Заново", callback_data="again_text_to_border")
+    builder.adjust(1)
+    await message.answer(text="Вы указали автомобиль будет доставлен на Границу через:\n\n"
+                              f"{message.text}\n\n"
+                              f"Верно?",
+                         reply_markup=builder.as_markup())
+
+@callback_car_before_border_router.callback_query(F.data == "add_delivery_time_car_to_border")
+async def add_delivery_time_car_to_border(callback: CallbackQuery, state: FSMContext):
+    async with deals_session() as session:
+        data = await state.get_data()
+        deal = data.get('deal_id')
+        delivery_time_car_to_border_user = data.get('delivery_time_car_to_border')
+        deal = await session.execute(select(Deals).where(Deals.deal_id == deal))
+        deal = deal.scalar_one_or_none()
+        if deal:
+            deal.delivery_time_car_to_border = delivery_time_car_to_border_user
+            await session.commit()
+            await callback.answer(f"Срок доставки авто {delivery_time_car_to_border_user}")
+            await callback.message.edit_text(text=f"{callback.message.text}\n\n"
+                                                  f"Срок доставки до Границы подтверждён!",
+                                             reply_markup=kb_provider_main)
+            await state.clear()
+        else:
+            await callback.answer(text="Сделка не найдена")
