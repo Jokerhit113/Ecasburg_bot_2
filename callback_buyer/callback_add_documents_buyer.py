@@ -93,7 +93,7 @@ async def kb_menu_load_docs(callback: CallbackQuery, state: FSMContext):
     builder.button(text=f"{fill_out_the_questionnaire_btn} Заполнить Анкету", callback_data="fill_out_the_questionnaire")
     builder.button(text=f"{get_elpts_registration_btn} Загрузить Скрин с сайта ЭПТС", callback_data="get_elpts_registration")
     builder.button(text="🔍 Запросить проверку документов", callback_data="request_check_docs_from_the_broker")
-    builder.button(text="В главное меню", callback_data="back_main_buyer")
+    builder.button(text="⬅️ Назад", callback_data=f"deal_list_buyer_{deal_id}")
     builder.adjust(1)
     await callback.answer(text="Для Загрузки документов, выберите нужный пункт меню, и строго следуйте инструкциям.",
                           show_alert=True)

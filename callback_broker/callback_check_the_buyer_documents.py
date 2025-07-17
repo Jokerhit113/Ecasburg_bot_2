@@ -105,24 +105,7 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
                          f"Есть ли автомобиль в пользовании в данный момент: {deals.buyer_have_car}\n"
                 )
 
-            # # Отправка всех документов с использованием новой функции
-            # if deals.payment_photo_id:
-            #     await send_media_chunks(
-            #         bot=callback.bot,
-            #         chat_id=callback.message.chat.id,
-            #         media_items=deals.payment_photo_id,
-            #         caption="Фото Квитанции об оплате автомобиля:",
-            #         media_type="photo"
-            #     )
-            #
-            # if deals.payment_document_id:
-            #     await send_media_chunks(
-            #         bot=callback.bot,
-            #         chat_id=callback.message.chat.id,
-            #         media_items=deals.payment_document_id,
-            #         caption="Скан Квитанции об оплате автомобиля:",
-            #         media_type="document"
-            #     )
+
             # Квитанция об оплате автомобиля
             if deals.payment_photo_id:
                 await callback.message.answer_photo(photo=deals.payment_photo_id,

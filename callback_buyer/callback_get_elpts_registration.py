@@ -21,7 +21,7 @@ async def get_elpts_registration_buyer(callback: CallbackQuery, state: FSMContex
     await state.update_data(deal_id=deal_id)
     try:
         builder = InlineKeyboardBuilder()
-        builder.button(text="Назад в Меню", callback_data="back_main_buyer")
+        builder.button(text="Назад в Меню", callback_data=f"deal_list_buyer_{deal_id}")
         builder.adjust(1)
 
         await callback.message.edit_caption(

@@ -21,8 +21,10 @@ from callback_broker.callback_upload_a_payment_invoice_to_buyer import callback_
 from callback_buyer.callback_add_buyer_driver_license import callback_add_buyer_driver_license_router
 from callback_buyer.callback_add_documents_buyer import callback_add_documents_buyer_router
 from callback_buyer.callback_add_passport import callback_add_passport_router
+from callback_buyer.callback_call_manager import callback_call_manager_router
 from callback_buyer.callback_cash_flow_statement import callback_cash_flow_statement_router
 from callback_buyer.callback_check_deals_buyer import callback_check_deals_buyer_router
+from callback_buyer.callback_check_status_buyer import callback_check_status_buyer_router
 from callback_buyer.callback_fill_out_the_questionnaire import callback_fill_out_the_questionnaire_router
 from callback_buyer.callback_foreign_currency_account_statement import \
     callback_foreign_currency_account_statement_router
@@ -96,7 +98,8 @@ async def main():
     dp.include_router(callback_add_buyer_driver_license_router)
     dp.include_router(callback_upload_a_payment_invoice_to_buyer_router)
     dp.include_router(callback_request_check_docs_from_the_broker_router)
-
+    dp.include_router(callback_call_manager_router)
+    dp.include_router(callback_check_status_buyer_router)
 
     await dp.start_polling(bot)
 

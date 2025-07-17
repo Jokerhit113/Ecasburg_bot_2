@@ -13,11 +13,10 @@ from data_base.db_users import User, user_session
 callback_fill_out_the_questionnaire_router = Router()
 
 text = ("Для заполнения анкеты понадобятся следующие данные: \n"
-
         "- номер телефона\n"
         "- Адрес Фактического проживания\n"
         "- Электронная почта\n"
-        "- был ли ввоз авто в течение 3 последних лет из других стран\n"
+        "- был ли ввоз авто в течение 1 Года из других стран\n"
         "- информация о наличии авто в личном пользовании (если есть, надо указать марку/модель и год выпуска авто)")
 
 @callback_fill_out_the_questionnaire_router.callback_query(F.data == "fill_out_the_questionnaire")
@@ -26,7 +25,7 @@ async def fill_out_the_questionnaire(callback: CallbackQuery, state: FSMContext)
     deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
     await state.update_data(deal_id=deal_id)
     builder = InlineKeyboardBuilder()
-    builder.button(text="Назад в Меню", callback_data="back_main_buyer")
+    builder.button(text="Назад в Меню", callback_data=f"deal_list_buyer_{deal_id}")
     builder.adjust(1)
     await callback.message.edit_caption(caption=text,
                                       reply_markup=builder.as_markup())
