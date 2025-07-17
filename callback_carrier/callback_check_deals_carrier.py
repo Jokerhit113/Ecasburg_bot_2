@@ -53,11 +53,26 @@ async def show_deal_details(callback: CallbackQuery):
                 f"VIN: {deal.vin_code}\n"
             )
 
+            if not deal.photo_car_get_border and not deal.video_car_get_border:
+                report_of_receiving_a_car_at_the_border_btn = "⚠️"  # Нет ни фото, ни видео
+            else:
+                report_of_receiving_a_car_at_the_border_btn = "✅"  # Есть хотя бы что-то из этого
+
+            if not deal.photo_car_load_transportation and not deal.video_car_load_transportation:
+                report_of_loading_a_vehicle_for_transportation_btn = "⚠️"  # Нет ни фото, ни видео
+            else:
+                report_of_loading_a_vehicle_for_transportation_btn = "✅"  # Есть хотя бы что-то из этого
+
+            if not deal.photo_docs_car_carrier and not deal.docs_docs_car_carrier:
+                load_docs_carrier_btn = "⚠️"  # Нет ни фото, ни видео
+            else:
+                load_docs_carrier_btn = "✅"  # Есть хотя бы что-то из этого
+
             # Создаем клавиатуру для возврата
             builder = InlineKeyboardBuilder()
-            builder.button(text=f"Отчёт получения Авто на границе", callback_data=f"report_of_receiving_a_car_at_the_border")
-            builder.button(text=f"Отчёт погрузки автомобиля", callback_data=f"report_of_loading_a_vehicle_for_transportation")
-            builder.button(text=f"Загрузить документы по автомобилю", callback_data=f"load_docs_carrier")
+            builder.button(text=f"{report_of_receiving_a_car_at_the_border_btn} Отчёт получения Авто на границе", callback_data=f"report_of_receiving_a_car_at_the_border")
+            builder.button(text=f"{report_of_loading_a_vehicle_for_transportation_btn} Отчёт погрузки автомобиля", callback_data=f"report_of_loading_a_vehicle_for_transportation")
+            builder.button(text=f"{load_docs_carrier_btn} Документы по перевозке автомобиля", callback_data=f"load_docs_carrier")
 
             builder.button(text="Назад к списку", callback_data="back_check_deals_carrier")
             builder.adjust(1)

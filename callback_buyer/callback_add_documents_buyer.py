@@ -73,6 +73,11 @@ async def kb_menu_load_docs(callback: CallbackQuery, state: FSMContext):
         else:
             get_elpts_registration_btn = "✅"  # Есть хотя бы что-то из этого
 
+        if not deal.confirmation_of_acceptance_of_documents_from_buyer:
+            confirmation_of_acceptance_of_documents_from_buyer = "⚠️"  # Нет ни фото, ни видео
+        else:
+            confirmation_of_acceptance_of_documents_from_buyer = "✅"  # Есть хотя бы что-то из этого
+
         await state.update_data(payment_confirmation_buyer_btn=payment_confirmation_buyer_btn,
                                 add_passport_btn=add_passport_btn,
                                 driver_license_load_buyer_btn=driver_license_load_buyer_btn,
@@ -92,7 +97,7 @@ async def kb_menu_load_docs(callback: CallbackQuery, state: FSMContext):
     builder.button(text=f"{cash_flow_statement_btn} Справка о движении денежных средств по ВС", callback_data="cash_flow_statement")
     builder.button(text=f"{fill_out_the_questionnaire_btn} Заполнить Анкету", callback_data="fill_out_the_questionnaire")
     builder.button(text=f"{get_elpts_registration_btn} Загрузить Скрин с сайта ЭПТС", callback_data="get_elpts_registration")
-    builder.button(text="🔍 Запросить проверку документов", callback_data="request_check_docs_from_the_broker")
+    builder.button(text=f"{confirmation_of_acceptance_of_documents_from_buyer} Запросить проверку документов 🔍", callback_data="request_check_docs_from_the_broker")
     builder.button(text="⬅️ Назад", callback_data=f"deal_list_buyer_{deal_id}")
     builder.adjust(1)
     await callback.answer(text="Для Загрузки документов, выберите нужный пункт меню, и строго следуйте инструкциям.",

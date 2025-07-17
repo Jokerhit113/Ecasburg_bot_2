@@ -29,6 +29,9 @@ async def request_check_docs_from_the_broker(callback: CallbackQuery, state: FSM
                 select(Deals).where(Deals.deal_id == deal_id)
             )
             deal = deal.scalar_one_or_none()
+            if not deal.broker_id:
+                await callback.answer(text="Брокер сделки ещё не назначен", show_alert=True)
+                return
             message_text = (
                 f"Сделка №: {deal.deal_id}\n"
                 f"Покупатель: {deal.buy_user}\n"

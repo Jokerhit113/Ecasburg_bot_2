@@ -24,7 +24,9 @@ async def buy_car_provider(callback: CallbackQuery, state: FSMContext):
                                        "По завершению загрузки нажмите ЗАВЕРШИТЬ ЗАГРУЗКУ",
                                   reply_markup=reply_markup)
     await state.set_state(Provider.waiting_for_car_before_border)
-    await callback.message.delete()
+    builder = InlineKeyboardBuilder()
+    builder.button(text="Назад", callback_data=f"check_deal_{deal_id}")
+    await callback.message.edit_reply_markup(reply_markup=builder.as_markup())
 
 @callback_car_before_border_router.message(Provider.waiting_for_car_before_border)
 async def photo_video_buy_car(message: Message, state: FSMContext):

@@ -116,6 +116,9 @@ async def request_crm_and_uin_from_the_broker(callback: CallbackQuery, bot: Bot,
             select(Deals).where(Deals.deal_id == deal_id)
                                 )
         deal = deal.scalar_one_or_none()
+        if not deal.broker_id:
+            await callback.answer(text="Брокер сделки ещё не назначен", show_alert=True)
+            return
         data = await state.get_data()
         payment_btn = data.get("payment_btn")
         video_car_before_btn = data.get("video_car_before_btn")
