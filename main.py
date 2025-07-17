@@ -29,6 +29,8 @@ from callback_buyer.callback_foreign_currency_account_statement import \
 from callback_buyer.callback_get_elpts_registration import callback_get_elpts_registration_router
 from callback_buyer.callback_get_snils_buyer import callback_get_snils_buyer_router
 from callback_buyer.callback_payment_confirmation import callback_payment_confirmation_buyer_router
+from callback_buyer.callback_request_check_docs_from_the_broker import \
+    callback_request_check_docs_from_the_broker_router
 from callback_carrier.callback_check_deals_carrier import callback_check_deals_carrier_router
 from callback_carrier.callback_load_docs_carrier import callback_load_docs_carrier_router
 from callback_carrier.callback_report_of_loading_a_vehicle_for_transportation import \
@@ -93,6 +95,7 @@ async def main():
     dp.include_router(callback_load_docs_carrier_router)
     dp.include_router(callback_add_buyer_driver_license_router)
     dp.include_router(callback_upload_a_payment_invoice_to_buyer_router)
+    dp.include_router(callback_request_check_docs_from_the_broker_router)
 
 
     await dp.start_polling(bot)

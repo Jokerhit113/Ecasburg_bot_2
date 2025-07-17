@@ -92,7 +92,7 @@ async def show_deal_details(callback: CallbackQuery, state: FSMContext):
             builder.button(text=f"{video_car_before_btn} Отчёт отправки авто до границы", callback_data=f"media_car_before_border")
             builder.button(text=f"{video_car_border_btn} Отчёт доставки авто на границу", callback_data=f"media_car_delivered_border")
             builder.button(text=f"{docs_car_provider_btn} Загрузить документы по автомобилю", callback_data=f"load_docs_car_provider")
-            builder.button(text=f"Запросить CRM и УИН у Брокера", callback_data=f"request_crm_and_uin_from_the_broker")
+            builder.button(text=f"Запросить CMR и УИН у Брокера", callback_data=f"request_cmr_and_uin_from_the_broker")
             builder.button(text="Назад к списку", callback_data="back_check_deals_provider")
             builder.adjust(1)
             await callback.message.delete()
@@ -107,7 +107,7 @@ async def show_deal_details(callback: CallbackQuery, state: FSMContext):
             logging.error(f"Error in show_deal_details: {e}")
             await callback.answer("Произошла ошибка", show_alert=True)
 
-@callback_check_deals_provider_router.callback_query(F.data == "request_crm_and_uin_from_the_broker")
+@callback_check_deals_provider_router.callback_query(F.data == "request_cmr_and_uin_from_the_broker")
 async def request_crm_and_uin_from_the_broker(callback: CallbackQuery, bot: Bot, state: FSMContext):
     async with deals_session() as session:
         caption = callback.message.caption

@@ -261,7 +261,7 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
 # ... остальные обработчики остаются без изменений ...
 
 @callback_check_the_buyer_documents_router.callback_query(F.data == "accept_the_documents_buyer")
-async def accept_the_documents_buyer(callback: CallbackQuery):
+async def accept_the_documents_buyer(callback: CallbackQuery, bot: Bot):
     async with deals_session() as session:
         text = callback.message.text
         deal_id = int(text.split('\n')[0].split('Сделка №: ')[1])
@@ -273,6 +273,17 @@ async def accept_the_documents_buyer(callback: CallbackQuery):
         deals.confirmation_of_acceptance_of_documents_from_buyer = "Документы приняты"
 
         await session.commit()
+        message_text = (
+            f"Сделка №: {deals.deal_id}\n"
+            f"Покупатель: {deals.buy_user}\n"
+            f"Автомобиль: {deals.march_model}\n"
+            f"VIN: {deals.vin_code}\n"
+        )
+        await bot.send_message(
+            chat_id=deals.buyer_id,
+            text=f"{message_text}\n\n"
+                 f"Документы приняты Брокером ✅",
+        )
         await callback.message.edit_text(
             text=f"{callback.message.text}\n\n"
                  f"Документы Приняты ✅"
