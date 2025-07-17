@@ -196,18 +196,18 @@ async def waiting_for_cmr_file(message: Message, state: FSMContext, bot: Bot):
             await bot.send_document(
                 chat_id=deal.provider_id,
                 document=deal.cmr_file,
-                caption=f"CMR Файл для автомобиля:\n\n"
+                caption=f"✅ CMR Файл для автомобиля:\n\n"
                         f"{deal.march_model}\n\n"
                         f"{deal.vin_code}"
             )
             if deal.uin_text:
-                await message.answer("Документ Загружен и отправлен Поставщику")
+                await message.answer("✅ Документ Загружен и отправлен Поставщику")
             else:
                 builder = InlineKeyboardBuilder()
                 builder.button(text="Написать УИН", callback_data="load_uin_text")
                 await message.answer(text=f"{message_text}\n\n"
-                                          f"Документ Загружен и отправлен Поставщику\n\n"
-                                          "Поставщик ожидает УИН, нажмите кнопку <Написать УИН> и напишите код",
+                                          f"✅ Документ Загружен и отправлен Поставщику\n\n"
+                                          "⚠️ Поставщик ожидает УИН, нажмите кнопку <Написать УИН> и напишите код",
                                      reply_markup=builder.as_markup())
 
 
@@ -245,19 +245,19 @@ async def waiting_for_uin_text(message: Message, state: FSMContext, bot: Bot):
             await bot.send_message(
                 chat_id=deal.provider_id,
                 text=f"УИН код:\n\n"
-                     f"{message.text}\n\n"
+                     f"✅ {message.text}\n\n"
                      f"Для Автомобиля:\n"
                      f"{deal.march_model}\n"
                      f"{deal.vin_code}"
             )
             if deal.cmr_file:
-                await message.answer(f"УИН: {message.text} отправлен Поставщику")
+                await message.answer(f"✅ УИН: {message.text} отправлен Поставщику")
             else:
                 builder = InlineKeyboardBuilder()
                 builder.button(text="Загрузить CMR", callback_data="load_cmr_file")
                 await message.answer(text=f"{message_text}\n\n"
-                                          f"УИН код < {message.text} > отправлен Поставщику\n\n"
-                                          "Поставщик ожидает CMR файл, нажмите кнопку ниже <Загрузить CMR> и отправьте файл",
+                                          f"✅ УИН код < {message.text} > отправлен Поставщику\n\n"
+                                          "⚠️ Поставщик ожидает CMR файл, нажмите кнопку ниже <Загрузить CMR> и отправьте файл",
                                      reply_markup=builder.as_markup())
 
 

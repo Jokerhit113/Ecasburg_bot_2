@@ -82,10 +82,11 @@ async def show_deal_details(callback: CallbackQuery):
 
             # Создаем клавиатуру для возврата
             builder = InlineKeyboardBuilder()
-            builder.button(text=f"Подтверждение выкупа автомобиля {payment_btn}", callback_data=f"buy_car_provider")
-            builder.button(text=f"Отчёт отправки авто до границы {video_car_before_btn}", callback_data=f"media_car_before_border")
-            builder.button(text=f"Отчёт доставки авто на границу {video_car_border_btn}", callback_data=f"media_car_delivered_border")
-            builder.button(text=f"Загрузить документы по автомобилю {docs_car_provider_btn}", callback_data=f"load_docs_car_provider")
+            builder.button(text=f"{payment_btn} Подтверждение выкупа автомобиля", callback_data=f"buy_car_provider")
+            builder.button(text=f"{video_car_before_btn} Отчёт отправки авто до границы", callback_data=f"media_car_before_border")
+            builder.button(text=f"{video_car_border_btn} Отчёт доставки авто на границу", callback_data=f"media_car_delivered_border")
+            builder.button(text=f"{docs_car_provider_btn} Загрузить документы по автомобилю", callback_data=f"load_docs_car_provider")
+            builder.button(text=f"Запросить CRM и УИН у Брокера", callback_data=f"request_crm_and_uin_from_the_broker")
             builder.button(text="Назад к списку", callback_data="back_check_deals_provider")
             builder.adjust(1)
             await callback.message.delete()
@@ -99,6 +100,10 @@ async def show_deal_details(callback: CallbackQuery):
         except Exception as e:
             logging.error(f"Error in show_deal_details: {e}")
             await callback.answer("Произошла ошибка", show_alert=True)
+
+@callback_check_deals_provider_router.callback_query(F.data == "request_crm_and_uin_from_the_broker")
+async def request_crm_and_uin_from_the_broker(callback: CallbackQuery):
+    pass
 
 
 @callback_check_deals_provider_router.callback_query(F.data == "back_check_deals_provider")
