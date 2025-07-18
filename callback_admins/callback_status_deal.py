@@ -58,6 +58,7 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                     builder.button(text=text, callback_data=callback_data)
 
                 builder.adjust(1)  # Все кнопки в отдельных рядах
+
                 if not deal.payment_confirmation_yes_no:
                     car_payment_btn = "⚠️"
                 else:
@@ -71,9 +72,51 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                 if car_payment_btn == "✅":
                     car_redemption_btn = "⚠️"
                 elif deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
-                    car_redemption_btn = "✅"
+                    car_redemption_btn = f"✅ Доставка до Поставщика - {deal.delivery_time_car_to_provider} "
                 else:
                     car_redemption_btn = "❕"
+
+                if car_redemption_btn == "✅":
+                    car_awersome_buy_btn = "⚠️"
+                elif deal.provider_photo_car_before_border_id or deal.provider_video_car_before_border_id and deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
+                    car_awersome_buy_btn = "✅"
+                else:
+                    car_awersome_buy_btn = "❕"
+
+                if car_awersome_buy_btn == "✅":
+                    car_go_to_border_btn = "⚠️"
+                elif deal.provider_photo_car_before_border_id or deal.provider_video_car_before_border_id:
+                    car_go_to_border_btn = f"✅ Доставка до границы - {deal.delivery_time_car_to_border}"
+                else:
+                    car_go_to_border_btn = "❕"
+
+                if car_go_to_border_btn == "✅":
+                    car_to_border_btn = "⚠️"
+                elif deal.provider_photo_car_border_id or deal.provider_video_car_border_id:
+                    car_to_border_btn = f"✅"
+                else:
+                    car_to_border_btn = "❕"
+
+                if car_to_border_btn == "✅":
+                    car_from_border_btn = "⚠️"
+                elif deal.document_doc_broker_id or deal.photo_docs_broker_id:
+                    car_from_border_btn = f"✅"
+                else:
+                    car_from_border_btn = "❕"
+
+                if car_from_border_btn == "✅":
+                    car_waiting_for_delivery_btn = "⚠️"
+                elif deal.photo_car_get_border or deal.video_car_get_border:
+                    car_waiting_for_delivery_btn = f"✅"
+                else:
+                    car_waiting_for_delivery_btn = "❕"
+
+                if car_waiting_for_delivery_btn == "✅":
+                    car_delivery_for_rf_btn = "⚠️"
+                elif deal.photo_car_load_transportation or deal.video_car_load_transportation:
+                    car_delivery_for_rf_btn = f"✅"
+                else:
+                    car_delivery_for_rf_btn = "❕"
 
                 # Формируем текст сообщения
                 caption_text = (
@@ -95,13 +138,12 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                     f"Оплата автомобиля {car_payment_btn}\n"
                     f"Загрузка документов Покупателя {load_buyer_doc_btn}\n"
                     f"Выкуп авто {car_redemption_btn}\n"
-                    f"Автомобиль выкуплен\n"
-                    f"Автомобиль у поставщика\n"
-                    f"Автомобиль отправлен до границы\n"
-                    f"Автомобиль на пересечении границы\n"
-                    f"Таможенное оформление\n"
-                    f"Ожидание погрузки автомобиля на автовоз\n"
-                    f"Доставка по РФ\n"
+                    f"Автомобиль у поставщика{car_awersome_buy_btn}\n"
+                    f"Автомобиль отправлен до границы {car_go_to_border_btn}\n"
+                    f"Автомобиль на пересечении границы {car_to_border_btn}\n"
+                    f"Таможенное оформление {car_from_border_btn}\n"
+                    f"Ожидание погрузки автомобиля на автовоз {car_waiting_for_delivery_btn}\n"
+                    f"Доставка по РФ {car_delivery_for_rf_btn}\n"
                     f"Готов к выдаче\n\n"
 
                     f"❕ - Ещё не начат\n"
