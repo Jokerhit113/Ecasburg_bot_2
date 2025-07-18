@@ -32,54 +32,74 @@ class Deals(Base):
     # Данные от Покупателя
     payment_photo_id = Column(String) # Фото оплаты автомобиля покупателем
     payment_document_id = Column(String) # Документ оплаты автомобиля покупателем
+
     passport_photos = Column(MutableList.as_mutable(JSON), default=list) # Фотографии паспорта
     passport_documents = Column(MutableList.as_mutable(JSON), default=list) # Документы / файлы паспорта
+
     buyer_driver_license_photo = Column(MutableList.as_mutable(JSON), default=list) # Фото Водительского Удостоверения
     buyer_driver_license_docs = Column(MutableList.as_mutable(JSON), default=list) # Документы Водительского Удостоверения
+
     foreign_currency_account_statement_photo = Column(MutableList.as_mutable(JSON), default=list) # Фото Выписки по валютному счёту
     foreign_currency_account_statement_docs = Column(MutableList.as_mutable(JSON), default=list)  # Документы Выписки по валютному счёту
+
     cash_flow_statement_photos = Column(MutableList.as_mutable(JSON), default=list)# Фото Выписки движения денег по валютному счёту
     cash_flow_statement_docs = Column(MutableList.as_mutable(JSON), default=list)# Документы Выписки движения денег по валютному счёту
+
     snils_buyer_photos = Column(MutableList.as_mutable(JSON), default=list)# СНИЛС фото Покупателя
     snils_buyer_docs = Column(MutableList.as_mutable(JSON), default=list)# СНИЛС документ Покупателя
+
     buyer_phone_number = Column(String) # Номер телефона покупателя
     buyer_actual_address_of_residence = Column(String) # Фактический адрес проживания
     buyer_email_address = Column(String) # E-mail
     buyer_imported_yes_no = Column(String) # Был ли ввоз автомобиля из-за границы за последние 3 года
     buyer_have_car = Column(String) # Есть ли автомобиль в пользовании в данный момент
+
     elpts_registration_photo = Column(String) # Фото регистрации в ЭПТС
     payment_document_invoice_to_buyer = Column(String) # Файл квитанция подтверждения оплаты счёта от Брокера
 
     # Данные от Поставщика
     payment_confirmation_yes_no = Column(String) # Подтверждение получения денег от покупателя
+
     buy_car_provider_photo_id = Column(MutableList.as_mutable(JSON), default=list) # Фото выкупа автомобиля поставщиком
     buy_car_provider_video_id = Column(MutableList.as_mutable(JSON), default=list) # Видео выкупа автомобиля поставщиком
+
     provider_photo_car_before_border_id = Column(MutableList.as_mutable(JSON), default=list)  # Фото автомобиля до отправки на границу от поставщика
     provider_video_car_before_border_id = Column(MutableList.as_mutable(JSON), default=list)  # Видео автомобиля до отправки на границу от поставщика
+
     provider_photo_car_border_id = Column(MutableList.as_mutable(JSON), default=list) # Фото автомобиля на границе от поставщика
     provider_video_car_border_id = Column(MutableList.as_mutable(JSON), default=list) # Видео автомобиля на границе от поставщика
+
     document_docs_car_provider_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
     photo_docs_car_provider_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от поставщика
+
     delivery_time_car_to_provider = Column(String) # Срок доставки автомобиля до Поставщика
     delivery_time_car_to_border = Column(String) # Срок доставки автомобиля до Границы
 
     # Данные от Брокера
     confirmation_of_acceptance_of_documents_from_suppliers = Column(String) # Подтверждение получения документов от поставщика
+
     confirmation_of_acceptance_of_documents_from_buyer = Column(String) # Подтверждение получения документов от Покупателя
+
     document_doc_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от Брокера
     photo_docs_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от Брокера
+
     payment_invoice_to_buyer = Column(String) # Счёт на оплату покупателем чего - то там
+
     payment_document_invoice_to_buyer_yes_no = Column(String) # Подтверждение получения оплаты счёта Покупателем
+
     cmr_file = Column(String) # CMR Файл от брокера
+
     uin_text = Column(String) # УИН код от брокера
 
     # Данные от Перевозчика
-    photo_car_get_border = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
-    video_car_get_border = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
-    photo_car_load_transportation = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
-    video_car_load_transportation = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
-    photo_docs_car_carrier = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
-    docs_docs_car_carrier = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от поставщика
+    photo_car_get_border = Column(MutableList.as_mutable(JSON), default=list) # Получение Авто на границе
+    video_car_get_border = Column(MutableList.as_mutable(JSON), default=list) # Получение Авто на границе
+
+    photo_car_load_transportation = Column(MutableList.as_mutable(JSON), default=list) # Автомобиль погружен на Воз
+    video_car_load_transportation = Column(MutableList.as_mutable(JSON), default=list) # Автомобиль погружен на Воз
+
+    photo_docs_car_carrier = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от Перевозчика
+    docs_docs_car_carrier = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от Перевозчика
 
 
 async def init_deals_db():

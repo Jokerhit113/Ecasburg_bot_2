@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, KeyboardButton, ReplyKeyboardRemove
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
+from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from sqlalchemy import select
 
 from core.state_fsm import Admin
@@ -53,8 +53,13 @@ async def waiting_for_text_additional_options_yes_no(message: Message, state: FS
                 await session.commit()
                 await message.answer(text=f"Доп. опции:\n\n"
                                           f"{additional_options}\n\n"
-                                          f"✅ Добавлены к заказу нажмите /start для вызова главного меню",
+                                          f"✅ Добавлены к заказу",
                                      reply_markup=ReplyKeyboardRemove())
+                builder = InlineKeyboardBuilder()
+                builder.button(text="Назад в Меню", callback_data=f"deal_detail_{deal.id}")
+                builder.adjust(1)
+                await message.answer(text="Нажмите кнопку ниже что бы вернуться в меню",
+                                     reply_markup=builder.as_markup())
                 await state.clear()
     if message.text == "Заполнить заново ❌":
         await state.set_state(Admin.waiting_for_text_additional_options)

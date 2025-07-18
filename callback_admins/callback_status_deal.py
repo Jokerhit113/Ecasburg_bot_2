@@ -40,17 +40,40 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                 # Создаем клавиатуру
                 builder = InlineKeyboardBuilder()
                 buttons = [
-                    ("Чек об оплате", "payment_check"),
-                    ("Фото/Видео Выкупа авто", "purchase_media"),
-                    ("Доставка до ТК на Границу", "delivery_to_border"),
-                    ("Документы на авто от Поставщика", "provider_docs"),
-                    ("Назад к Списку", "admin_all_orders_list")
+                    ("Договор по сделке", "1"),
+                    ("Чек об оплате покупателем", "2"),
+                    ("Документы Покупателя", "3"),
+                    ("Выкупа Автомобиля", "4"),
+                    ("Авто до отправки на границу", "5"),
+                    ("Авто на Границе", "6"),
+                    ("Документы по авто от Поставщика", "7"),
+                    ("Документы от Брокера", "8"),
+                    ("Получение авто на границе", "9"),
+                    ("Погрузка авто на Воз", "10"),
+                    ("Документы от Перевозчика", "11"),
+                    ("Назад к Списку", f"deal_detail_{deal.id}")
                 ]
 
                 for text, callback_data in buttons:
                     builder.button(text=text, callback_data=callback_data)
 
                 builder.adjust(1)  # Все кнопки в отдельных рядах
+                if not deal.payment_confirmation_yes_no:
+                    car_payment_btn = "⚠️"
+                else:
+                    car_payment_btn = "✅"
+
+                if not deal.passport_photos and not deal.passport_documents and not deal.buyer_driver_license_photo and not deal.buyer_driver_license_photo and not deal.foreign_currency_account_statement_photo and not deal.foreign_currency_account_statement_docs and not deal.cash_flow_statement_photos and not deal.cash_flow_statement_docs and deal.snils_buyer_photos and not deal.snils_buyer_docs and not deal.buyer_phone_number and not deal.elpts_registration_photo:
+                    load_buyer_doc_btn = "⚠️"
+                else:
+                    load_buyer_doc_btn = "✅"
+
+                if car_payment_btn == "✅":
+                    car_redemption_btn = "⚠️"
+                elif deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
+                    car_redemption_btn = "✅"
+                else:
+                    car_redemption_btn = "❕"
 
                 # Формируем текст сообщения
                 caption_text = (
@@ -62,7 +85,28 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                     f"Vin code: {deal.vin_code}\n"
                     f"Поставщик: {users.get(deal.provider_id, User(name='Не указан')).name}\n"
                     f"Брокер: {users.get(deal.broker_id, User(name='Не указан')).name}\n"
-                    f"Перевозчик: {users.get(deal.carrier_id, User(name='Не указан')).name}\n"
+                    f"Перевозчик: {users.get(deal.carrier_id, User(name='Не указан')).name}\n\n"
+                    f"Статус оплаты покупателя: {deal.payment_confirmation_yes_no}\n"
+                    f"Статус проверки документов покупателя: {deal.confirmation_of_acceptance_of_documents_from_buyer}\n"
+                    f"Статус проверки документов поставщика: {deal.confirmation_of_acceptance_of_documents_from_suppliers}\n"
+                    f"Статус оплаты счёта Покупателем от Брокера: {deal.payment_document_invoice_to_buyer_yes_no}\n\n"
+                    
+                    f"Статус Заказа:\n"
+                    f"Оплата автомобиля {car_payment_btn}\n"
+                    f"Загрузка документов Покупателя {load_buyer_doc_btn}\n"
+                    f"Выкуп авто {car_redemption_btn}\n"
+                    f"Автомобиль выкуплен\n"
+                    f"Автомобиль у поставщика\n"
+                    f"Автомобиль отправлен до границы\n"
+                    f"Автомобиль на пересечении границы\n"
+                    f"Таможенное оформление\n"
+                    f"Ожидание погрузки автомобиля на автовоз\n"
+                    f"Доставка по РФ\n"
+                    f"Готов к выдаче\n\n"
+
+                    f"❕ - Ещё не начат\n"
+                    f"⚠️ - В процессе выполнения\n"
+                    f"✅ - Успешно завершен"
                 )
 
                 await callback.message.edit_caption(
@@ -76,15 +120,4 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
         logging.error(f"Error in check_status: {e}", exc_info=True)
         await callback.answer("Произошла ошибка при обработке запроса", show_alert=True)
 
-@callback_status_deal_router.callback_query(F.data == "delete_deal")
-async def callback_get_deals_delete(callback: CallbackQuery):
-    caption = callback.message.caption
-    deal_id = caption.split('\n')[0].split('ID: ')[1]
-    print(deal_id)
 
-    builder = InlineKeyboardBuilder()
-    builder.button(text="🗑 Удалить", callback_data=f"delete_deal_{deal_id}")  # Теперь передаем user_id
-    builder.button(text="◀ Назад", callback_data="admin_all_orders_list")
-    builder.adjust(1)
-    await callback.message.edit_reply_markup(inline_message_id=callback.inline_message_id,
-                                             reply_markup=builder.as_markup())

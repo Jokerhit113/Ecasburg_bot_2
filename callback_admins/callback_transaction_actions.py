@@ -44,6 +44,11 @@ async def transaction_actions(callback: CallbackQuery):
     else:
         change_carrier_btn = "✅"  # Есть хотя бы что-то из этого
 
+    if not deal.additional_options:
+        add_additional_options_btn = "⚠️"  # Нет ни фото, ни видео
+    else:
+        add_additional_options_btn = "✅"  # Есть хотя бы что-то из этого
+
 
     builder = InlineKeyboardBuilder()
     builder.button(text=f"{add_contract_btn} Загрузить договор", callback_data="add_contract")
@@ -51,9 +56,24 @@ async def transaction_actions(callback: CallbackQuery):
     builder.button(text=f"{change_provider_btn} Выбрать Поставщика", callback_data="change_provider")
     builder.button(text=f"{change_broker_btn} Выбрать Брокера", callback_data="change_broker")
     builder.button(text=f"{change_carrier_btn} Выбрать Логиста", callback_data="change_carrier")
-    builder.button(text=f"Добавить Доп. опции", callback_data="add_additional_options")
-    builder.button(text=f"Готов к Выдаче", callback_data="7")
-    builder.button(text=f"Завершить Заказ", callback_data="9")
+    builder.button(text=f"{add_additional_options_btn} Добавить Доп. опции", callback_data="add_additional_options")
+    builder.button(text=f"Готов к Выдаче", callback_data="car_is_ready_for_delivery")
+    builder.button(text=f"Завершить Заказ", callback_data="end_deal_admin")
     builder.button(text="Удалить Заказ", callback_data="delete_deal")
+    builder.button(text="Назад в Меню", callback_data=f"deal_detail_{deal.id}")
     builder.adjust(1)
     await callback.message.edit_reply_markup(reply_markup=builder.as_markup())
+
+
+@callback_transaction_actions_router.callback_query(F.data == "delete_deal")
+async def callback_get_deals_delete(callback: CallbackQuery):
+    caption = callback.message.caption
+    deal_id = caption.split('\n')[0].split('ID: ')[1]
+    print(deal_id)
+
+    builder = InlineKeyboardBuilder()
+    builder.button(text="🗑 Удалить", callback_data=f"delete_deal_{deal_id}")  # Теперь передаем user_id
+    builder.button(text="◀ Назад", callback_data="admin_all_orders_list")
+    builder.adjust(1)
+    await callback.message.edit_reply_markup(inline_message_id=callback.inline_message_id,
+                                             reply_markup=builder.as_markup())
