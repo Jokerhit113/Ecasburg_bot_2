@@ -1,11 +1,12 @@
 import logging
 
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 
 from data_base.db_deals import deals_session, Deals
+from data_base.db_users import user_session, User
 from keyboard.inline_keyboard import kb_broker_main
 
 callback_check_deals_broker_router = Router()
@@ -44,6 +45,32 @@ async def show_deal_broker_list(callback: CallbackQuery):
             if not deal:
                 await callback.answer(text="Сделка не найдена")
                 return
+
+            if not deal.confirmation_of_acceptance_of_documents_from_suppliers:
+                check_the_documents_for_the_car_btn = "⚠️"  # Нет ни фото, ни видео
+            else:
+                check_the_documents_for_the_car_btn = "✅"  # Есть хотя бы что-то из этого
+
+            if not deal.confirmation_of_acceptance_of_documents_from_buyer:
+                check_the_buyer_documents_btn = "⚠️"  # Нет ни фото, ни видео
+            else:
+                check_the_buyer_documents_btn = "✅"  # Есть хотя бы что-то из этого
+
+            if not deal.payment_invoice_to_buyer:
+                upload_a_payment_invoice_to_buyer_btn = "⚠️"  # Нет ни фото, ни видео
+            else:
+                upload_a_payment_invoice_to_buyer_btn = "✅"  # Есть хотя бы что-то из этого
+
+            if not deal.document_doc_broker_id and not deal.photo_docs_broker_id:
+                load_docs_broker_btn = "⚠️"  # Нет ни фото, ни видео
+            else:
+                load_docs_broker_btn = "✅"  # Есть хотя бы что-то из этого
+
+            if check_the_documents_for_the_car_btn and check_the_buyer_documents_btn and upload_a_payment_invoice_to_buyer_btn and load_docs_broker_btn == "✅":
+                end_deal_broker_btn = "✅"  # Нет ни фото, ни видео
+            else:
+                end_deal_broker_btn = "⚠️"  # Есть хотя бы что-то из этого
+
             message_text = (
                 f"Сделка №: {deal.deal_id}\n"
                 f"Покупатель: {deal.buy_user}\n"
@@ -51,15 +78,15 @@ async def show_deal_broker_list(callback: CallbackQuery):
                 f"VIN: {deal.vin_code}\n"
             )
             builder = InlineKeyboardBuilder()
-            builder.button(text=f"Проверить документы по авто",
-                           callback_data=f"сheck_the_documents_for_the_car")
-            builder.button(text=f"Проверить документы покупателя",
+            builder.button(text=f"{check_the_documents_for_the_car_btn} Проверить документы по авто",
+                           callback_data=f"check_the_documents_for_the_car")
+            builder.button(text=f"{check_the_buyer_documents_btn} Проверить документы покупателя",
                            callback_data=f"check_the_buyer_documents")
-            builder.button(text=f"Загрузить Счёт на оплату чего то там",
+            builder.button(text=f"{upload_a_payment_invoice_to_buyer_btn} Загрузить Счёт на оплату чего то там",
                            callback_data=f"upload_a_payment_invoice_to_buyer")
-            builder.button(text=f"Загрузить документы",
+            builder.button(text=f"{load_docs_broker_btn} Загрузить таможенные документы",
                            callback_data=f"load_docs_broker")
-            builder.button(text=f"Завершить работу по сделке",
+            builder.button(text=f"{end_deal_broker_btn} Завершить работу по сделке",
                            callback_data=f"end_deal_broker")
             builder.button(text="Назад к списку", callback_data="back_to_main_menu_broker")
             builder.adjust(1)
@@ -83,3 +110,5 @@ async def back_to_main_menu_broker(callback: CallbackQuery):
     await callback.message.answer(text="Добро пожаловать в меню Брокера E-CarsBurg.\n\n"
                                           "Воспользуйтесь кнопкой ниже для получения списка Ваших сделок.",
                                      reply_markup=kb_broker_main)
+
+

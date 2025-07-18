@@ -262,6 +262,9 @@ async def accept_the_documents_buyer(callback: CallbackQuery, bot: Bot):
             f"Автомобиль: {deals.march_model}\n"
             f"VIN: {deals.vin_code}\n"
         )
+        builder = InlineKeyboardBuilder()
+        builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
+        builder.adjust(1)
         await bot.send_message(
             chat_id=deals.buyer_id,
             text=f"{message_text}\n\n"
@@ -269,7 +272,8 @@ async def accept_the_documents_buyer(callback: CallbackQuery, bot: Bot):
         )
         await callback.message.edit_text(
             text=f"{callback.message.text}\n\n"
-                 f"Документы Приняты ✅"
+                 f"Документы Приняты ✅",
+            reply_markup=builder.as_markup()
         )
 
 @callback_check_the_buyer_documents_router.callback_query(F.data == "reject_the_documents_buyer")

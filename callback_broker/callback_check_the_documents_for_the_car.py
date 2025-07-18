@@ -59,7 +59,7 @@ async def send_media_chunks(
             logging.error(f"Error sending media chunk {i}-{i + chunk_size}: {e}")
 
 
-@callback_check_the_documents_for_the_car_router.callback_query(F.data == "сheck_the_documents_for_the_car")
+@callback_check_the_documents_for_the_car_router.callback_query(F.data == "check_the_documents_for_the_car")
 async def check_the_documents_for_the_car_router(callback: CallbackQuery):
     try:
         caption = callback.message.caption
@@ -139,7 +139,7 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
             await callback.answer()
 
     except Exception as e:
-        logging.error(f"Error in сheck_the_documents_for_the_car: {e}", exc_info=True)
+        logging.error(f"Error in check_the_documents_for_the_car: {e}", exc_info=True)
         await callback.answer("Произошла ошибка при обработке документов", show_alert=True)
 
 @callback_check_the_documents_for_the_car_router.callback_query(F.data == "accept_the_documents_car_provider")
@@ -200,8 +200,11 @@ async def waiting_for_cmr_file(message: Message, state: FSMContext, bot: Bot):
                         f"{deal.march_model}\n\n"
                         f"{deal.vin_code}"
             )
+            builder = InlineKeyboardBuilder()
+            builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
+            builder.adjust(1)
             if deal.uin_text:
-                await message.answer("✅ Документ Загружен и отправлен Поставщику")
+                await message.answer("✅ Документ Загружен и отправлен Поставщику", reply_markup=builder.as_markup())
             else:
                 builder = InlineKeyboardBuilder()
                 builder.button(text="Написать УИН", callback_data="load_uin_text")
@@ -250,8 +253,11 @@ async def waiting_for_uin_text(message: Message, state: FSMContext, bot: Bot):
                      f"{deal.march_model}\n"
                      f"{deal.vin_code}"
             )
+            builder = InlineKeyboardBuilder()
+            builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
+            builder.adjust(1)
             if deal.cmr_file:
-                await message.answer(f"✅ УИН: {message.text} отправлен Поставщику")
+                await message.answer(f"✅ УИН: {message.text} отправлен Поставщику", reply_markup=builder.as_markup())
             else:
                 builder = InlineKeyboardBuilder()
                 builder.button(text="Загрузить CMR", callback_data="load_cmr_file")
@@ -352,7 +358,7 @@ async def fixed_it_document_provider(callback: CallbackQuery, bot: Bot):
             f"VIN: {deals.vin_code}\n"
         )
         builder = InlineKeyboardBuilder()
-        builder.button(text="🔍 Проверить документы", callback_data="сheck_the_documents_for_the_car")
+        builder.button(text="🔍 Проверить документы", callback_data="check_the_documents_for_the_car")
         await bot.send_photo(
             chat_id=deals.provider_id,
             photo=deals.car_photo_id,

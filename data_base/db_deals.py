@@ -66,8 +66,8 @@ class Deals(Base):
     # Данные от Брокера
     confirmation_of_acceptance_of_documents_from_suppliers = Column(String) # Подтверждение получения документов от поставщика
     confirmation_of_acceptance_of_documents_from_buyer = Column(String) # Подтверждение получения документов от Покупателя
-    document_doc_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от Брокера ⚠️
-    photo_docs_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от Брокера ⚠️
+    document_doc_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от Брокера
+    photo_docs_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от Брокера
     payment_invoice_to_buyer = Column(String) # Счёт на оплату покупателем чего - то там
     payment_document_invoice_to_buyer_yes_no = Column(String) # Подтверждение получения оплаты счёта Покупателем
     cmr_file = Column(String) # CMR Файл от брокера

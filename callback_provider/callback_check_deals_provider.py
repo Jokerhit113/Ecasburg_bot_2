@@ -134,7 +134,7 @@ async def request_crm_and_uin_from_the_broker(callback: CallbackQuery, bot: Bot,
                 f"VIN: {deal.vin_code}\n"
             )
             builder = InlineKeyboardBuilder()
-            builder.button(text="🔍 Проверить документы", callback_data="сheck_the_documents_for_the_car")
+            builder.button(text="🔍 Проверить документы", callback_data="check_the_documents_for_the_car")
             await bot.send_photo(
                 chat_id=deal.broker_id,
                 photo=deal.car_photo_id,
