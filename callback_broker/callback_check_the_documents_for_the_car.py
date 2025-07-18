@@ -360,7 +360,7 @@ async def fixed_it_document_provider(callback: CallbackQuery, bot: Bot):
         builder = InlineKeyboardBuilder()
         builder.button(text="🔍 Проверить документы", callback_data="check_the_documents_for_the_car")
         await bot.send_photo(
-            chat_id=deals.provider_id,
+            chat_id=deals.broker_id,
             photo=deals.car_photo_id,
             caption=f"{message_text}\n\n"
                     f"Поставщик исправил недочёты ✅\n"
