@@ -69,10 +69,11 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                 else:
                     load_buyer_doc_btn = "✅"
 
-                if car_payment_btn == "✅":
-                    car_redemption_btn = "⚠️"
-                elif deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
+
+                if deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
                     car_redemption_btn = f"✅ Доставка до Поставщика - {deal.delivery_time_car_to_provider} "
+                elif car_payment_btn == "✅":
+                    car_redemption_btn = "⚠️"
                 else:
                     car_redemption_btn = "❕"
 
@@ -83,10 +84,10 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                 else:
                     car_awersome_buy_btn = "❕"
 
-                if car_awersome_buy_btn == "✅":
-                    car_go_to_border_btn = "⚠️"
-                elif deal.provider_photo_car_before_border_id or deal.provider_video_car_before_border_id:
+                if deal.provider_photo_car_before_border_id or deal.provider_video_car_before_border_id:
                     car_go_to_border_btn = f"✅ Доставка до границы - {deal.delivery_time_car_to_border}"
+                elif car_awersome_buy_btn == "✅":
+                    car_go_to_border_btn = "⚠️"
                 else:
                     car_go_to_border_btn = "❕"
 
@@ -104,10 +105,11 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                 else:
                     car_from_border_btn = "❕"
 
-                if car_from_border_btn == "✅":
-                    car_waiting_for_delivery_btn = "⚠️"
-                elif deal.photo_car_get_border or deal.video_car_get_border:
+                if deal.photo_car_get_border or deal.video_car_get_border:
                     car_waiting_for_delivery_btn = f"✅"
+                elif car_from_border_btn == "✅":
+                    car_waiting_for_delivery_btn = "⚠️"
+
                 else:
                     car_waiting_for_delivery_btn = "❕"
 
