@@ -28,7 +28,7 @@ async def callback_add_passport(callback: CallbackQuery, state: FSMContext):
         reply_builder.add(KeyboardButton(text="ЗАВЕРШИТЬ ЗАГРУЗКУ"))
         reply_markup = reply_builder.as_markup(resize_keyboard=True)
 
-        await callback.answer(text="ВНИМАТЕЛЬНО ПРОЧИТАЙТЕ ПРАВИЛА ЗАГРУЗКИ СНИЛС!", show_alert=True)
+        await callback.answer()
         await callback.message.edit_caption(caption=text_snils_get,
                                          reply_markup=builder.as_markup())
         await callback.message.answer(text="Загрузите Фото или Скан документов, по завершению нажмите кнопу ЗАВЕРШИТЬ ЗАГРУЗКУ!",

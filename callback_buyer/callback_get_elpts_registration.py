@@ -43,13 +43,9 @@ async def get_elpts_registration_buyer_get_photo(message: Message, state: FSMCon
     deal_id = data.get('deal_id')
     try:
         # Проверяем тип содержимого
-        if not (message.photo or message.document):
+        if not message.photo:
             await message.answer("Пожалуйста, отправьте Скрин с сайта ЭПТС")
             return
-
-        # Сохраняем файл в состояние
-        file_id = message.photo[-1].file_id
-        await state.update_data(payment_file_id=file_id)
 
         async with deals_session() as session:
             # Ищем сделку по user_id покупателя
@@ -64,15 +60,13 @@ async def get_elpts_registration_buyer_get_photo(message: Message, state: FSMCon
 
             # Обновляем данные о платеже
             if message.photo:
-                deal.elpts_registration_photo = file_id
-            else:
-                await message.answer("Отправьте Скрин")
+                deal.elpts_registration_photo = message.photo[-1].file_id
 
             await session.commit()
 
             # Отправляем подтверждение
             builder = InlineKeyboardBuilder()
-            builder.button(text="Назад к списку Сделок", callback_data="check_deals_buyer")
+            builder.button(text="Назад", callback_data=f"deal_list_buyer_{deal_id}")
 
             await message.answer(
                 "✅ Скрин принят!\n",

@@ -43,6 +43,11 @@ async def kb_menu_load_docs(callback: CallbackQuery, state: FSMContext):
         else:
             add_passport_btn = "✅"  # Есть хотя бы что-то из этого
 
+        if not deal.inn_photo and not deal.inn_docs:
+            upload_inn_buyer_btn = "⚠️"  # Нет ни фото, ни видео
+        else:
+            upload_inn_buyer_btn = "✅"  # Есть хотя бы что-то из этого
+
         if not deal.buyer_driver_license_photo and not deal.buyer_driver_license_docs:
             driver_license_load_buyer_btn = "⚠️"  # Нет ни фото, ни видео
         else:
@@ -91,6 +96,7 @@ async def kb_menu_load_docs(callback: CallbackQuery, state: FSMContext):
     builder = InlineKeyboardBuilder()
     builder.button(text=f"{payment_confirmation_buyer_btn} Подтвердить Оплату", callback_data="payment_confirmation_buyer")
     builder.button(text=f"{add_passport_btn} Паспорт", callback_data="add_passport")
+    builder.button(text=f"{upload_inn_buyer_btn}ИНН", callback_data="upload_inn_buyer")
     builder.button(text=f"{driver_license_load_buyer_btn} Водительское Удостоверение", callback_data="driver_license_load_buyer")
     builder.button(text=f"{add_snils_buyer_btn} СНИЛС", callback_data="add_snils_buyer")
     builder.button(text=f"{foreign_currency_account_statement_btn} Выписка по валютному счету", callback_data="foreign_currency_account_statement")

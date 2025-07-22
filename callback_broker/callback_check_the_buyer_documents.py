@@ -134,6 +134,25 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
                     media_type="document"
                 )
 
+            # ИНН
+            if deals.inn_photo:
+                await send_media_chunks(
+                    bot=callback.bot,
+                    chat_id=callback.message.chat.id,
+                    media_items=deals.inn_photo,
+                    caption="Фото ИНН:",
+                    media_type="photo"
+                )
+
+            if deals.inn_docs:
+                await send_media_chunks(
+                    bot=callback.bot,
+                    chat_id=callback.message.chat.id,
+                    media_items=deals.inn_docs,
+                    caption="Скан ИНН:",
+                    media_type="document"
+                )
+
             # Водительское удостоверение
             if deals.buyer_driver_license_photo:
                 await send_media_chunks(
@@ -178,7 +197,7 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
                     bot=callback.bot,
                     chat_id=callback.message.chat.id,
                     media_items=deals.cash_flow_statement_photos,
-                    caption="Фото Выписки движения денег по валютному счёту:",
+                    caption="Фото Справки движения денег по валютному счёту:",
                     media_type="photo"
                 )
 
@@ -187,7 +206,7 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
                     bot=callback.bot,
                     chat_id=callback.message.chat.id,
                     media_items=deals.cash_flow_statement_docs,
-                    caption="Сканы Выписки движения денег по валютному счёту:",
+                    caption="Сканы Справки движения денег по валютному счёту:",
                     media_type="document"
                 )
 

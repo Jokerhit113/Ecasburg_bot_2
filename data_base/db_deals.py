@@ -36,6 +36,9 @@ class Deals(Base):
     passport_photos = Column(MutableList.as_mutable(JSON), default=list) # Фотографии паспорта
     passport_documents = Column(MutableList.as_mutable(JSON), default=list) # Документы / файлы паспорта
 
+    inn_photo = Column(String) # Фото ИНН
+    inn_docs = Column(String) # Скан ИНН
+
     buyer_driver_license_photo = Column(MutableList.as_mutable(JSON), default=list) # Фото Водительского Удостоверения
     buyer_driver_license_docs = Column(MutableList.as_mutable(JSON), default=list) # Документы Водительского Удостоверения
 
