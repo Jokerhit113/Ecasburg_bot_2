@@ -37,22 +37,133 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                 )
                 users = {user.user_id: user for user in users.scalars()}
 
+                btn_1_data = any([
+                    deal.contract_photo_id,
+                    deal.contract_docs_id,
+
+                ])
+                if not btn_1_data:
+                    btn_1 = "⚠️"
+                else:
+                    btn_1 = "✅"
+                btn_2_data = any([
+                    deal.payment_photo_id,
+                    deal.payment_document_id,
+                ])
+                if not btn_2_data:
+                    btn_2 = "⚠️"
+                else:
+                    btn_2 = "✅"
+                btn_3_data = any([
+                    deal.buyer_phone_number,
+                    deal.passport_photos,
+                    deal.passport_documents,
+                    deal.inn_photo,
+                    deal.inn_docs,
+                    deal.buyer_driver_license_photo,
+                    deal.buyer_driver_license_docs,
+                    deal.foreign_currency_account_statement_photo,
+                    deal.foreign_currency_account_statement_docs,
+                    deal.cash_flow_statement_photos,
+                    deal.cash_flow_statement_docs,
+                    deal.snils_buyer_photos,
+                    deal.snils_buyer_docs,
+                    deal.elpts_registration_photo,
+                    deal.payment_document_invoice_to_buyer
+                ])
+                if not btn_3_data:
+                    btn_3 = "⚠️"
+                else:
+                    btn_3 = "✅"
+                btn_4_data = any([
+                    deal.buy_car_provider_photo_id,
+                    deal.buy_car_provider_video_id,
+                ])
+                if not btn_4_data:
+                    btn_4 = "⚠️"
+                else:
+                    btn_4 = "✅"
+                btn_5_data = any([
+                    deal.provider_photo_car_before_border_id,
+                    deal.provider_video_car_before_border_id,
+                ])
+                if not btn_5_data:
+                    btn_5 = "⚠️"
+                else:
+                    btn_5 = "✅"
+                btn_6_data = any([
+                    deal.provider_photo_car_border_id,
+                    deal.provider_video_car_border_id,
+                ])
+                if not btn_6_data:
+                    btn_6 = "⚠️"
+                else:
+                    btn_6 = "✅"
+                btn_7_data = any([
+                    deal.document_docs_car_provider_id,
+                    deal.photo_docs_car_provider_id,
+                ])
+                if not btn_7_data:
+                    btn_7 = "⚠️"
+                else:
+                    btn_7 = "✅"
+                btn_8_data = any([
+                    deal.document_doc_broker_id,
+                    deal.photo_docs_broker_id,
+                ])
+                if not btn_8_data:
+                    btn_8 = "⚠️"
+                else:
+                    btn_8 = "✅"
+                btn_9_data = any([
+                    deal.car_go_to_rf_photo,
+                    deal.car_go_to_rf_video,
+                ])
+                if not btn_9_data:
+                    btn_9 = "⚠️"
+                else:
+                    btn_9 = "✅"
+                btn_10_data = any([
+                    deal.photo_car_get_border,
+                    deal.video_car_get_border,
+                ])
+                if not btn_10_data:
+                    btn_10 = "⚠️"
+                else:
+                    btn_10 = "✅"
+                btn_11_data = any([
+                    deal.photo_car_load_transportation,
+                    deal.video_car_load_transportation,
+                ])
+                if not btn_11_data:
+                    btn_11 = "⚠️"
+                else:
+                    btn_11 = "✅"
+                btn_12_data = any([
+                    deal.photo_docs_car_carrier,
+                    deal.docs_docs_car_carrier,
+                ])
+                if not btn_12_data:
+                    btn_12 = "⚠️"
+                else:
+                    btn_12 = "✅"
+
                 # Создаем клавиатуру
                 builder = InlineKeyboardBuilder()
                 buttons = [
-                    ("Договор по сделке", "contract_1"),
-                    ("Чек об оплате покупателем", "payment_proof_2"),
-                    ("Документы Покупателя", "get_docs_buyer_docs_3"),
-                    ("Выкуп Автомобиля", "car_purchase_4"),
-                    ("Авто до отправки на границу", "pre_border_5"),
-                    ("Авто на Границе", "at_border_6"),
-                    ("Документы по авто от Поставщика", "supplier_docs_7"),
-                    ("Документы от Брокера", "get_docs_broker_docs_8"),
-                    ("Передача авто в РФ", "transfer_rf_9"),
-                    ("Получение авто на границе", "border_receive_10"),
-                    ("Погрузка авто на Воз", "loading_transport_11"),
-                    ("Документы от Перевозчика", "get_docs_carrier_docs_12"),
-                    ("Назад к Списку", f"deal_detail_{deal.id}")
+                    (f"{btn_1} Договор по сделке", "contract_1"),
+                    (f"{btn_2} Чек об оплате покупателем", "payment_proof_2"),
+                    (f"{btn_3} Документы Покупателя", "get_docs_buyer_docs_3"),
+                    (f"{btn_4} Выкуп Автомобиля", "car_purchase_4"),
+                    (f"{btn_5} Авто до отправки на границу", "pre_border_5"),
+                    (f"{btn_6} Авто на Границе", "at_border_6"),
+                    (f"{btn_7} Документы по авто от Поставщика", "supplier_docs_7"),
+                    (f"{btn_8} Документы от Брокера", "get_docs_broker_docs_8"),
+                    (f"{btn_9} Передача авто в РФ", "transfer_rf_9"),
+                    (f"{btn_10} Получение авто на границе", "border_receive_10"),
+                    (f"{btn_11} Погрузка авто на Воз", "loading_transport_11"),
+                    (f"{btn_12} Документы от Перевозчика", "get_docs_carrier_docs_12"),
+                    ("⬅️ Назад к Списку", f"deal_detail_{deal.id}")
                 ]
 
                 for text, callback_data in buttons:
