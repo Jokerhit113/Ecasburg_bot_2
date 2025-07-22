@@ -108,6 +108,8 @@ class Deals(Base):
     photo_docs_car_carrier = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от Перевозчика
     docs_docs_car_carrier = Column(MutableList.as_mutable(JSON), default=list) # Документы по автомобилю от Перевозчика
 
+    car_is_ready_for_delivery = Column(String) # Фото готового автомобиля к Выдаче
+
 
 async def init_deals_db():
     async with engie.begin() as conn:
