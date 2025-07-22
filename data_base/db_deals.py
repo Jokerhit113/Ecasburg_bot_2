@@ -45,8 +45,8 @@ class Deals(Base):
     foreign_currency_account_statement_photo = Column(MutableList.as_mutable(JSON), default=list) # Фото Выписки по валютному счёту
     foreign_currency_account_statement_docs = Column(MutableList.as_mutable(JSON), default=list)  # Документы Выписки по валютному счёту
 
-    cash_flow_statement_photos = Column(MutableList.as_mutable(JSON), default=list)# Фото Выписки движения денег по валютному счёту
-    cash_flow_statement_docs = Column(MutableList.as_mutable(JSON), default=list)# Документы Выписки движения денег по валютному счёту
+    cash_flow_statement_photos = Column(MutableList.as_mutable(JSON), default=list)# Фото Справки движения денег по валютному счёту
+    cash_flow_statement_docs = Column(MutableList.as_mutable(JSON), default=list)# Документы Справки движения денег по валютному счёту
 
     snils_buyer_photos = Column(MutableList.as_mutable(JSON), default=list)# СНИЛС фото Покупателя
     snils_buyer_docs = Column(MutableList.as_mutable(JSON), default=list)# СНИЛС документ Покупателя
