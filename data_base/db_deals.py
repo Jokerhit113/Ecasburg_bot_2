@@ -90,6 +90,7 @@ class Deals(Base):
     photo_docs_broker_id = Column(MutableList.as_mutable(JSON), default=list) # Фото документы по автомобилю от Брокера
 
     payment_invoice_to_buyer = Column(String) # Счёт на оплату покупателем Таможни
+    payment_invoice_to_buyer_text = Column(String) # Счёт на оплату покупателем Таможни текстом
 
     payment_document_invoice_to_buyer_yes_no = Column(String) # Подтверждение получения оплаты счёта Покупателем
 

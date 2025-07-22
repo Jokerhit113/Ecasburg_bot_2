@@ -46,6 +46,7 @@ class Provider(StatesGroup):
     waiting_for_delivery_time_car_to_border = State()
 
 class Broker(StatesGroup):
+    waiting_for_payment_invoice_to_buyer_text = State()
     waiting_for_payment_invoice_to_buyer = State()
     waiting_for_uin_text = State()
     waiting_for_cmr_file = State()

@@ -5,17 +5,103 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
+from sqlalchemy.orm import defer
 
 from core.state_fsm import Broker, Buyer
 from data_base.db_deals import deals_session, Deals
 
 callback_upload_a_payment_invoice_to_buyer_router = Router()
 
+
 @callback_upload_a_payment_invoice_to_buyer_router.callback_query(F.data == "upload_a_payment_invoice_to_buyer")
 async def upload_a_payment_invoice_to_buyer(callback: CallbackQuery, state: FSMContext):
     caption = callback.message.caption
     deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
     await state.update_data(deal_id=deal_id)
+    await callback.answer()
+    builder = InlineKeyboardBuilder()
+    builder.button(text="📥 Файл", callback_data=f"upload_a_payment_invoice_to_buyer_document")
+    builder.button(text="📝 Текст", callback_data=f"upload_a_payment_invoice_to_buyer_text")
+
+    builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
+    builder.adjust(2)
+    await callback.message.answer(text="Выберете способ отправки реквизитов для оплаты:",
+                                  reply_markup=builder.as_markup())
+
+
+@callback_upload_a_payment_invoice_to_buyer_router.callback_query(F.data == "upload_a_payment_invoice_to_buyer_text")
+async def upload_a_payment_invoice_to_buyer_text(callback: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    deal_id = data['deal_id']
+    builder = InlineKeyboardBuilder()
+    builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
+    await callback.message.edit_text("Напишите одним сообщением реквизиты и сумму к оплате:",
+                                     reply_markup=builder.as_markup())
+    await state.set_state(Broker.waiting_for_payment_invoice_to_buyer_text)
+
+@callback_upload_a_payment_invoice_to_buyer_router.message(Broker.waiting_for_payment_invoice_to_buyer_text)
+async def waiting_for_payment_invoice_to_buyer_text(message: Message, state: FSMContext):
+    data = await state.get_data()
+    deal_id = data['deal_id']
+    await state.update_data(message_invoice=message.text)
+    async with deals_session() as session:
+        deal = await session.execute(
+            select(Deals).where(Deals.deal_id == deal_id)
+        )
+        deal = deal.scalar_one_or_none()
+        builder = InlineKeyboardBuilder()
+        builder.button(text="✅ Всё верно", callback_data="invoice_ok")
+        builder.button(text="❌ Написать снова", callback_data="delete_message")
+        message_text = (
+            f"Сделка №: {deal.deal_id}\n"
+            f"Покупатель: {deal.buy_user}\n"
+            f"Автомобиль: {deal.march_model}\n"
+            f"VIN: {deal.vin_code}\n"
+        )
+
+        await message.answer(text=f"{message_text}\n\n"
+                                  f"Реквизиты для оплаты Таможни:\n\n"
+                                  f"{message.text}\n",
+                             reply_markup=builder.as_markup())
+
+@callback_upload_a_payment_invoice_to_buyer_router.callback_query(F.data == "invoice_ok")
+async def invoice_ok(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    data = await state.get_data()
+    deal_id = data['deal_id']
+    message_invoice = data['message_invoice']
+
+    async with deals_session() as session:
+        deal = await session.execute(
+            select(Deals).where(Deals.deal_id == deal_id)
+        )
+        deal = deal.scalar_one_or_none()
+        deal.payment_invoice_to_buyer_text = message_invoice
+        await session.commit()
+        builder = InlineKeyboardBuilder()
+        builder.button(text="✅ Подтвердить оплату", callback_data="accept_payment_invoice_to_buyer")
+        message_text = (
+            f"Сделка №: {deal.deal_id}\n"
+            f"Покупатель: {deal.buy_user}\n"
+            f"Автомобиль: {deal.march_model}\n"
+            f"VIN: {deal.vin_code}\n"
+        )
+        await bot.send_photo(photo=deal.car_photo_id,
+            chat_id=deal.buyer_id,
+            caption=f"{message_text}\n\n"
+                 f"Реквизиты для оплаты Таможни:\n\n"
+                 f"{message_invoice}\n",
+            reply_markup=builder.as_markup())
+
+        await callback.message.edit_text(text=f"{callback.message.text}\n\n"
+                                              f"📍 Реквизиты на оплату отправлены Покупателю, ожидайте подтверждение оплаты.")
+        await state.clear()
+
+
+@callback_upload_a_payment_invoice_to_buyer_router.callback_query(F.data == "upload_a_payment_invoice_to_buyer_document")
+async def upload_a_payment_invoice_to_buyer_document(callback: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    deal_id = data['deal_id']
+
     try:
         builder = InlineKeyboardBuilder()
         builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
@@ -79,6 +165,7 @@ async def accept_payment_invoice_to_buyer(callback: CallbackQuery, state: FSMCon
     caption = callback.message.caption
     deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
     await state.update_data(deal_id=deal_id)
+    await callback.message.delete_reply_markup()
     await callback.answer("Загрузите квитанцию об оплате", show_alert=True)
     await callback.message.answer("Загрузите документ с подтверждением оплаты")
     await state.set_state(Buyer.waiting_for_upload_payment_document_invoice_to_buyer)
