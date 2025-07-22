@@ -37,6 +37,7 @@ class Buyer(StatesGroup):
     waiting_phone_number_buyer = State()
 
 class Provider(StatesGroup):
+    waiting_for_car_go_to_rf = State()
     waiting_for_photo_buy_car = State()
     waiting_for_car_before_border = State()
     waiting_for_car_delivered_border = State()

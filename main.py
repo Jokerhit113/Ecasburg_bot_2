@@ -46,6 +46,7 @@ from callback_carrier.callback_report_of_receiving_a_car_at_the_border import \
 from callback_provider.callback_buy_car_provider import callback_buy_car_provider_router
 from callback_provider.callback_car_before_border import callback_car_before_border_router
 from callback_provider.callback_car_delivered_border import callback_car_delivered_border_router
+from callback_provider.callback_car_go_to_rf import callback_car_go_to_rf_router
 from callback_provider.callback_check_deals_provider import callback_check_deals_provider_router
 from callback_provider.callback_confirmation_payment_buyer_provider import \
     callback_confirmation_payment_buyer_provider_router
@@ -108,6 +109,7 @@ async def main():
     dp.include_router(callback_add_additional_options_router)
     dp.include_router(callback_end_deal_broker_router)
     dp.include_router(callback_add_inn_buyer_router)
+    dp.include_router(callback_car_go_to_rf_router)
 
     await dp.start_polling(bot)
 

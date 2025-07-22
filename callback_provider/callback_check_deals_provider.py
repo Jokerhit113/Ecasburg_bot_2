@@ -72,6 +72,16 @@ async def show_deal_details(callback: CallbackQuery, state: FSMContext):
             else:
                 docs_car_provider_btn = "✅"  # Есть хотя бы что-то из этого
 
+            if not deal.car_go_to_rf_photo and not deal.car_go_to_rf_video:
+                car_go_to_rf_btn = "⚠️"  # Нет ни фото, ни видео
+            else:
+                car_go_to_rf_btn = "✅"  # Есть хотя бы что-то из этого
+
+            if payment_btn and video_car_before_btn and video_car_border_btn and docs_car_provider_btn == "✅":
+                get_cmr_uin_btn = "✅"
+            else:
+                get_cmr_uin_btn = "⚠️"
+
             await state.update_data(payment_btn=payment_btn,
                                     video_car_before_btn = video_car_before_btn,
                                     video_car_border_btn = video_car_border_btn,
@@ -89,11 +99,12 @@ async def show_deal_details(callback: CallbackQuery, state: FSMContext):
 
             # Создаем клавиатуру для возврата
             builder = InlineKeyboardBuilder()
-            builder.button(text=f"{payment_btn} Подтверждение выкупа автомобиля", callback_data=f"buy_car_provider")
-            builder.button(text=f"{video_car_before_btn} Отчёт отправки авто до границы", callback_data=f"media_car_before_border")
-            builder.button(text=f"{video_car_border_btn} Отчёт доставки авто на границу", callback_data=f"media_car_delivered_border")
-            builder.button(text=f"{docs_car_provider_btn} Загрузить документы по автомобилю", callback_data=f"load_docs_car_provider")
-            builder.button(text=f"Запросить CMR и УИН у Брокера", callback_data=f"request_cmr_and_uin_from_the_broker")
+            builder.button(text=f"{payment_btn} Авто Выкуплен", callback_data=f"buy_car_provider")
+            builder.button(text=f"{video_car_before_btn} Отправка авто до границы", callback_data=f"media_car_before_border")
+            builder.button(text=f"{video_car_border_btn} Доставка авто на границу", callback_data=f"media_car_delivered_border")
+            builder.button(text=f"{docs_car_provider_btn} Документы по автомобилю", callback_data=f"load_docs_car_provider")
+            builder.button(text=f"{get_cmr_uin_btn} Запросить CMR и УИН у Брокера", callback_data=f"request_cmr_and_uin_from_the_broker")
+            builder.button(text=f"{car_go_to_rf_btn} Передача авто в РФ", callback_data=f"car_go_to_rf")
             builder.button(text="Назад к списку", callback_data="back_check_deals_provider")
             builder.adjust(1)
             await callback.message.delete()

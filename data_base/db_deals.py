@@ -78,6 +78,9 @@ class Deals(Base):
     delivery_time_car_to_provider = Column(String) # Срок доставки автомобиля до Поставщика
     delivery_time_car_to_border = Column(String) # Срок доставки автомобиля до Границы
 
+    car_go_to_rf_photo = Column(MutableList.as_mutable(JSON), default=list) # Фото передачи авто в РФ
+    car_go_to_rf_video = Column(MutableList.as_mutable(JSON), default=list) # Видео передачи авто в РФ
+
     # Данные от Брокера
     confirmation_of_acceptance_of_documents_from_suppliers = Column(String) # Подтверждение получения документов от поставщика
 
