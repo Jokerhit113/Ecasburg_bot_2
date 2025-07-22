@@ -29,7 +29,7 @@ async def change_buyer(callback: CallbackQuery):
                 text=f"{buyer.name}",
                 callback_data=f"buyer_{buyer.id}",
             )
-        builder.button(text="Назад к списку сделок", callback_data="admin_all_orders_list")
+        builder.button(text="⬅️ Назад к списку сделок", callback_data="admin_all_orders_list")
         builder.adjust(1)
         await callback.message.edit_reply_markup(
             inline_message_id=callback.inline_message_id,
@@ -44,7 +44,7 @@ async def change_buyer_add(callback: CallbackQuery):
         buyer = callback.data.split("_")[1]
         builder = InlineKeyboardBuilder()
         builder.button(text=f"Добавить к сделке", callback_data=f"add_buyer_{buyer}")
-        builder.button(text="Назад к списку сделок", callback_data="admin_all_orders_list")
+        builder.button(text="⬅️ Назад к списку сделок", callback_data="admin_all_orders_list")
         builder.adjust(1)
         await callback.message.edit_caption(
             caption=f"{callback.message.caption}"
@@ -89,7 +89,7 @@ async def change_buyer_add_to_deal(callback: CallbackQuery):
 
             # Обновляем текст сообщения
             builder = InlineKeyboardBuilder()
-            builder.button(text="◀ Назад к списку", callback_data="admin_all_orders_list")
+            builder.button(text="⬅️ Назад к списку", callback_data="admin_all_orders_list")
             builder.adjust(1)
             await callback.message.edit_caption(
                 caption=f"{callback.message.caption}\n\n"

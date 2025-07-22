@@ -49,6 +49,11 @@ async def transaction_actions(callback: CallbackQuery):
     else:
         add_additional_options_btn = "✅"  # Есть хотя бы что-то из этого
 
+    if not deal.photo_docs_car_carrier and deal.docs_docs_car_carrier:
+        already_for_issue = "❌"  # Нет ни фото, ни видео
+    else:
+        already_for_issue = "✅"  # Есть хотя бы что-то из этого
+
 
     builder = InlineKeyboardBuilder()
     builder.button(text=f"{add_contract_btn} Загрузить договор", callback_data="add_contract")
@@ -57,10 +62,10 @@ async def transaction_actions(callback: CallbackQuery):
     builder.button(text=f"{change_broker_btn} Выбрать Брокера", callback_data="change_broker")
     builder.button(text=f"{change_carrier_btn} Выбрать Логиста", callback_data="change_carrier")
     builder.button(text=f"{add_additional_options_btn} Добавить Доп. опции", callback_data="add_additional_options")
-    builder.button(text=f"Готов к Выдаче", callback_data="car_is_ready_for_delivery")
-    builder.button(text=f"Завершить Заказ", callback_data="end_deal_admin")
-    builder.button(text="Удалить Заказ", callback_data="delete_deal")
-    builder.button(text="Назад в Меню", callback_data=f"deal_detail_{deal.id}")
+    builder.button(text=f"{already_for_issue} Готов к Выдаче", callback_data="car_is_ready_for_delivery")
+    builder.button(text=f"🏁 Завершить Заказ", callback_data="end_deal_admin")
+    builder.button(text="🚫 Удалить Заказ", callback_data="delete_deal")
+    builder.button(text="⬅️ Назад в Меню", callback_data=f"deal_detail_{deal.id}")
     builder.adjust(1)
     await callback.message.edit_reply_markup(reply_markup=builder.as_markup())
 
@@ -73,7 +78,7 @@ async def callback_get_deals_delete(callback: CallbackQuery):
 
     builder = InlineKeyboardBuilder()
     builder.button(text="🗑 Удалить", callback_data=f"delete_deal_{deal_id}")  # Теперь передаем user_id
-    builder.button(text="◀ Назад", callback_data="admin_all_orders_list")
+    builder.button(text="⬅️ Назад", callback_data="admin_all_orders_list")
     builder.adjust(1)
     await callback.message.edit_reply_markup(inline_message_id=callback.inline_message_id,
                                              reply_markup=builder.as_markup())

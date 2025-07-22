@@ -69,7 +69,7 @@ async def add_contract_load(message: Message, state: FSMContext):
                 deal.contract_docs_id = docs
                 await session.commit()
                 builder = InlineKeyboardBuilder()
-                builder.button(text="Назад к списку сделок", callback_data="admin_all_orders")
+                builder.button(text="⬅️ Назад к списку сделок", callback_data="admin_all_orders")
                 builder.adjust(1)
                 await message.answer(
                     text=f"✅ Успешно сохранено:\n"

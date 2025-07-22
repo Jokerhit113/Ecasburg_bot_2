@@ -56,7 +56,7 @@ async def waiting_for_text_additional_options_yes_no(message: Message, state: FS
                                           f"✅ Добавлены к заказу",
                                      reply_markup=ReplyKeyboardRemove())
                 builder = InlineKeyboardBuilder()
-                builder.button(text="Назад в Меню", callback_data=f"deal_detail_{deal.id}")
+                builder.button(text="⬅️ Назад в Меню", callback_data=f"deal_detail_{deal.id}")
                 builder.adjust(1)
                 await message.answer(text="Нажмите кнопку ниже что бы вернуться в меню",
                                      reply_markup=builder.as_markup())

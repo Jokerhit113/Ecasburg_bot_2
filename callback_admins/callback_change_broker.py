@@ -29,7 +29,7 @@ async def change_broker(callback: CallbackQuery):
                 text=f"{broker.name}",
                 callback_data=f"broker_{broker.id}",
             )
-        builder.button(text="Назад к списку сделок", callback_data="admin_all_orders_list")
+        builder.button(text="⬅️ Назад к списку сделок", callback_data="admin_all_orders_list")
         builder.adjust(1)
         await callback.message.edit_reply_markup(
             inline_message_id=callback.inline_message_id,
@@ -44,7 +44,7 @@ async def change_broker_add(callback: CallbackQuery):
         broker = callback.data.split("_")[1]
         builder = InlineKeyboardBuilder()
         builder.button(text=f"Добавить к сделке", callback_data=f"add_broker_{broker}")
-        builder.button(text="Назад к списку сделок", callback_data="admin_all_orders_list")
+        builder.button(text="⬅️ Назад к списку сделок", callback_data="admin_all_orders_list")
         builder.adjust(1)
         await callback.message.edit_caption(
             caption=f"{callback.message.caption}"
@@ -87,7 +87,7 @@ async def change_broker_add_to_deal(callback: CallbackQuery):
             deal.broker_id = broker_id_tg
             await session_deals.commit()
             builder = InlineKeyboardBuilder()
-            builder.button(text="◀ Назад к списку", callback_data="admin_all_orders_list")
+            builder.button(text="⬅️ Назад к списку", callback_data="admin_all_orders_list")
             builder.adjust(1)
             # Обновляем текст сообщения
             await callback.message.edit_caption(

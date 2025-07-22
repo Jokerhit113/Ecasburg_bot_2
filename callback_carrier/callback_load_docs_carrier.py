@@ -24,7 +24,7 @@ async def callback_load_docs_carrier(callback: CallbackQuery, state: FSMContext)
                                   reply_markup=reply_markup)
     await state.set_state(Carrier.waiting_for_get_docs_car_carrier)
     builder = InlineKeyboardBuilder()
-    builder.button(text="Назад", callback_data=f"deal_list_carrier_{deal_id}")
+    builder.button(text="⬅️ Назад", callback_data=f"deal_list_carrier_{deal_id}")
     await callback.message.edit_reply_markup(reply_markup=builder.as_markup())
 
 @callback_load_docs_carrier_router.message(Carrier.waiting_for_get_docs_car_carrier)
@@ -67,7 +67,7 @@ async def get_docs_car_carrier(message: Message, state: FSMContext):
                 deal.docs_docs_car_carrier = docs
                 await session.commit()
                 builder = InlineKeyboardBuilder()
-                builder.button(text="Назад к списку сделок", callback_data="check_deals_carrier")
+                builder.button(text="⬅️ Назад к списку сделок", callback_data="check_deals_carrier")
                 builder.adjust(1)
                 await message.answer(
                     text=f"✅ Успешно сохранено:\n"

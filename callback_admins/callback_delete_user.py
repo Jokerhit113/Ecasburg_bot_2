@@ -51,7 +51,7 @@ async def show_user_detail(callback: CallbackQuery):
 
         builder = InlineKeyboardBuilder()
         builder.button(text="🗑 Удалить", callback_data=f"confirm_delete_{user.user_id}")  # Теперь передаем user_id
-        builder.button(text="◀ Назад", callback_data="show_all_users")
+        builder.button(text="⬅️ Назад", callback_data="show_all_users")
         builder.adjust(1)
 
         await callback.message.edit_text(

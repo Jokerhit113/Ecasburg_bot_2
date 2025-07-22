@@ -282,7 +282,7 @@ async def accept_the_documents_buyer(callback: CallbackQuery, bot: Bot):
             f"VIN: {deals.vin_code}\n"
         )
         builder = InlineKeyboardBuilder()
-        builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
+        builder.button(text="⬅️ Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
         builder.adjust(1)
         await bot.send_message(
             chat_id=deals.buyer_id,

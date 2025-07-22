@@ -105,7 +105,7 @@ async def show_deal_details(callback: CallbackQuery, state: FSMContext):
             builder.button(text=f"{docs_car_provider_btn} Документы по автомобилю", callback_data=f"load_docs_car_provider")
             builder.button(text=f"{get_cmr_uin_btn} Запросить CMR и УИН у Брокера", callback_data=f"request_cmr_and_uin_from_the_broker")
             builder.button(text=f"{car_go_to_rf_btn} Передача авто в РФ", callback_data=f"car_go_to_rf")
-            builder.button(text="Назад к списку", callback_data="back_check_deals_provider")
+            builder.button(text="⬅️ Назад к списку", callback_data="back_check_deals_provider")
             builder.adjust(1)
             await callback.message.delete()
 

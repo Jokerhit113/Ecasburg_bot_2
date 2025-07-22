@@ -27,7 +27,7 @@ async def buy_car_provider(callback: CallbackQuery, state: FSMContext):
                                   reply_markup=reply_markup)
     await state.set_state(Provider.waiting_for_photo_buy_car)
     builder = InlineKeyboardBuilder()
-    builder.button(text="Назад", callback_data=f"check_deal_{deal_id}")
+    builder.button(text="⬅️ Назад", callback_data=f"check_deal_{deal_id}")
     await callback.message.edit_reply_markup(reply_markup=builder.as_markup())
 
 @callback_buy_car_provider_router.message(Provider.waiting_for_photo_buy_car)

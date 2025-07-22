@@ -88,7 +88,7 @@ async def show_deal_broker_list(callback: CallbackQuery):
                            callback_data=f"load_docs_broker")
             builder.button(text=f"{end_deal_broker_btn} Завершить работу по сделке",
                            callback_data=f"end_deal_broker")
-            builder.button(text="Назад к списку", callback_data="back_to_main_menu_broker")
+            builder.button(text="⬅️ Назад к списку", callback_data="back_to_main_menu_broker")
             builder.adjust(1)
             await callback.message.delete()
 

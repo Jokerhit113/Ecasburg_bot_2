@@ -253,7 +253,7 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                     f"Статус Заказа:\n"
                     f"Оплата автомобиля {car_payment_btn}\n"
                     f"Загрузка документов Покупателя {load_buyer_doc_btn}\n"
-                    f"Выкуп авто {car_redemption_btn}\n"
+                    f"Выкуп авто {car_redemption_btn} \n"
                     f"Автомобиль у поставщика{car_awersome_buy_btn}\n"
                     f"Автомобиль отправлен до границы {car_go_to_border_btn}\n"
                     f"Автомобиль на пересечении границы {car_to_border_btn}\n"

@@ -19,7 +19,7 @@ async def add_cash_flow_statement(callback: CallbackQuery, state: FSMContext):
     deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
     await state.update_data(deal_id=deal_id)
     builder = InlineKeyboardBuilder()
-    builder.button(text="Назад в Меню", callback_data=f"deal_list_buyer_{deal_id}")
+    builder.button(text="⬅️ Назад в Меню", callback_data=f"deal_list_buyer_{deal_id}")
     builder.adjust(1)
 
     # Создаем Reply-клавиатуру для "Завершить загрузку"
@@ -76,7 +76,7 @@ async def get_cash_flow_statement(message: Message, state: FSMContext):
                 deal.cash_flow_statement_docs = documents
                 await session.commit()
                 builder = InlineKeyboardBuilder()
-                builder.button(text="Назад к списку Сделок", callback_data="check_deals_buyer")
+                builder.button(text="⬅️ Назад к списку Сделок", callback_data="check_deals_buyer")
                 builder.adjust(1)
                 await message.answer(
                     text=f"✅ Успешно сохранено:\n"

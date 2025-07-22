@@ -13,7 +13,7 @@ kb_admin_main = InlineKeyboardMarkup(
 
 kb_back_to_menu = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton(text="Назад в Меню", callback_data="back_to_menu")],
+        [InlineKeyboardButton(text="⬅️ Назад в Меню", callback_data="back_to_menu")],
     ]
 )
 

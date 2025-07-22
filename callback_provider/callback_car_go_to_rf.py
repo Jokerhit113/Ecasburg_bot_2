@@ -24,7 +24,7 @@ async def car_go_to_rf(callback: CallbackQuery, state: FSMContext):
                                   reply_markup=reply_markup)
     await state.set_state(Provider.waiting_for_car_go_to_rf)
     builder = InlineKeyboardBuilder()
-    builder.button(text="Назад", callback_data=f"check_deal_{deal_id}")
+    builder.button(text="⬅️ Назад", callback_data=f"check_deal_{deal_id}")
     await callback.message.edit_reply_markup(reply_markup=builder.as_markup())
 
 
@@ -78,7 +78,7 @@ async def car_go_to_rf_get_photo_video(message: Message, state: FSMContext):
                 )
                 await message.answer(text=f"Загрузка завершена",
                                      reply_markup=ReplyKeyboardRemove())
-                await message.answer("Назад", reply_markup=builder.as_markup())
+                await message.answer("⬅️ Назад", reply_markup=builder.as_markup())
 
             else:
                 await message.answer(text="Сделка не найдена")

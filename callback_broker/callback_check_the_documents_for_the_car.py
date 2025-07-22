@@ -213,7 +213,7 @@ async def waiting_for_cmr_file(message: Message, state: FSMContext, bot: Bot):
                         f"{deal.vin_code}"
             )
             builder = InlineKeyboardBuilder()
-            builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
+            builder.button(text="⬅️ Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
             builder.adjust(1)
             if deal.uin_text:
                 await message.answer("✅ Документ Загружен и отправлен Поставщику", reply_markup=builder.as_markup())
@@ -266,7 +266,7 @@ async def waiting_for_uin_text(message: Message, state: FSMContext, bot: Bot):
                      f"{deal.vin_code}"
             )
             builder = InlineKeyboardBuilder()
-            builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
+            builder.button(text="⬅️ Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
             builder.adjust(1)
             if deal.cmr_file:
                 await message.answer(f"✅ УИН: {message.text} отправлен Поставщику", reply_markup=builder.as_markup())

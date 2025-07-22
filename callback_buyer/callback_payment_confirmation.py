@@ -20,7 +20,7 @@ async def payment_confirmation_buyer(callback: CallbackQuery, state: FSMContext)
     await state.update_data(deal_id=deal_id)
     try:
         builder = InlineKeyboardBuilder()
-        builder.button(text="Назад", callback_data=f"deal_list_buyer_{deal_id}")
+        builder.button(text="⬅️ Назад", callback_data=f"deal_list_buyer_{deal_id}")
         builder.adjust(1)
 
         await callback.message.edit_caption(

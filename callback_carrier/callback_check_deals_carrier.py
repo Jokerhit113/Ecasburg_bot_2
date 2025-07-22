@@ -74,7 +74,7 @@ async def show_deal_details(callback: CallbackQuery):
             builder.button(text=f"{report_of_loading_a_vehicle_for_transportation_btn} Отчёт погрузки автомобиля", callback_data=f"report_of_loading_a_vehicle_for_transportation")
             builder.button(text=f"{load_docs_carrier_btn} Документы по перевозке автомобиля", callback_data=f"load_docs_carrier")
 
-            builder.button(text="Назад к списку", callback_data="back_check_deals_carrier")
+            builder.button(text="⬅️ Назад к списку", callback_data="back_check_deals_carrier")
             builder.adjust(1)
             await callback.message.delete()
 

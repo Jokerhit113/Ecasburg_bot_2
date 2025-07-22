@@ -66,7 +66,7 @@ async def photo_video_buy_car(message: Message, state: FSMContext):
                 deal.document_doc_broker_id = docs
                 await session.commit()
                 builder = InlineKeyboardBuilder()
-                builder.button(text="Назад к списку сделок", callback_data="check_deals_broker")
+                builder.button(text="⬅️ Назад к списку сделок", callback_data="check_deals_broker")
                 builder.adjust(1)
                 await message.answer(
                     text=f"✅ Успешно сохранено:\n"

@@ -19,7 +19,7 @@ async def inn_buyer(callback: CallbackQuery, state: FSMContext):
     await state.update_data(deal_id=deal_id)
     try:
         builder = InlineKeyboardBuilder()
-        builder.button(text="Назад", callback_data=f"deal_list_buyer_{deal_id}")
+        builder.button(text="⬅️ Назад", callback_data=f"deal_list_buyer_{deal_id}")
         builder.adjust(1)
 
         await callback.message.edit_caption(
@@ -68,7 +68,7 @@ async def upload_inn_buyer(message: Message, state: FSMContext):
 
             # Отправляем подтверждение
             builder = InlineKeyboardBuilder()
-            builder.button(text="Назад", callback_data=f"deal_list_buyer_{deal_id}")
+            builder.button(text="⬅️ Назад", callback_data=f"deal_list_buyer_{deal_id}")
 
             await message.answer(
                 "✅ ИНН принят!\n",

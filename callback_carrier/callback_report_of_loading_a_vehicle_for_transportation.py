@@ -25,7 +25,7 @@ async def report_of_loading_a_vehicle_for_transportation(callback: CallbackQuery
                                   reply_markup=reply_markup)
     await state.set_state(Carrier.waiting_for_get_report_load_car)
     builder = InlineKeyboardBuilder()
-    builder.button(text="Назад", callback_data=f"deal_list_carrier_{deal_id}")
+    builder.button(text="⬅️ Назад", callback_data=f"deal_list_carrier_{deal_id}")
     await callback.message.edit_reply_markup(reply_markup=builder.as_markup())
 
 @callback_report_of_loading_a_vehicle_for_transportation_router.message(Carrier.waiting_for_get_report_load_car)
@@ -68,7 +68,7 @@ async def photo_video_buy_car(message: Message, state: FSMContext):
                 deal.video_car_load_transportation = videos
                 await session.commit()
                 builder = InlineKeyboardBuilder()
-                builder.button(text="Назад к списку сделок", callback_data="check_deals_carrier")
+                builder.button(text="⬅️ Назад к списку сделок", callback_data="check_deals_carrier")
                 builder.adjust(1)
                 await message.answer(
                     text=f"✅ Успешно сохранено:\n"

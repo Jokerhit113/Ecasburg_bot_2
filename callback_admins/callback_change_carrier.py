@@ -29,7 +29,7 @@ async def change_carrier(callback: CallbackQuery):
                 text=f"{carrier.name}",
                 callback_data=f"carrier_{carrier.id}",
             )
-        builder.button(text="Назад к списку сделок", callback_data="admin_all_orders_list")
+        builder.button(text="⬅️ Назад к списку сделок", callback_data="admin_all_orders_list")
         builder.adjust(1)
         await callback.message.edit_reply_markup(
             inline_message_id=callback.inline_message_id,
@@ -44,7 +44,7 @@ async def change_carrier_add(callback: CallbackQuery):
         carrier = callback.data.split("_")[1]
         builder = InlineKeyboardBuilder()
         builder.button(text=f"Добавить к сделке", callback_data=f"add_carrier_{carrier}")
-        builder.button(text="Назад к списку сделок", callback_data="admin_all_orders_list")
+        builder.button(text="⬅️ Назад к списку сделок", callback_data="admin_all_orders_list")
         builder.adjust(1)
         await callback.message.edit_caption(
             caption=f"{callback.message.caption}"
@@ -87,7 +87,7 @@ async def change_carrier_add_to_deal(callback: CallbackQuery):
             deal.carrier_id = carrier_id_tg
             await session_deals.commit()
             builder = InlineKeyboardBuilder()
-            builder.button(text="◀ Назад к списку", callback_data="admin_all_orders_list")
+            builder.button(text="⬅️ Назад к списку", callback_data="admin_all_orders_list")
             builder.adjust(1)
             # Обновляем текст сообщения
             await callback.message.edit_caption(

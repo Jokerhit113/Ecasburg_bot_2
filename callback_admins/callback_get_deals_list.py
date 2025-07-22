@@ -27,7 +27,7 @@ async def callback_get_deals_list(callback: CallbackQuery):
                 text=f"{deal.deal_id} {deal.buy_user}",
                 callback_data=f"deal_detail_{deal.id}",
             )
-        builder.button(text="Назад в меню", callback_data="back_to_menu")
+        builder.button(text="⬅️ Назад в меню", callback_data="back_to_menu")
         builder.adjust(1)
 
         await callback.message.edit_text(
@@ -46,9 +46,9 @@ async def callback_get_deals_switch(callback: CallbackQuery):
             await callback.answer("Сделка не найдена", show_alert=True)
             return
         builder = InlineKeyboardBuilder()
-        builder.button(text="Проверить статус", callback_data="check_status")
-        builder.button(text="Действия со сделкой", callback_data="transaction_actions")
-        builder.button(text="Назад к списку", callback_data="admin_all_orders_list")
+        builder.button(text="🔍 Проверить статус", callback_data="check_status")
+        builder.button(text="❕ Действия со сделкой", callback_data="transaction_actions")
+        builder.button(text="⬅️ Назад к списку", callback_data="admin_all_orders_list")
         builder.adjust(1)
 
         await callback.message.answer_photo(
@@ -79,7 +79,7 @@ async def callback_get_deals_list(callback: CallbackQuery):
                 text=f"{deal.deal_id} {deal.buy_user}",
                 callback_data=f"deal_detail_{deal.id}"
             )
-        builder.button(text="Назад в меню", callback_data="back_to_menu")
+        builder.button(text="⬅️ Назад в меню", callback_data="back_to_menu")
         builder.adjust(1)
         await callback.message.delete()
 

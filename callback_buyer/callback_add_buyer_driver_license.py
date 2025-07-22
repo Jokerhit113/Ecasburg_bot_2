@@ -20,7 +20,7 @@ async def callback_driver_license(callback: CallbackQuery, state: FSMContext):
         deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
         await state.update_data(deal_id=deal_id)
         builder = InlineKeyboardBuilder()
-        builder.button(text="Назад в Меню", callback_data=f"deal_list_buyer_{deal_id}")
+        builder.button(text="⬅️ Назад в Меню", callback_data=f"deal_list_buyer_{deal_id}")
         builder.adjust(1)
 
         # Создаем Reply-клавиатуру для "Завершить загрузку"

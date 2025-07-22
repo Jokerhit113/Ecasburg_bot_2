@@ -23,7 +23,7 @@ async def upload_a_payment_invoice_to_buyer(callback: CallbackQuery, state: FSMC
     builder.button(text="📥 Файл", callback_data=f"upload_a_payment_invoice_to_buyer_document")
     builder.button(text="📝 Текст", callback_data=f"upload_a_payment_invoice_to_buyer_text")
 
-    builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
+    builder.button(text="⬅️ Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
     builder.adjust(2)
     await callback.message.answer(text="Выберете способ отправки реквизитов для оплаты:",
                                   reply_markup=builder.as_markup())
@@ -34,7 +34,7 @@ async def upload_a_payment_invoice_to_buyer_text(callback: CallbackQuery, state:
     data = await state.get_data()
     deal_id = data['deal_id']
     builder = InlineKeyboardBuilder()
-    builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
+    builder.button(text="⬅️ Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
     await callback.message.edit_text("Напишите одним сообщением реквизиты и сумму к оплате:",
                                      reply_markup=builder.as_markup())
     await state.set_state(Broker.waiting_for_payment_invoice_to_buyer_text)
@@ -104,7 +104,7 @@ async def upload_a_payment_invoice_to_buyer_document(callback: CallbackQuery, st
 
     try:
         builder = InlineKeyboardBuilder()
-        builder.button(text="Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
+        builder.button(text="⬅️ Назад в Меню", callback_data=f"list_broker_check_deal_{deal_id}")
         builder.adjust(1)
 
         await callback.message.delete()
