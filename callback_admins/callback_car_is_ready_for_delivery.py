@@ -137,9 +137,9 @@ async def congratulation(callback: CallbackQuery, bot: Bot):
                     await bot.send_photo(
                         chat_id=user.user_id,
                         photo=deal.car_is_ready_for_delivery,
-                        caption=f"️✅✅✅✅✅️\n\n"
+                        caption=f"️✅✅✅✅✅️✅✅✅✅\n\n"
                                 f"{message_text}\n\n"
-                                f"✅ Клиент Узнал что Автомобиль готов к выдаче!"
+                                f"✅ Клиент ОЧЕНЬ РАД что Автомобиль готов к выдаче! ✅"
                     )
     except Exception as e:
         logging.error(f"Error in add_questionnaire_to_db: {e}")
