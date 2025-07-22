@@ -143,7 +143,7 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
         await callback.answer("Произошла ошибка при обработке документов", show_alert=True)
 
 @callback_check_the_documents_for_the_car_router.callback_query(F.data == "accept_the_documents_car_provider")
-async def accept_the_documents_car_provider(callback: CallbackQuery, state: FSMContext):
+async def accept_the_documents_car_provider(callback: CallbackQuery, state: FSMContext, bot: Bot):
     async with deals_session() as session:
         text = callback.message.text
         deal_id = int(text.split('\n')[0].split('Сделка №: ')[1])
@@ -164,6 +164,18 @@ async def accept_the_documents_car_provider(callback: CallbackQuery, state: FSMC
             text=f"{callback.message.text}\n\n"
                  f"Документы Приняты ✅",
             reply_markup=builder.as_markup()
+        )
+        message_text = (
+            f"Сделка №: {deals.deal_id}\n"
+            f"Покупатель: {deals.buy_user}\n"
+            f"Автомобиль: {deals.march_model}\n"
+            f"VIN: {deals.vin_code}\n"
+        )
+        await bot.send_message(
+            chat_id=deals.provider_id,
+            text=f"{message_text}\n\n"
+                 f"Документы приняты брокером ✅\n"
+                 f"⚠️ Ожидайте получения CMR и УИН."
         )
 
 @callback_check_the_documents_for_the_car_router.callback_query(F.data == "load_cmr_file")

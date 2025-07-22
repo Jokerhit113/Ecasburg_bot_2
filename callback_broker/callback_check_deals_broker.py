@@ -78,13 +78,13 @@ async def show_deal_broker_list(callback: CallbackQuery):
                 f"VIN: {deal.vin_code}\n"
             )
             builder = InlineKeyboardBuilder()
-            builder.button(text=f"{check_the_documents_for_the_car_btn} Проверить документы по авто",
+            builder.button(text=f"{check_the_documents_for_the_car_btn} Документы по авто",
                            callback_data=f"check_the_documents_for_the_car")
-            builder.button(text=f"{check_the_buyer_documents_btn} Проверить документы покупателя",
+            builder.button(text=f"{check_the_buyer_documents_btn} Документы покупателя",
                            callback_data=f"check_the_buyer_documents")
-            builder.button(text=f"{upload_a_payment_invoice_to_buyer_btn} Загрузить Счёт на оплату чего то там",
+            builder.button(text=f"{upload_a_payment_invoice_to_buyer_btn} Счёт на оплату Таможни",
                            callback_data=f"upload_a_payment_invoice_to_buyer")
-            builder.button(text=f"{load_docs_broker_btn} Загрузить таможенные документы",
+            builder.button(text=f"{load_docs_broker_btn} Таможенные документы",
                            callback_data=f"load_docs_broker")
             builder.button(text=f"{end_deal_broker_btn} Завершить работу по сделке",
                            callback_data=f"end_deal_broker")

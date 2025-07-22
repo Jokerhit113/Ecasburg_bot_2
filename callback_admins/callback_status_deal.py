@@ -77,10 +77,11 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                 else:
                     car_redemption_btn = "❕"
 
-                if car_redemption_btn == "✅":
-                    car_awersome_buy_btn = "⚠️"
-                elif deal.provider_photo_car_before_border_id or deal.provider_video_car_before_border_id and deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
+                if deal.provider_photo_car_before_border_id or deal.provider_video_car_before_border_id and deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
                     car_awersome_buy_btn = "✅"
+                elif car_redemption_btn == "✅":
+                    car_awersome_buy_btn = "⚠️"
+
                 else:
                     car_awersome_buy_btn = "❕"
 
@@ -91,17 +92,18 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                 else:
                     car_go_to_border_btn = "❕"
 
-                if car_go_to_border_btn == "✅":
-                    car_to_border_btn = "⚠️"
-                elif deal.provider_photo_car_border_id or deal.provider_video_car_border_id:
+                if deal.provider_photo_car_border_id or deal.provider_video_car_border_id:
                     car_to_border_btn = f"✅"
+                elif car_go_to_border_btn == "✅":
+                    car_to_border_btn = "⚠️"
+
                 else:
                     car_to_border_btn = "❕"
 
-                if car_to_border_btn == "✅":
-                    car_from_border_btn = "⚠️"
-                elif deal.document_doc_broker_id or deal.photo_docs_broker_id:
+                if deal.document_doc_broker_id or deal.photo_docs_broker_id:
                     car_from_border_btn = f"✅"
+                elif car_to_border_btn == "✅":
+                    car_from_border_btn = "⚠️"
                 else:
                     car_from_border_btn = "❕"
 
@@ -113,10 +115,10 @@ async def callback_get_deals_check_status(callback: CallbackQuery):
                 else:
                     car_waiting_for_delivery_btn = "❕"
 
-                if car_waiting_for_delivery_btn == "✅":
-                    car_delivery_for_rf_btn = "⚠️"
-                elif deal.photo_car_load_transportation or deal.video_car_load_transportation:
+                if deal.photo_car_load_transportation or deal.video_car_load_transportation:
                     car_delivery_for_rf_btn = f"✅"
+                elif car_waiting_for_delivery_btn == "✅":
+                    car_delivery_for_rf_btn = "⚠️"
                 else:
                     car_delivery_for_rf_btn = "❕"
 

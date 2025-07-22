@@ -26,76 +26,84 @@ async def callback_check_status_buyer(callback: CallbackQuery):
         else:
             load_buyer_doc_btn = "✅"
 
-        if car_payment_btn == "✅":
-            car_redemption_btn = "⚠️"
-        elif deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
+        if deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
             car_redemption_btn = f"✅ Доставка до Поставщика - {deal.delivery_time_car_to_provider} "
+        elif car_payment_btn == "✅":
+            car_redemption_btn = "⚠️"
         else:
             car_redemption_btn = "❕"
 
-        if car_redemption_btn == "✅":
-            car_awersome_buy_btn = "⚠️"
-        elif deal.provider_photo_car_before_border_id or deal.provider_video_car_before_border_id and deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
+        if deal.provider_photo_car_before_border_id or deal.provider_video_car_before_border_id and deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
             car_awersome_buy_btn = "✅"
+        elif car_redemption_btn == "✅":
+            car_awersome_buy_btn = "⚠️"
+
         else:
             car_awersome_buy_btn = "❕"
 
-        if car_awersome_buy_btn == "✅":
-            car_go_to_border_btn = "⚠️"
-        elif deal.provider_photo_car_before_border_id or deal.provider_video_car_before_border_id:
+        if deal.provider_photo_car_before_border_id or deal.provider_video_car_before_border_id:
             car_go_to_border_btn = f"✅ Доставка до границы - {deal.delivery_time_car_to_border}"
+        elif car_awersome_buy_btn == "✅":
+            car_go_to_border_btn = "⚠️"
         else:
             car_go_to_border_btn = "❕"
 
-        if car_go_to_border_btn == "✅":
-            car_to_border_btn = "⚠️"
-        elif deal.provider_photo_car_border_id or deal.provider_video_car_border_id:
+        if deal.provider_photo_car_border_id or deal.provider_video_car_border_id:
             car_to_border_btn = f"✅"
+        elif car_go_to_border_btn == "✅":
+            car_to_border_btn = "⚠️"
+
         else:
             car_to_border_btn = "❕"
 
-        if car_to_border_btn == "✅":
-            car_from_border_btn = "⚠️"
-        elif deal.document_doc_broker_id or deal.photo_docs_broker_id:
+        if deal.document_doc_broker_id or deal.photo_docs_broker_id:
             car_from_border_btn = f"✅"
+        elif car_to_border_btn == "✅":
+            car_from_border_btn = "⚠️"
         else:
             car_from_border_btn = "❕"
 
-        if car_from_border_btn == "✅":
-            car_waiting_for_delivery_btn = "⚠️"
-        elif deal.photo_car_get_border or deal.video_car_get_border:
+        if deal.photo_car_get_border or deal.video_car_get_border:
             car_waiting_for_delivery_btn = f"✅"
+        elif car_from_border_btn == "✅":
+            car_waiting_for_delivery_btn = "⚠️"
+
         else:
             car_waiting_for_delivery_btn = "❕"
 
-        if car_waiting_for_delivery_btn == "✅":
-            car_delivery_for_rf_btn = "⚠️"
-        elif deal.photo_car_load_transportation or deal.video_car_load_transportation:
+        if deal.photo_car_load_transportation or deal.video_car_load_transportation:
             car_delivery_for_rf_btn = f"✅"
+        elif car_waiting_for_delivery_btn == "✅":
+            car_delivery_for_rf_btn = "⚠️"
         else:
             car_delivery_for_rf_btn = "❕"
 
+        # Формируем текст сообщения
+        message_text = (
+            f"ID: {deal.id}\n"
+            f"Данные по сделке:\n\n"
+            f"Сделка №: {deal.deal_id}\n"
+            f"Покупатель: {deal.buy_user}\n"
+            f"Автомобиль: {deal.march_model}\n"
+            f"Vin code: {deal.vin_code}\n"
 
-        message_text = (f"Ваша Сделка №: {deal.deal_id}\n"
-                        f"Покупатель: {deal.buy_user}\n"
-                        f"Автомобиль: {deal.march_model}\n"
-                        f"VIN: {deal.vin_code}\n\n"
-                        
-                        f"Статус Заказа:\n"
-                        f"Оплата автомобиля {car_payment_btn}\n"
-                        f"Загрузка документов Покупателя {load_buyer_doc_btn}\n"
-                        f"Выкуп авто {car_redemption_btn}\n"
-                        f"Автомобиль у поставщика{car_awersome_buy_btn}\n"
-                        f"Автомобиль отправлен до границы {car_go_to_border_btn}\n"
-                        f"Автомобиль на пересечении границы {car_to_border_btn}\n"
-                        f"Таможенное оформление {car_from_border_btn}\n"
-                        f"Ожидание погрузки автомобиля на автовоз {car_waiting_for_delivery_btn}\n"
-                        f"Доставка по РФ {car_delivery_for_rf_btn}\n"
-                        f"Готов к выдаче\n\n"
-    
-                        f"❕ - Ещё не начат\n"
-                        f"⚠️ - В процессе выполнения\n"
-                        f"✅ - Успешно завершен")
+
+            f"Статус Заказа:\n"
+            f"Оплата автомобиля {car_payment_btn}\n"
+            f"Загрузка документов Покупателя {load_buyer_doc_btn}\n"
+            f"Выкуп авто {car_redemption_btn}\n"
+            f"Автомобиль у поставщика{car_awersome_buy_btn}\n"
+            f"Автомобиль отправлен до границы {car_go_to_border_btn}\n"
+            f"Автомобиль на пересечении границы {car_to_border_btn}\n"
+            f"Таможенное оформление {car_from_border_btn}\n"
+            f"Ожидание погрузки автомобиля на автовоз {car_waiting_for_delivery_btn}\n"
+            f"Доставка по РФ {car_delivery_for_rf_btn}\n"
+            f"Готов к выдаче\n\n"
+
+            f"❕ - Ещё не начат\n"
+            f"⚠️ - В процессе выполнения\n"
+            f"✅ - Успешно завершен"
+        )
         builder = InlineKeyboardBuilder()
         builder.button(text=f"УДАЛИТЬ СООБЩЕНИЕ", callback_data=f"delete_message")
         builder.adjust(1)
