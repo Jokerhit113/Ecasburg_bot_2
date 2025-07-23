@@ -1,17 +1,20 @@
 import logging
 
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 
 from data_base.db_deals import deals_session, Deals
 from keyboard.inline_keyboard import kb_buyer_main
+from settings import CHAT_LOG
 
 callback_check_deals_buyer_router = Router()
 
 @callback_check_deals_buyer_router.callback_query(F.data == "check_deals_buyer")
-async def check_deals_buyer(callback: CallbackQuery):
+async def check_deals_buyer(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Список сделок")
     async with deals_session() as session:
         deals = await session.execute(
             select(Deals).where(callback.from_user.id == Deals.buyer_id)
@@ -31,7 +34,9 @@ async def check_deals_buyer(callback: CallbackQuery):
 
 
 @callback_check_deals_buyer_router.callback_query(F.data.startswith("deal_list_buyer_"))
-async def show_deal_list_buyer(callback: CallbackQuery):
+async def show_deal_list_buyer(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Сделку")
     async with deals_session() as session:
         try:
             deal_id = callback.data.split("_")[-1]
@@ -76,7 +81,9 @@ async def show_deal_list_buyer(callback: CallbackQuery):
 
 
 @callback_check_deals_buyer_router.callback_query(F.data == "back_to_main_menu_buyer")
-async def back_to_main_menu_buyer(callback: CallbackQuery):
+async def back_to_main_menu_buyer(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Вернуться в меню Покупателя")
     await callback.message.delete()
     await callback.message.answer(text=f"Добро пожаловать в панель Покупателя, благодарим Вас за выбор E-CarsBurg",
                          reply_markup=kb_buyer_main)

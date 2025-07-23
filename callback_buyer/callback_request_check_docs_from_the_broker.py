@@ -5,11 +5,14 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_request_check_docs_from_the_broker_router = Router()
 
 @callback_request_check_docs_from_the_broker_router.callback_query(F.data == "request_check_docs_from_the_broker")
 async def request_check_docs_from_the_broker(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Запрос проверки документов Брокером")
 
     data = await state.get_data()
     payment_confirmation_buyer_btn = data.get("payment_confirmation_buyer_btn")

@@ -21,7 +21,9 @@ text = ("Для заполнения анкеты понадобятся сле�
         "- информация о наличии авто в личном пользовании (если есть, надо указать марку/модель и год выпуска авто)")
 
 @callback_fill_out_the_questionnaire_router.callback_query(F.data == "fill_out_the_questionnaire")
-async def fill_out_the_questionnaire(callback: CallbackQuery, state: FSMContext):
+async def fill_out_the_questionnaire(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Заполнить Анкету")
     caption = callback.message.caption
     deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
     await state.update_data(deal_id=deal_id)
@@ -106,6 +108,8 @@ async def get_have_car(message: Message, state: FSMContext):
 
 @callback_fill_out_the_questionnaire_router.callback_query(F.data == "add_questionnaire_to_db")
 async def add_questionnaire_to_db(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель Подтвердил заполненную Анкету")
     data = await state.get_data()
     deal_id = data.get('deal_id')
     phone_number = data['phone_number']

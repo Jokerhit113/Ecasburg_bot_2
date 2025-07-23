@@ -1,4 +1,4 @@
-from aiogram import Router
+from aiogram import Router, Bot
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, KeyboardButton, Message, ReplyKeyboardRemove
@@ -15,7 +15,9 @@ text_cash_flow_statement_get = (f"Загрузите Фотографии СПР
                                 f"ДВИЖЕНИИ ДЕНЕЖНЫХ СРЕДСТВ ВАЛЮТНОМУ СЧЁТУ")
 
 @callback_cash_flow_statement_router.callback_query(F.data == "cash_flow_statement")
-async def add_cash_flow_statement(callback: CallbackQuery, state: FSMContext):
+async def add_cash_flow_statement(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Загрузить Фото Справки движения денег по валютному счёту")
     caption = callback.message.caption
     deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
     await state.update_data(deal_id=deal_id)

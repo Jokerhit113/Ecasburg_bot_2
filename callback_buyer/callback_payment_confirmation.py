@@ -14,7 +14,9 @@ callback_payment_confirmation_buyer_router = Router()
 
 
 @callback_payment_confirmation_buyer_router.callback_query(F.data == "payment_confirmation_buyer")
-async def payment_confirmation_buyer(callback: CallbackQuery, state: FSMContext):
+async def payment_confirmation_buyer(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Загрузить Квитанцию об оплате автомобиля")
     """Обработчик начала процесса подтверждения оплаты"""
     caption = callback.message.caption
     deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])

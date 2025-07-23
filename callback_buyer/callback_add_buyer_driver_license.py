@@ -1,6 +1,6 @@
 import logging
 
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, KeyboardButton, Message, ReplyKeyboardRemove
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
@@ -15,7 +15,9 @@ callback_add_buyer_driver_license_router = Router()
 text_vod_ud_get = "Загрузите Фотографии Вашего Водительского удостоверения с 2 двух сторон, либо отправьте сканы:"
 
 @callback_add_buyer_driver_license_router.callback_query(F.data == "driver_license_load_buyer")
-async def callback_driver_license(callback: CallbackQuery, state: FSMContext):
+async def callback_driver_license(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Загрузить Водительское Удостоверение")
     try:
         caption = callback.message.caption
         deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])

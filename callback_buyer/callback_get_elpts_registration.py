@@ -15,7 +15,9 @@ callback_get_elpts_registration_router = Router()
 
 
 @callback_get_elpts_registration_router.callback_query(F.data == "get_elpts_registration")
-async def get_elpts_registration_buyer(callback: CallbackQuery, state: FSMContext):
+async def get_elpts_registration_buyer(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Загрузить Фото регистрации на портале ЭПТС")
     """Обработчик начала процесса подтверждения оплаты"""
     caption = callback.message.caption
     deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])

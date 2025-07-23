@@ -1,6 +1,6 @@
 import logging
 
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
@@ -13,7 +13,9 @@ from settings import CHAT_LOG
 callback_add_inn_buyer_router = Router()
 
 @callback_add_inn_buyer_router.callback_query(F.data == "upload_inn_buyer")
-async def inn_buyer(callback: CallbackQuery, state: FSMContext):
+async def inn_buyer(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Загрузить ИНН")
     """Обработчик начала процесса подтверждения оплаты"""
     caption = callback.message.caption
     deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])

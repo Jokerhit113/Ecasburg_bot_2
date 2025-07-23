@@ -1,4 +1,4 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, KeyboardButton, Message, ReplyKeyboardRemove
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
@@ -14,7 +14,9 @@ text_foreign_currency_account_statement_get = (f"Загрузите Фотогр
                                                f"ВЫПИСКИ ПО ВАЛЮТНОМУ СЧЁТУ")
 
 @callback_foreign_currency_account_statement_router.callback_query(F.data == "foreign_currency_account_statement")
-async def foreign_currency_account_statement(callback: CallbackQuery, state: FSMContext):
+async def foreign_currency_account_statement(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Загрузить Фото Выписки по валютному счёту")
     caption = callback.message.caption
     deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
     await state.update_data(deal_id=deal_id)

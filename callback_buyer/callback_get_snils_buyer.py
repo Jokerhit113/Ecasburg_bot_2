@@ -1,6 +1,6 @@
 import logging
 
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, KeyboardButton, Message, ReplyKeyboardRemove
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
@@ -15,7 +15,9 @@ callback_get_snils_buyer_router = Router()
 text_snils_get = ("Загрузите Фотографии Вашего СНИЛС с 2 двух сторон, либо отправьте сканы:")
 
 @callback_get_snils_buyer_router.callback_query(F.data == "add_snils_buyer")
-async def callback_add_passport(callback: CallbackQuery, state: FSMContext):
+async def callback_add_passport(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Загрузить СНИЛС")
     try:
         caption = callback.message.caption
         deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])

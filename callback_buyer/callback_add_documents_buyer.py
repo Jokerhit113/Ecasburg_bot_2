@@ -9,12 +9,15 @@ from aiogram.utils.media_group import MediaGroupBuilder
 from sqlalchemy import select
 
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_add_documents_buyer_router = Router()
 
 
 @callback_add_documents_buyer_router.callback_query(F.data == "info_add_documents_buyer")
-async def info_add_documents_buyer_info(callback: CallbackQuery):
+async def info_add_documents_buyer_info(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Информция о загрузке документов ")
     file = Path(f"setting/info_load_documents.txt")
     text = file.read_text(encoding='utf-8')
     builder = InlineKeyboardBuilder()
@@ -120,5 +123,7 @@ async def kb_menu_load_docs(callback: CallbackQuery, state: FSMContext):
     )
 
 @callback_add_documents_buyer_router.callback_query(F.data == "delete_message")
-async def delete_message(callback: CallbackQuery):
+async def delete_message(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Удалить сообщение")
     await callback.message.delete()

@@ -1,14 +1,18 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_check_status_buyer_router = Router()
 
 @callback_check_status_buyer_router.callback_query(F.data == "check_status_buyer")
-async def callback_check_status_buyer(callback: CallbackQuery):
+async def callback_check_status_buyer(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Проверить статус сделки")
+
     caption = callback.message.caption
     deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
     async with deals_session() as session:

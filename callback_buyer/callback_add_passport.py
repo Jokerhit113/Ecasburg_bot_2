@@ -24,7 +24,9 @@ text_passport_get = ("Загрузите Фотографии паспорта, 
                     "В идеале отправлять скан из сканера\n\n")
 
 @callback_add_passport_router.callback_query(F.data == "add_passport")
-async def callback_add_passport(callback: CallbackQuery, state: FSMContext):
+async def callback_add_passport(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Загрузить Паспорт")
     try:
         caption = callback.message.caption
         deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
