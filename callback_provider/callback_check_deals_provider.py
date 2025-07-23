@@ -8,11 +8,14 @@ from sqlalchemy import select
 
 from data_base.db_deals import deals_session, Deals
 from keyboard.inline_keyboard import kb_provider_main
+from settings import CHAT_LOG
 
 callback_check_deals_provider_router = Router()
 
 @callback_check_deals_provider_router.callback_query(F.data == "check_deals_provider")
-async def check_deals_provider(callback: CallbackQuery):
+async def check_deals_provider(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Поставщик выбрал Список сделок")
     async with deals_session() as session:
         deals = await session.execute(
             select(Deals).where(Deals.provider_id == callback.from_user.id)
@@ -121,6 +124,7 @@ async def show_deal_details(callback: CallbackQuery, state: FSMContext):
 
 @callback_check_deals_provider_router.callback_query(F.data == "request_cmr_and_uin_from_the_broker")
 async def request_crm_and_uin_from_the_broker(callback: CallbackQuery, bot: Bot, state: FSMContext):
+
     async with deals_session() as session:
         caption = callback.message.caption
         deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
@@ -131,6 +135,8 @@ async def request_crm_and_uin_from_the_broker(callback: CallbackQuery, bot: Bot,
         if not deal.broker_id:
             await callback.answer(text="Брокер сделки ещё не назначен", show_alert=True)
             return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} Поставщик запросил проверку документов по сделке {deal_id}")
         data = await state.get_data()
         payment_btn = data.get("payment_btn")
         video_car_before_btn = data.get("video_car_before_btn")
@@ -164,7 +170,9 @@ async def request_crm_and_uin_from_the_broker(callback: CallbackQuery, bot: Bot,
 
 
 @callback_check_deals_provider_router.callback_query(F.data == "back_check_deals_provider")
-async def back_check_deals_provider(callback: CallbackQuery):
+async def back_check_deals_provider(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Поставщик вернулся в меню")
     await callback.message.delete()
     async with deals_session() as session:
         deals = await session.execute(

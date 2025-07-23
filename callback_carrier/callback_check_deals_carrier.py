@@ -1,17 +1,20 @@
 import logging
 
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 
 from data_base.db_deals import deals_session, Deals
 from keyboard.inline_keyboard import kb_carrier_main
+from settings import CHAT_LOG
 
 callback_check_deals_carrier_router = Router()
 
 @callback_check_deals_carrier_router.callback_query(F.data == "check_deals_carrier")
-async def check_deals_carrier(callback: CallbackQuery):
+async def check_deals_carrier(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Перевозчик выбрал список сделок")
     async with deals_session() as session:
         deals = await session.execute(
             select(Deals).where(Deals.carrier_id == callback.from_user.id)
@@ -30,7 +33,9 @@ async def check_deals_carrier(callback: CallbackQuery):
             await callback.answer(text="У Вас пока что нет сделок!")
 
 @callback_check_deals_carrier_router.callback_query(F.data.startswith("deal_list_carrier_"))
-async def show_deal_details(callback: CallbackQuery):
+async def show_deal_details(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Перевозчик выбрал сделку")
     """Показывает детали конкретной сделки"""
     async with deals_session() as session:
         try:
@@ -89,7 +94,9 @@ async def show_deal_details(callback: CallbackQuery):
             await callback.answer("Произошла ошибка", show_alert=True)
 
 @callback_check_deals_carrier_router.callback_query(F.data == "back_check_deals_carrier")
-async def back_check_deals_carrier(callback: CallbackQuery):
+async def back_check_deals_carrier(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Перевозчик Вернулся в меню")
     await callback.message.delete()
     async with deals_session() as session:
         deals = await session.execute(

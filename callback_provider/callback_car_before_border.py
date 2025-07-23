@@ -1,4 +1,4 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, KeyboardButton, Message, ReplyKeyboardRemove
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
@@ -12,7 +12,9 @@ from settings import CHAT_LOG
 callback_car_before_border_router = Router()
 
 @callback_car_before_border_router.callback_query(F.data == "media_car_before_border")
-async def buy_car_provider(callback: CallbackQuery, state: FSMContext):
+async def buy_car_provider(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Поставщик выбрал Загрузить Фото автомобиля до отправки на границу")
     caption = callback.message.caption
     deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
     await state.update_data(deal_id=deal_id)

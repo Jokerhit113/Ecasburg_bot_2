@@ -4,11 +4,14 @@ from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 from sqlalchemy import select
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_confirmation_payment_buyer_provider_router = Router()
 
 @callback_confirmation_payment_buyer_provider_router.callback_query(F.data == "confirmation_payment_buyer_provider")
 async def confirmation_payment_buyer_provider(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Поставщик Подтвердил оплату автомобиля Покупателем")
     try:
         caption = callback.message.text
         deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
@@ -18,6 +21,11 @@ async def confirmation_payment_buyer_provider(callback: CallbackQuery, bot: Bot)
                 select(Deals).where(Deals.deal_id == deal_id)
             )
             deal = deal.scalar_one_or_none()
+            if not deal:
+                await callback.answer("Сделка не найдена")
+                return
+            await bot.send_message(chat_id=CHAT_LOG,
+                                   text=f"{callback.from_user.first_name} {callback.from_user.last_name} Поставщик Подтвердил оплату автомобиля Покупателем по сделке {deal_id}")
             deal.payment_confirmation_yes_no = "Деньги получены поставщиком"
             await session.commit()
 

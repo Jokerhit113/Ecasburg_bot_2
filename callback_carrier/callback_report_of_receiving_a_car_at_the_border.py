@@ -1,4 +1,4 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, KeyboardButton, Message, ReplyKeyboardRemove
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
@@ -12,7 +12,9 @@ callback_report_of_receiving_a_car_at_the_border_router = Router()
 
 
 @callback_report_of_receiving_a_car_at_the_border_router.callback_query(F.data == "report_of_receiving_a_car_at_the_border")
-async def report_of_receiving_a_car_at_the_border(callback: CallbackQuery, state: FSMContext):
+async def report_of_receiving_a_car_at_the_border(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Перевозчик выбрал Загрузить Фото получения авто с Таможни")
     caption = callback.message.caption
     deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
     await state.update_data(deal_id=deal_id)
