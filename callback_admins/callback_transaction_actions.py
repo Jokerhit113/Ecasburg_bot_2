@@ -78,7 +78,7 @@ async def callback_get_deals_delete(callback: CallbackQuery):
 
     builder = InlineKeyboardBuilder()
     builder.button(text="🗑 Удалить", callback_data=f"delete_deal_{deal_id}")  # Теперь передаем user_id
-    builder.button(text="⬅️ Назад", callback_data="admin_all_orders_list")
+    builder.button(text="⬅️ Назад", callback_data="transaction_actions")
     builder.adjust(1)
     await callback.message.edit_reply_markup(inline_message_id=callback.inline_message_id,
                                              reply_markup=builder.as_markup())

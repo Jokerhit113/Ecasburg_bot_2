@@ -12,6 +12,7 @@ from callback_admins.callback_change_carrier import callback_change_carrier_rout
 from callback_admins.callback_change_provider import callback_change_provider_router
 from callback_admins.callback_delete_user import callback_delete_user_router
 from callback_admins.callback_car_is_ready_for_delivery import callback_car_is_ready_for_delivery_router
+from callback_admins.callback_end_deal_admin import callback_end_deal_admin_router
 from callback_admins.callback_get_all_data_deal import callback_get_all_data_deal_router
 from callback_admins.callback_get_deals_list import callback_get_deals_list_router
 from callback_admins.callback_other import callback_other_router
@@ -114,6 +115,7 @@ async def main():
     dp.include_router(callback_car_go_to_rf_router)
     dp.include_router(callback_get_all_data_deal_router)
     dp.include_router(callback_car_is_ready_for_delivery_router)
+    dp.include_router(callback_end_deal_admin_router)
 
     await dp.start_polling(bot)
 
