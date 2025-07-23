@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.state_fsm import NewDeals, Buyer
 from data_base.db_deals import deals_session, Deals
 from keyboard.inline_keyboard import kb_buyer_main
+from settings import CHAT_LOG
 
 callback_get_elpts_registration_router = Router()
 
@@ -37,7 +38,9 @@ async def get_elpts_registration_buyer(callback: CallbackQuery, state: FSMContex
 
 
 @callback_get_elpts_registration_router.message(Buyer.waiting_for_get_registration_elpts)
-async def get_elpts_registration_buyer_get_photo(message: Message, state: FSMContext, bot: Bot):
+async def get_elpts_registration_buyer_get_photo(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     """Обработчик получения подтверждения оплаты"""
     data = await state.get_data()
     deal_id = data.get('deal_id')

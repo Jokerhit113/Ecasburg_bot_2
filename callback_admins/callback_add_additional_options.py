@@ -1,4 +1,4 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, KeyboardButton, ReplyKeyboardRemove
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
@@ -6,11 +6,14 @@ from sqlalchemy import select
 
 from core.state_fsm import Admin
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_add_additional_options_router = Router()
 
 @callback_add_additional_options_router.callback_query(F.data == "add_additional_options")
-async def add_additional_options(callback: CallbackQuery, state: FSMContext):
+async def add_additional_options(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+        text=f"{callback.from_user.first_name} {callback.from_user.last_name} выбрал: Доп опции")
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -22,6 +25,7 @@ async def add_additional_options(callback: CallbackQuery, state: FSMContext):
 
 @callback_add_additional_options_router.message(Admin.waiting_for_text_additional_options)
 async def waiting_for_text_additional_options(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
     if not message.text:
         await message.answer("Напишите одним текстом какие доп опции нужно добавить:")
         return
@@ -38,6 +42,7 @@ async def waiting_for_text_additional_options(message: Message, state: FSMContex
 
 @callback_add_additional_options_router.message(Admin.waiting_for_text_additional_options_yes_no)
 async def waiting_for_text_additional_options_yes_no(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
     if not message.text:
         await message.answer(text="Выберите Добавить / Заполнить заново")
         return

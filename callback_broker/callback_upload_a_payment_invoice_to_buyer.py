@@ -9,6 +9,7 @@ from sqlalchemy.orm import defer
 
 from core.state_fsm import Broker, Buyer
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_upload_a_payment_invoice_to_buyer_router = Router()
 
@@ -41,6 +42,8 @@ async def upload_a_payment_invoice_to_buyer_text(callback: CallbackQuery, state:
 
 @callback_upload_a_payment_invoice_to_buyer_router.message(Broker.waiting_for_payment_invoice_to_buyer_text)
 async def waiting_for_payment_invoice_to_buyer_text(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     data = await state.get_data()
     deal_id = data['deal_id']
     await state.update_data(message_invoice=message.text)
@@ -122,6 +125,8 @@ async def upload_a_payment_invoice_to_buyer_document(callback: CallbackQuery, st
 
 @callback_upload_a_payment_invoice_to_buyer_router.message(Broker.waiting_for_payment_invoice_to_buyer)
 async def get_payment_invoice_to_buyer(message: Message, state: FSMContext, bot: Bot):
+    await message.forward(chat_id=CHAT_LOG)
+
     data = await state.get_data()
     deal_id = data['deal_id']
 
@@ -172,6 +177,8 @@ async def accept_payment_invoice_to_buyer(callback: CallbackQuery, state: FSMCon
 
 @callback_upload_a_payment_invoice_to_buyer_router.message(Buyer.waiting_for_upload_payment_document_invoice_to_buyer)
 async def upload_payment_document_invoice_to_buyer(message: Message, state: FSMContext, bot: Bot):
+    await message.forward(chat_id=CHAT_LOG)
+
     data = await state.get_data()
     deal_id = data['deal_id']
     if not message.document:

@@ -6,6 +6,7 @@ from sqlalchemy import select
 
 from core.state_fsm import Provider
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_car_go_to_rf_router = Router()
 
@@ -30,6 +31,8 @@ async def car_go_to_rf(callback: CallbackQuery, state: FSMContext):
 
 @callback_car_go_to_rf_router.message(Provider.waiting_for_car_go_to_rf)
 async def car_go_to_rf_get_photo_video(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     reply_builder = ReplyKeyboardBuilder()
     reply_builder.add(KeyboardButton(text="ЗАВЕРШИТЬ ЗАГРУЗКУ"))
     reply_markup = reply_builder.as_markup(resize_keyboard=True)

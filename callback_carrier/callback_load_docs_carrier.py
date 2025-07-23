@@ -6,6 +6,7 @@ from sqlalchemy import select
 
 from core.state_fsm import Carrier
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_load_docs_carrier_router = Router()
 
@@ -29,6 +30,8 @@ async def callback_load_docs_carrier(callback: CallbackQuery, state: FSMContext)
 
 @callback_load_docs_carrier_router.message(Carrier.waiting_for_get_docs_car_carrier)
 async def get_docs_car_carrier(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     reply_builder = ReplyKeyboardBuilder()
     reply_builder.add(KeyboardButton(text="ЗАВЕРШИТЬ ЗАГРУЗКУ"))
     reply_markup = reply_builder.as_markup(resize_keyboard=True)

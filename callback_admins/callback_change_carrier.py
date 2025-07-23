@@ -1,11 +1,11 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from data_base.db_deals import deals_session, Deals
 from data_base.db_users import user_session, User
-
+from settings import CHAT_LOG
 
 callback_change_carrier_router = Router()
 
@@ -15,7 +15,9 @@ async def get_all_carrier(session: AsyncSession):
 
 
 @callback_change_carrier_router.callback_query(F.data == "change_carrier")
-async def change_carrier(callback: CallbackQuery):
+async def change_carrier(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} выбрал: Выбрать Перевозчика")
     async with user_session() as session:
         carriers = await get_all_carrier(session)
 
@@ -37,7 +39,9 @@ async def change_carrier(callback: CallbackQuery):
         )
 
 @callback_change_carrier_router.callback_query(F.data.startswith("carrier_"))
-async def change_carrier_add(callback: CallbackQuery):
+async def change_carrier_add(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} выбрал Перевозчика {callback.data}")
     async with user_session() as session:
         carrier_data = await session.execute(select(User).where(User.id == callback.data.split("_")[-1]))
         carrier_data_ = carrier_data.scalar_one_or_none()
@@ -55,7 +59,7 @@ async def change_carrier_add(callback: CallbackQuery):
 
 
 @callback_change_carrier_router.callback_query(F.data.startswith("add_carrier_"))
-async def change_carrier_add_to_deal(callback: CallbackQuery):
+async def change_carrier_add_to_deal(callback: CallbackQuery, bot: Bot):
     async with user_session() as session_user:
         # Получаем данные поставщика
         result_user = await session_user.execute(
@@ -97,4 +101,6 @@ async def change_carrier_add_to_deal(callback: CallbackQuery):
                         f"Добавлен к сделке.",
                 reply_markup=builder.as_markup()
             )
+            await bot.send_message(chat_id=CHAT_LOG,
+                                   text=f"{callback.from_user.first_name} {callback.from_user.last_name} Добавил брокера {carrier.name}, к сделке {deal.deal_id}")
             await callback.answer("Перевозчик успешно добавлен")

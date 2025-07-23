@@ -8,6 +8,7 @@ from sqlalchemy import select
 
 from core.state_fsm import Buyer
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_add_inn_buyer_router = Router()
 
@@ -36,6 +37,8 @@ async def inn_buyer(callback: CallbackQuery, state: FSMContext):
 
 @callback_add_inn_buyer_router.message(Buyer.waiting_for_upload_inn)
 async def upload_inn_buyer(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     """Обработчик получения подтверждения оплаты"""
     data = await state.get_data()
     deal_id = data.get('deal_id')

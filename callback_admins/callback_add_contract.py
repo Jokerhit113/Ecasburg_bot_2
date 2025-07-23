@@ -1,4 +1,4 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, KeyboardButton, Message, ReplyKeyboardRemove
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
@@ -6,11 +6,14 @@ from sqlalchemy import select
 
 from core.state_fsm import Admin
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_add_contract_router = Router()
 
 @callback_add_contract_router.callback_query(F.data == "add_contract")
-async def add_contract(callback: CallbackQuery, state: FSMContext):
+async def add_contract(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+        text=f"{callback.from_user.first_name} {callback.from_user.last_name} выбрал: Загрузить Договор")
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -31,6 +34,7 @@ async def add_contract(callback: CallbackQuery, state: FSMContext):
 
 @callback_add_contract_router.message(Admin.waiting_for_load_contract)
 async def add_contract_load(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
     reply_builder = ReplyKeyboardBuilder()
     reply_builder.add(KeyboardButton(text="ЗАВЕРШИТЬ ЗАГРУЗКУ"))
     reply_markup = reply_builder.as_markup(resize_keyboard=True)

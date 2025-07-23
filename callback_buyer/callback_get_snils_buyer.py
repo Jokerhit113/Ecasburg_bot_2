@@ -8,6 +8,7 @@ from sqlalchemy import select
 
 from core.state_fsm import Buyer
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_get_snils_buyer_router = Router()
 
@@ -43,6 +44,8 @@ async def callback_add_passport(callback: CallbackQuery, state: FSMContext):
 
 @callback_get_snils_buyer_router.message(Buyer.waiting_for_get_snils)
 async def get_photo_or_doc_passport(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     try:
         data = await state.get_data()
         deal_id = data.get('deal_id')

@@ -7,6 +7,7 @@ from sqlalchemy import select
 from core.state_fsm import Provider
 from data_base.db_deals import deals_session, Deals
 from keyboard.inline_keyboard import kb_provider_main
+from settings import CHAT_LOG
 
 callback_car_before_border_router = Router()
 
@@ -30,6 +31,8 @@ async def buy_car_provider(callback: CallbackQuery, state: FSMContext):
 
 @callback_car_before_border_router.message(Provider.waiting_for_car_before_border)
 async def photo_video_buy_car(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     reply_builder = ReplyKeyboardBuilder()
     reply_builder.add(KeyboardButton(text="ЗАВЕРШИТЬ ЗАГРУЗКУ"))
     reply_markup = reply_builder.as_markup(resize_keyboard=True)
@@ -90,6 +93,8 @@ async def photo_video_buy_car(message: Message, state: FSMContext):
 
 @callback_car_before_border_router.message(Provider.waiting_for_delivery_time_car_to_border)
 async def delivery_time_car_to_border(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     await state.update_data(delivery_time_car_to_border=message.text)
     builder = InlineKeyboardBuilder()
     builder.button(text="✅ Всё верно", callback_data="add_delivery_time_car_to_border")

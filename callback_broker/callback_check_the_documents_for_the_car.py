@@ -10,6 +10,7 @@ from sqlalchemy import select
 
 from core.state_fsm import Broker
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_check_the_documents_for_the_car_router = Router()
 
@@ -186,6 +187,8 @@ async def load_cmr_file(callback: CallbackQuery, state: FSMContext):
 
 @callback_check_the_documents_for_the_car_router.message(Broker.waiting_for_cmr_file)
 async def waiting_for_cmr_file(message: Message, state: FSMContext, bot: Bot):
+    await message.forward(chat_id=CHAT_LOG)
+
     if not message.document:
         await message.answer(text="Нужно отправить файл")
         return
@@ -238,6 +241,8 @@ async def load_uin_text(callback: CallbackQuery, state: FSMContext):
 
 @callback_check_the_documents_for_the_car_router.message(Broker.waiting_for_uin_text)
 async def waiting_for_uin_text(message: Message, state: FSMContext, bot: Bot):
+    await message.forward(chat_id=CHAT_LOG)
+
     if not message.text:
         await message.answer(text="Нужно Написать код 1 сообщением")
         return
@@ -306,6 +311,7 @@ async def reject_the_documents_car_provider(callback: CallbackQuery, state: FSMC
 
 @callback_check_the_documents_for_the_car_router.message(Broker.waiting_for_reason_provider)
 async def waiting_for_reason_provider(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
 
     await state.update_data(reason=message.text)
 

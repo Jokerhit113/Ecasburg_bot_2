@@ -8,18 +8,22 @@ from sqlalchemy import select
 from core.state_fsm import NewDeals
 from data_base.db_deals import deals_session, Deals
 from keyboard.inline_keyboard import kb_back_to_menu, kb_admin_main
+from settings import CHAT_LOG
 
 add_new_deal_router = Router()
 
 @add_new_deal_router.callback_query(F.data == "admin_new_order")
-async def admin_new_order(callback_query: CallbackQuery, state: FSMContext):
-    await callback_query.message.edit_text(
-        text="Напишите номер Новой сделки:",
+async def admin_new_order(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+        text=f"{callback.from_user.first_name} {callback.from_user.last_name} выбрал: ")
+    await callback.message.edit_text(
+        text="Напишите номер Новой сделки (Писать можно только цифры):",
     reply_markup=kb_back_to_menu)
     await state.set_state(NewDeals.waiting_for_id_deal)
 
 @add_new_deal_router.message(NewDeals.waiting_for_id_deal)
 async def get_id_new_deal_id(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
     await state.update_data(new_deal_id=message.text)
     await message.answer(
         text="Напишите Фио покупателя:",
@@ -28,6 +32,8 @@ async def get_id_new_deal_id(message: Message, state: FSMContext):
 
 @add_new_deal_router.message(NewDeals.waiting_for_buyer_name)
 async def get_new_deal_name(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     await state.update_data(new_deal_name=message.text)
     await message.answer(
         text="Напишите Марку / Модель / Комплектацию автомобиля:",
@@ -36,6 +42,8 @@ async def get_new_deal_name(message: Message, state: FSMContext):
 
 @add_new_deal_router.message(NewDeals.waiting_for_march_car)
 async def get_new_deal_march_car(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     await state.update_data(new_deal_march_car=message.text)
     await message.answer(text="Напишите Vin code Автомобиля:",
                          reply_markup=kb_back_to_menu)
@@ -43,6 +51,8 @@ async def get_new_deal_march_car(message: Message, state: FSMContext):
 
 @add_new_deal_router.message(NewDeals.waiting_for_vin_code)
 async def get_new_deal_vin_car(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     await state.update_data(new_deal_vin_car=message.text)
     await message.answer(text="Отправьте 1 фото автомобиля",
                          reply_markup=kb_back_to_menu)
@@ -50,6 +60,10 @@ async def get_new_deal_vin_car(message: Message, state: FSMContext):
 
 @add_new_deal_router.message(NewDeals.waiting_for_photo_car)
 async def get_new_deal_photo_car(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+    if not message.photo:
+        await message.answer("Отправь Фото автомобиля!")
+        return
     await state.update_data(new_deal_photo_car=message.photo[-1].file_id)
     data = await state.get_data()
     deal_id = data.get("new_deal_id")
@@ -84,6 +98,8 @@ async def add_new_deal_ok(callback: CallbackQuery, state: FSMContext, bot: Bot):
             if not all([deal_id, buyer_name, march_car, vin_code, photo_car]):
                 await callback.answer("Не все данные заполнены, попробуйте с начала!")
                 return
+            await bot.send_message(chat_id=CHAT_LOG,
+                                   text=f"{callback.from_user.first_name} {callback.from_user.last_name} выбрал: Добавить сделку № {deal_id}, {buyer_name}, {march_car}")
 
             existing_deal_id = await session.execute(
                 select(Deals).where(Deals.deal_id == deal_id)

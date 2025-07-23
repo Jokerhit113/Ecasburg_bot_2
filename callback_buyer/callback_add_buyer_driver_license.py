@@ -8,6 +8,7 @@ from sqlalchemy import select
 
 from core.state_fsm import Buyer
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_add_buyer_driver_license_router = Router()
 
@@ -43,6 +44,8 @@ async def callback_driver_license(callback: CallbackQuery, state: FSMContext):
 
 @callback_add_buyer_driver_license_router.message(Buyer.waiting_for_driver_license)
 async def get_photo_or_doc_driver_license(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     try:
         data = await state.get_data()
         deal_id = data.get('deal_id')

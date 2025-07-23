@@ -1,14 +1,15 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_transaction_actions_router = Router()
 
 @callback_transaction_actions_router.callback_query(F.data == "transaction_actions")
-async def transaction_actions(callback: CallbackQuery):
+async def transaction_actions(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -18,6 +19,11 @@ async def transaction_actions(callback: CallbackQuery):
             select(Deals).where(Deals.deal_id == deal_id)
         )
         deal = deal.scalar_one_or_none()
+        if not deal:
+            await callback.answer("Сделка не найдена")
+            return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} Вошел в меню Действия со сделкой")
 
     if not deal.contract_photo_id and not deal.contract_docs_id:
         add_contract_btn = "⚠️"  # Нет ни фото, ни видео
@@ -71,7 +77,9 @@ async def transaction_actions(callback: CallbackQuery):
 
 
 @callback_transaction_actions_router.callback_query(F.data == "delete_deal")
-async def callback_get_deals_delete(callback: CallbackQuery):
+async def callback_get_deals_delete(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Выбрал удалить сделку")
     caption = callback.message.caption
     deal_id = caption.split('\n')[0].split('ID: ')[1]
     print(deal_id)

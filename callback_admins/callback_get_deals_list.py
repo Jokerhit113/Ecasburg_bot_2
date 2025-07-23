@@ -1,9 +1,10 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_get_deals_list_router = Router()
 
@@ -12,7 +13,9 @@ async def get_all_deals(session: AsyncSession):
     return result.scalars().all()
 
 @callback_get_deals_list_router.callback_query(F.data == "admin_all_orders")
-async def callback_get_deals_list(callback: CallbackQuery):
+async def callback_get_deals_list(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Выбрал список всех сделок")
     async with deals_session() as session:
         deals = await get_all_deals(session)
 
@@ -23,8 +26,12 @@ async def callback_get_deals_list(callback: CallbackQuery):
         builder = InlineKeyboardBuilder()
 
         for deal in deals:
+            if not deal.finally_photo:
+                btn = "🟢"
+            else:
+                btn = "🏁"
             builder.button(
-                text=f"{deal.deal_id} {deal.buy_user}",
+                text=f"{btn} {deal.deal_id} {deal.buy_user}",
                 callback_data=f"deal_detail_{deal.id}",
             )
         builder.button(text="⬅️ Назад в меню", callback_data="back_to_menu")
@@ -37,7 +44,7 @@ async def callback_get_deals_list(callback: CallbackQuery):
 
 
 @callback_get_deals_list_router.callback_query(F.data.startswith("deal_detail_"))
-async def callback_get_deals_switch(callback: CallbackQuery):
+async def callback_get_deals_switch(callback: CallbackQuery, bot: Bot):
     async with deals_session() as session:
         deal_id = int(callback.data.split("_")[-1])
         deal = await session.get(Deals, deal_id)
@@ -45,6 +52,8 @@ async def callback_get_deals_switch(callback: CallbackQuery):
         if not deal:
             await callback.answer("Сделка не найдена", show_alert=True)
             return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} Выбрал сделку {deal.deal_id}")
         builder = InlineKeyboardBuilder()
         builder.button(text="🔍 Проверить статус", callback_data="check_status")
         builder.button(text="❕ Действия со сделкой", callback_data="transaction_actions")
@@ -64,7 +73,9 @@ async def callback_get_deals_switch(callback: CallbackQuery):
         await callback.message.delete()
 
 @callback_get_deals_list_router.callback_query(F.data == "admin_all_orders_list")
-async def callback_get_deals_list(callback: CallbackQuery):
+async def callback_get_deals_list(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Выбрал список всех сделок")
     async with deals_session() as session:
         deals = await get_all_deals(session)
 
@@ -75,8 +86,12 @@ async def callback_get_deals_list(callback: CallbackQuery):
         builder = InlineKeyboardBuilder()
 
         for deal in deals:
+            if not deal.finally_photo:
+                btn = "🟢"
+            else:
+                btn = "🏁"
             builder.button(
-                text=f"{deal.deal_id} {deal.buy_user}",
+                text=f"{btn}{deal.deal_id} {deal.buy_user}",
                 callback_data=f"deal_detail_{deal.id}"
             )
         builder.button(text="⬅️ Назад в меню", callback_data="back_to_menu")
@@ -90,10 +105,12 @@ async def callback_get_deals_list(callback: CallbackQuery):
 
 
 @callback_get_deals_list_router.callback_query(F.data.startswith("delete_deal_"))
-async def callback_get_deals_confirm_delete(callback: CallbackQuery):
+async def callback_get_deals_confirm_delete(callback: CallbackQuery, bot: Bot):
     async with deals_session() as session:
         result = await session.execute(select(Deals).where(Deals.id == callback.data.split("_")[-1]))
         deal = result.scalar_one_or_none()
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} Выбрал удалить сделку {deal.deal_id}")
         if deal:
             await session.delete(deal)
             await session.commit()

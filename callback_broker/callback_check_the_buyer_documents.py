@@ -10,6 +10,7 @@ from sqlalchemy import select
 
 from core.state_fsm import Broker
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_check_the_buyer_documents_router = Router()
 
@@ -320,6 +321,8 @@ async def reject_the_documents_buyer(callback: CallbackQuery, state: FSMContext)
 
 @callback_check_the_buyer_documents_router.message(Broker.waiting_for_reason_buyer)
 async def waiting_for_reason_buyer(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
 
     await state.update_data(reason=message.text)
 

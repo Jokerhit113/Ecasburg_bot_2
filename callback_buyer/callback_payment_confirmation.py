@@ -8,6 +8,7 @@ from sqlalchemy import select
 from core.state_fsm import Buyer
 from data_base.db_deals import deals_session, Deals
 from keyboard.inline_keyboard import kb_buyer_main
+from settings import CHAT_LOG
 
 callback_payment_confirmation_buyer_router = Router()
 
@@ -37,6 +38,8 @@ async def payment_confirmation_buyer(callback: CallbackQuery, state: FSMContext)
 
 @callback_payment_confirmation_buyer_router.message(Buyer.waiting_for_payment)
 async def payment_confirmation_buyer_get_photo(message: Message, state: FSMContext, bot: Bot):
+    await message.forward(chat_id=CHAT_LOG)
+
     """Обработчик получения подтверждения оплаты"""
     try:
         data = await state.get_data()

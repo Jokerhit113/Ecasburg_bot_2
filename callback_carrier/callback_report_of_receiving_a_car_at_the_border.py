@@ -6,6 +6,7 @@ from sqlalchemy import select
 
 from core.state_fsm import Carrier
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_report_of_receiving_a_car_at_the_border_router = Router()
 
@@ -30,6 +31,8 @@ async def report_of_receiving_a_car_at_the_border(callback: CallbackQuery, state
 
 @callback_report_of_receiving_a_car_at_the_border_router.message(Carrier.waiting_for_get_report_get_car)
 async def photo_video_buy_car(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     reply_builder = ReplyKeyboardBuilder()
     reply_builder.add(KeyboardButton(text="ЗАВЕРШИТЬ ЗАГРУЗКУ"))
     reply_markup = reply_builder.as_markup(resize_keyboard=True)

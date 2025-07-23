@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.state_fsm import NewDeals, Buyer
 from data_base.db_deals import deals_session, Deals
-
+from settings import CHAT_LOG
 
 callback_add_passport_router = Router()
 
@@ -53,6 +53,8 @@ async def callback_add_passport(callback: CallbackQuery, state: FSMContext):
 
 @callback_add_passport_router.message(Buyer.waiting_for_get_passport)
 async def get_photo_or_doc_passport(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     try:
         data = await state.get_data()
         deal_id = data.get('deal_id')

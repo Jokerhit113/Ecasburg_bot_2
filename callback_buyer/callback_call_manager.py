@@ -7,6 +7,7 @@ from sqlalchemy import select
 from core.state_fsm import Buyer
 from data_base.db_deals import deals_session, Deals
 from data_base.db_users import user_session, User
+from settings import CHAT_LOG
 
 callback_call_manager_router = Router()
 
@@ -23,6 +24,8 @@ async def call_manager(callback: CallbackQuery, state: FSMContext):
 
 @callback_call_manager_router.message(Buyer.waiting_for_question_call)
 async def waiting_for_question_call(message: Message, state: FSMContext, bot: Bot):
+    await message.forward(chat_id=CHAT_LOG)
+
     data = await state.get_data()
     deal_id = data.get("deal_id")
 

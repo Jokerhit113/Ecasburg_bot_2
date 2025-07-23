@@ -8,6 +8,7 @@ from aiogram.utils.media_group import MediaGroupBuilder
 from sqlalchemy import select
 
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_get_all_data_deal_router = Router()
 
@@ -57,7 +58,7 @@ async def get_all_data_deal(
 
 
 @callback_get_all_data_deal_router.callback_query(F.data == "contract_1")
-async def callback_contract_1(callback: CallbackQuery):
+async def callback_contract_1(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -70,6 +71,8 @@ async def callback_contract_1(callback: CallbackQuery):
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Запросил Договор по сделке №: {deal_id}")
 
         has_documents = any([
             deal.contract_photo_id,
@@ -102,7 +105,7 @@ async def callback_contract_1(callback: CallbackQuery):
 
 
 @callback_get_all_data_deal_router.callback_query(F.data == "payment_proof_2")
-async def payment_proof_2(callback: CallbackQuery):
+async def payment_proof_2(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -115,6 +118,8 @@ async def payment_proof_2(callback: CallbackQuery):
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Запросил Квитанцию об оплате по сделке №: {deal_id}")
         has_documents = any([
             deal.payment_photo_id,
             deal.payment_document_id,
@@ -144,7 +149,7 @@ async def payment_proof_2(callback: CallbackQuery):
 
 
 @callback_get_all_data_deal_router.callback_query(F.data == "get_docs_buyer_docs_3")
-async def get_docs_buyer_docs_3(callback: CallbackQuery):
+async def get_docs_buyer_docs_3(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -157,6 +162,8 @@ async def get_docs_buyer_docs_3(callback: CallbackQuery):
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Запросил Документы Покупателя по сделке №: {deal_id}")
 
         has_documents = any([
             deal.buyer_phone_number,
@@ -304,7 +311,7 @@ async def get_docs_buyer_docs_3(callback: CallbackQuery):
 
 
 @callback_get_all_data_deal_router.callback_query(F.data == "car_purchase_4")
-async def car_purchase_4(callback: CallbackQuery):
+async def car_purchase_4(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -317,6 +324,8 @@ async def car_purchase_4(callback: CallbackQuery):
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Запросил Фото выкупа авто по сделке №: {deal_id}")
 
         has_documents = any([
             deal.buy_car_provider_photo_id,
@@ -347,7 +356,7 @@ async def car_purchase_4(callback: CallbackQuery):
         await callback.answer("Фото/Видео выкупа автомобиля поставщиком Получены")
 
 @callback_get_all_data_deal_router.callback_query(F.data == "pre_border_5")
-async def pre_border_5(callback: CallbackQuery):
+async def pre_border_5(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -360,7 +369,8 @@ async def pre_border_5(callback: CallbackQuery):
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
-
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Запросил Фото авто до отправки на границу по сделке №: {deal_id}")
         has_documents = any([
             deal.provider_photo_car_before_border_id,
             deal.provider_video_car_before_border_id,
@@ -390,7 +400,7 @@ async def pre_border_5(callback: CallbackQuery):
         await callback.answer("Фото/Видео автомобиля до отправки на границу от поставщика Получены")
 
 @callback_get_all_data_deal_router.callback_query(F.data == "at_border_6")
-async def at_border_6(callback: CallbackQuery):
+async def at_border_6(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -403,7 +413,8 @@ async def at_border_6(callback: CallbackQuery):
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
-
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Запросил Фото авто на границе по сделке №: {deal_id}")
         has_documents = any([
             deal.provider_photo_car_border_id,
             deal.provider_video_car_border_id,
@@ -434,7 +445,7 @@ async def at_border_6(callback: CallbackQuery):
 
 
 @callback_get_all_data_deal_router.callback_query(F.data == "supplier_docs_7")
-async def supplier_docs_7(callback: CallbackQuery):
+async def supplier_docs_7(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -447,7 +458,8 @@ async def supplier_docs_7(callback: CallbackQuery):
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
-
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Запросил Документы от Перевозчика по сделке №: {deal_id}")
         has_documents = any([
             deal.document_docs_car_provider_id,
             deal.photo_docs_car_provider_id,
@@ -477,7 +489,7 @@ async def supplier_docs_7(callback: CallbackQuery):
         await callback.answer("Документы по автомобилю от поставщика Получены")
 
 @callback_get_all_data_deal_router.callback_query(F.data == "get_docs_broker_docs_8")
-async def get_docs_broker_docs_8(callback: CallbackQuery):
+async def get_docs_broker_docs_8(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -490,6 +502,8 @@ async def get_docs_broker_docs_8(callback: CallbackQuery):
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Запросил Документы от Брокера по сделке №: {deal_id}")
         has_documents = any([
             deal.document_doc_broker_id,
             deal.photo_docs_broker_id,
@@ -528,7 +542,7 @@ async def get_docs_broker_docs_8(callback: CallbackQuery):
         await callback.answer("Документы от Брокера Получены")
 
 @callback_get_all_data_deal_router.callback_query(F.data == "transfer_rf_9")
-async def transfer_rf_9(callback: CallbackQuery):
+async def transfer_rf_9(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -541,7 +555,8 @@ async def transfer_rf_9(callback: CallbackQuery):
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
-
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Запросил Фото передачи авто в РФ по сделке №: {deal_id}")
         has_documents = any([
             deal.car_go_to_rf_photo,
             deal.car_go_to_rf_video,
@@ -571,7 +586,7 @@ async def transfer_rf_9(callback: CallbackQuery):
         await callback.answer("Фото/Видео передачи авто в РФ Получены")
 
 @callback_get_all_data_deal_router.callback_query(F.data == "border_receive_10")
-async def border_receive_10(callback: CallbackQuery):
+async def border_receive_10(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -584,7 +599,8 @@ async def border_receive_10(callback: CallbackQuery):
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
-
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Запросил Фото получения авто с Таможни сделке №: {deal_id}")
         has_documents = any([
             deal.photo_car_get_border,
             deal.video_car_get_border,
@@ -614,7 +630,7 @@ async def border_receive_10(callback: CallbackQuery):
         await callback.answer("Фото/Видео Получения Авто на границе Получены")
 
 @callback_get_all_data_deal_router.callback_query(F.data == "loading_transport_11")
-async def loading_transport_11(callback: CallbackQuery):
+async def loading_transport_11(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -627,7 +643,8 @@ async def loading_transport_11(callback: CallbackQuery):
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
-
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Запросил Фото авто на Автовозе сделке №: {deal_id}")
         has_documents = any([
             deal.photo_car_load_transportation,
             deal.video_car_load_transportation,
@@ -657,7 +674,7 @@ async def loading_transport_11(callback: CallbackQuery):
         await callback.answer("Фото/Видео Погруженного Автомобиля на Воз Получены")
 
 @callback_get_all_data_deal_router.callback_query(F.data == "get_docs_carrier_docs_12")
-async def get_docs_carrier_docs_12(callback: CallbackQuery):
+async def get_docs_carrier_docs_12(callback: CallbackQuery, bot: Bot):
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -670,7 +687,8 @@ async def get_docs_carrier_docs_12(callback: CallbackQuery):
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
-
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Запросил Документы от перевозчика по сделке №: {deal_id}")
         has_documents = any([
             deal.photo_docs_car_carrier,
             deal.docs_docs_car_carrier,

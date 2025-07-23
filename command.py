@@ -23,11 +23,8 @@ async def get_departament_by_user_id(session: AsyncSession, user_id: int) -> str
 
 @router_command.message(Command("start"))
 async def cmd_start(message: Message, bot: Bot):
-    await bot.forward_message(
-        chat_id=CHAT_LOG,
-    from_chat_id=message.chat.id,
-    message_id=message.message_id,
-    )
+    await message.forward(chat_id=CHAT_LOG)
+
     await bot.send_message(
         chat_id=CHAT_LOG,
         text=f"{message.from_user.id}",

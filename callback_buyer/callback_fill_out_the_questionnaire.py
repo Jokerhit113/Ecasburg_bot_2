@@ -9,6 +9,7 @@ from sqlalchemy import select
 from core.state_fsm import Buyer
 from data_base.db_deals import deals_session, Deals
 from data_base.db_users import User, user_session
+from settings import CHAT_LOG
 
 callback_fill_out_the_questionnaire_router = Router()
 
@@ -35,6 +36,8 @@ async def fill_out_the_questionnaire(callback: CallbackQuery, state: FSMContext)
 
 @callback_fill_out_the_questionnaire_router.message(Buyer.waiting_phone_number_buyer)
 async def get_phone_number_buyer(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     await state.update_data(phone_number = message.text)
     await message.answer("Напишите Ваш Адрес Фактического проживания:\n\n"
                          "Например: г. Екатеринбург, ул. Амундсена, д. 45, кв. 132")
@@ -42,6 +45,8 @@ async def get_phone_number_buyer(message: Message, state: FSMContext):
 
 @callback_fill_out_the_questionnaire_router.message(Buyer.waiting_for_actual_address_of_residence)
 async def get_actual_address_of_residence(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     await state.update_data(actual_address_of_residence = message.text)
     await message.answer("Напишите Ваш E-Mail:\n\n"
                          "Например: info@e-carsburg.ru")
@@ -49,6 +54,8 @@ async def get_actual_address_of_residence(message: Message, state: FSMContext):
 
 @callback_fill_out_the_questionnaire_router.message(Buyer.waiting_for_email_address)
 async def get_actual_address_of_residence(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     await state.update_data(email_address = message.text)
     reply_builder = ReplyKeyboardBuilder()
     reply_builder.add(KeyboardButton(text="ДА"))
@@ -63,6 +70,8 @@ async def get_actual_address_of_residence(message: Message, state: FSMContext):
 
 @callback_fill_out_the_questionnaire_router.message(Buyer.waiting_for_imported_yes_no)
 async def get_imported_yes_no(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     await state.update_data(imported_yes_no = message.text)
     await message.answer(
         text="Напишите информацию о наличии авто в личном пользовании (если есть, надо указать марку/модель и год выпуска авто)\n\n"
@@ -74,6 +83,8 @@ async def get_imported_yes_no(message: Message, state: FSMContext):
 
 @callback_fill_out_the_questionnaire_router.message(Buyer.waiting_for_have_car)
 async def get_have_car(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     await state.update_data(have_car = message.text)
     data = await state.get_data()
     phone_number = data['phone_number']

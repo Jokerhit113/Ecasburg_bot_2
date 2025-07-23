@@ -6,12 +6,14 @@ from sqlalchemy import select
 
 from core.state_fsm import Admin
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_end_deal_admin_router = Router()
 
 
 @callback_end_deal_admin_router.callback_query(F.data == "end_deal_admin")
-async def end_deal_admin(callback: CallbackQuery, state: FSMContext):
+async def end_deal_admin(callback: CallbackQuery, state: FSMContext, bot: Bot):
+
     lines = callback.message.caption.strip().split('\n')
     for line in lines:
         if line.startswith("Сделка №: "):
@@ -23,6 +25,8 @@ async def end_deal_admin(callback: CallbackQuery, state: FSMContext):
         )
         deal = deal.scalar_one_or_none()
         await state.update_data(deal_id=deal_id)
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} выбрал Завершить Сделку {deal_id}")
         if not deal:
             await callback.answer(text=f"Сделка №: {deal_id} не найдена", show_alert=True)
             return
@@ -35,7 +39,9 @@ async def end_deal_admin(callback: CallbackQuery, state: FSMContext):
 
 
 @callback_end_deal_admin_router.callback_query(F.data == "end_deal_admin_apply")
-async def end_deal_admin_apply(callback: CallbackQuery, state: FSMContext):
+async def end_deal_admin_apply(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} выбрал Подтвердил Завершить Сделку")
     builder = InlineKeyboardBuilder()
     builder.button(text="⬅️ Назад", callback_data=f"end_deal_admin")
     builder.adjust(1)
@@ -48,6 +54,8 @@ async def end_deal_admin_apply(callback: CallbackQuery, state: FSMContext):
 
 @callback_end_deal_admin_router.message(Admin.waiting_for_transfer_photo_car)
 async def end_deal_admin_photo(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     if not message.photo:
         await message.answer("Отправьте фото выдачи автомобиля покупателю")
         return
@@ -78,6 +86,7 @@ async def end_deal_admin_photo(message: Message, state: FSMContext):
 
 @callback_end_deal_admin_router.callback_query(F.data == "finally_end_deal_admin_apply")
 async def finally_end_deal_admin_apply(callback: CallbackQuery, state: FSMContext, bot: Bot):
+
     data = await state.get_data()
     deal_id = data["deal_id"]
     photo = data["photo"]
@@ -86,8 +95,12 @@ async def finally_end_deal_admin_apply(callback: CallbackQuery, state: FSMContex
             select(Deals).where(Deals.deal_id == deal_id)
         )
         deal = deal.scalar_one_or_none()
+
         if not deal:
             await callback.answer(text="Сделка не найдена")
+            return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name}  Завершил Сделку {deal_id}")
         deal.finally_photo = photo
         await session.commit()
         await callback.message.delete()
@@ -105,9 +118,18 @@ async def finally_end_deal_admin_apply(callback: CallbackQuery, state: FSMContex
                                       f"по этой сделке пока не удалите её через меню \n\n"
                                       f"ДЕЙСТВИЯ СО СДЕЛКОЙ -> УДАЛИТЬ ЗАКАЗ",
                                       reply_markup=builder.as_markup())
+        builder2 = InlineKeyboardBuilder()
+        builder2.button(text="❤️ ОСТАВИТЬ ОТЗЫВ", url="https://yandex.ru/profile/243636818139?lang=ru")
         await bot.send_photo(
             chat_id=deal.buyer_id,
             photo=photo,
             caption=f"{message_text}\n\n"
-                    f"Благодарим Вас за то что выбрали именно нашу компанию НАПИШИТЕ БЛЯДЬ ОТЗЫВ НЕ БУДЬТЕ УЕБАНАМИ! Спасибо, с уважением команда ЕкарсБург"
+                    f"Благодарим Вас за то что выбрали именно нашу компанию НАПИШИТЕ БЛЯДЬ ОТЗЫВ НЕ БУДЬТЕ УЕБАНАМИ! Спасибо, с уважением команда ЕкарсБург",
+            reply_markup=builder2.as_markup()
         )
+        deal.buyer_id = ""
+        deal.provider_id = ""
+        deal.broker_id = ""
+        deal.carrier_id = ""
+        await session.commit()
+        await state.clear()

@@ -6,6 +6,7 @@ from sqlalchemy import select
 
 from core.state_fsm import Buyer
 from data_base.db_deals import deals_session, Deals
+from settings import CHAT_LOG
 
 callback_foreign_currency_account_statement_router = Router()
 
@@ -38,6 +39,8 @@ async def foreign_currency_account_statement(callback: CallbackQuery, state: FSM
 
 @callback_foreign_currency_account_statement_router.message(Buyer.waiting_for_get_foreign_currency_account_statement)
 async def get_photo_or_doc_passport(message: Message, state: FSMContext):
+    await message.forward(chat_id=CHAT_LOG)
+
     data = await state.get_data()
     deal_id = data.get('deal_id')
     reply_builder = ReplyKeyboardBuilder()

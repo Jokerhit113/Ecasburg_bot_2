@@ -1,11 +1,11 @@
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from data_base.db_deals import deals_session, Deals
 from data_base.db_users import user_session, User
-
+from settings import CHAT_LOG
 
 callback_change_broker_router = Router()
 
@@ -15,7 +15,9 @@ async def get_all_broker(session: AsyncSession):
 
 
 @callback_change_broker_router.callback_query(F.data == "change_broker")
-async def change_broker(callback: CallbackQuery):
+async def change_broker(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} выбрал: Выбрать Брокера")
     async with user_session() as session:
         brokers = await get_all_broker(session)
 
@@ -37,7 +39,9 @@ async def change_broker(callback: CallbackQuery):
         )
 
 @callback_change_broker_router.callback_query(F.data.startswith("broker_"))
-async def change_broker_add(callback: CallbackQuery):
+async def change_broker_add(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} выбрал Брокера {callback.data}")
     async with user_session() as session:
         broker_data = await session.execute(select(User).where(User.id == callback.data.split("_")[-1]))
         broker_data_ = broker_data.scalar_one_or_none()
@@ -55,7 +59,8 @@ async def change_broker_add(callback: CallbackQuery):
 
 
 @callback_change_broker_router.callback_query(F.data.startswith("add_broker_"))
-async def change_broker_add_to_deal(callback: CallbackQuery):
+async def change_broker_add_to_deal(callback: CallbackQuery, bot: Bot):
+
     async with user_session() as session_user:
         # Получаем данные поставщика
         result_user = await session_user.execute(
@@ -97,4 +102,6 @@ async def change_broker_add_to_deal(callback: CallbackQuery):
                         f"Добавлен к сделке.",
                 reply_markup=builder.as_markup()
             )
+            await bot.send_message(chat_id=CHAT_LOG,
+                                   text=f"{callback.from_user.first_name} {callback.from_user.last_name} Добавил брокера {broker.name}, к сделке {deal.deal_id}")
             await callback.answer("Брокер успешно добавлен")
