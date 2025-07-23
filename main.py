@@ -2,6 +2,7 @@ import logging
 from aiogram import Bot, Router, Dispatcher
 import asyncio
 
+from TEST_FiLE import get_video_id_router
 from callback_admins.callback_add_additional_options import callback_add_additional_options_router
 from callback_admins.callback_add_contract import callback_add_contract_router
 from callback_admins.callback_add_new_deal import add_new_deal_router
@@ -116,6 +117,8 @@ async def main():
     dp.include_router(callback_get_all_data_deal_router)
     dp.include_router(callback_car_is_ready_for_delivery_router)
     dp.include_router(callback_end_deal_admin_router)
+
+    dp.include_router(get_video_id_router)
 
     await dp.start_polling(bot)
 

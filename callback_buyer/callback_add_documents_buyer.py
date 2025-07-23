@@ -5,6 +5,7 @@ from aiogram import Router, Bot, F
 from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.media_group import MediaGroupBuilder
 from sqlalchemy import select
 
 from data_base.db_deals import deals_session, Deals
@@ -14,13 +15,17 @@ callback_add_documents_buyer_router = Router()
 
 @callback_add_documents_buyer_router.callback_query(F.data == "info_add_documents_buyer")
 async def info_add_documents_buyer_info(callback: CallbackQuery):
-    file = Path(f"setting/info_load_documents")
+    file = Path(f"setting/info_load_documents.txt")
     text = file.read_text(encoding='utf-8')
     builder = InlineKeyboardBuilder()
     builder.button(text=f"УДАЛИТЬ СООБЩЕНИЕ", callback_data=f"delete_message")
     builder.adjust(1)
-
     await callback.message.answer(text=text, reply_markup=builder.as_markup())
+    media_group = MediaGroupBuilder()
+    media_group.add_video(media="BAACAgIAAxkBAAIzD2iA1hEuP3ow95XJkrLuzFJao6vpAALadQACxuUISHp94vCv29kYNgQ")
+    media_group.add_video(media="BAACAgIAAxkBAAIzEWiA1j4sfRlwIYXrLwFkk2iSnAYpAALjdQACxuUISJbEGlN6R2V2NgQ")
+    media_group.add_video(media="BAACAgIAAxkBAAIzE2iA1k_s23KRZ9Bq8upwaQZH-tRqAALGeAAC4XMISNty9t8ihCmHNgQ")
+    await callback.message.answer_media_group(media=media_group.build())
     await callback.answer()
 
 @callback_add_documents_buyer_router.callback_query(F.data == "kb_menu_load_docs")
