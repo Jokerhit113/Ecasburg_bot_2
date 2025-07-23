@@ -61,7 +61,9 @@ async def send_media_chunks(
 
 
 @callback_check_the_documents_for_the_car_router.callback_query(F.data == "check_the_documents_for_the_car")
-async def check_the_documents_for_the_car_router(callback: CallbackQuery):
+async def check_the_documents_for_the_car_router(callback: CallbackQuery, bot: Bot):
+
+
     try:
         caption = callback.message.caption
         deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
@@ -79,7 +81,8 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
             if not deals:
                 await callback.answer("Сделка не найдена", show_alert=True)
                 return
-
+            await bot.send_message(chat_id=CHAT_LOG,
+                                   text=f"{callback.from_user.first_name} {callback.from_user.last_name} Брокер запросил проверку документов авто по сделке {deal_id}")
             # Проверка наличия документов
             if not deals.photo_docs_car_provider_id and not deals.document_docs_car_provider_id:
                 await callback.answer("Документы ещё не загружены Поставщиком", show_alert=True)
@@ -153,6 +156,11 @@ async def accept_the_documents_car_provider(callback: CallbackQuery, state: FSMC
             select(Deals).where(Deals.deal_id == deal_id)
         )
         deals = deals.scalar_one_or_none()
+        if not deals:
+            await callback.answer("Сделка не найдена", show_alert=True)
+            return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} Брокер Принял документы авто по сделке {deal_id}")
 
         deals.confirmation_of_acceptance_of_documents_from_suppliers = "Документы приняты"
 
@@ -180,7 +188,9 @@ async def accept_the_documents_car_provider(callback: CallbackQuery, state: FSMC
         )
 
 @callback_check_the_documents_for_the_car_router.callback_query(F.data == "load_cmr_file")
-async def load_cmr_file(callback: CallbackQuery, state: FSMContext):
+async def load_cmr_file(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Брокер Выбрал загрузить CMR файл")
     await callback.message.answer(text="Загрузите СMR файл")
     await callback.answer(text="Загрузите СMR файл", show_alert=True)
     await state.set_state(Broker.waiting_for_cmr_file)
@@ -234,7 +244,9 @@ async def waiting_for_cmr_file(message: Message, state: FSMContext, bot: Bot):
 
 
 @callback_check_the_documents_for_the_car_router.callback_query(F.data == "load_uin_text")
-async def load_uin_text(callback: CallbackQuery, state: FSMContext):
+async def load_uin_text(callback: CallbackQuery, state: FSMContext, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Брокер Выбрал загрузить УИН код")
     await callback.message.answer(text="Напишите УИН код 1 сообщением:")
     await callback.answer(text="Напишите УИН код 1 сообщением", show_alert=True)
     await state.set_state(Broker.waiting_for_uin_text)
@@ -286,7 +298,7 @@ async def waiting_for_uin_text(message: Message, state: FSMContext, bot: Bot):
 
 
 @callback_check_the_documents_for_the_car_router.callback_query(F.data == "reject_the_documents_car_provider")
-async def reject_the_documents_car_provider(callback: CallbackQuery, state: FSMContext):
+async def reject_the_documents_car_provider(callback: CallbackQuery, state: FSMContext, bot: Bot):
     async with deals_session() as session:
         text = callback.message.text
         deal_id = int(text.split('\n')[0].split('Сделка №: ')[1])
@@ -294,6 +306,11 @@ async def reject_the_documents_car_provider(callback: CallbackQuery, state: FSMC
             select(Deals).where(Deals.deal_id == deal_id)
         )
         deals = deals.scalar_one_or_none()
+        if not deals:
+            await callback.answer("Сделка не найдена", show_alert=True)
+            return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} Брокер Отклонил документы авто по сделке {deal_id}")
 
         deals.confirmation_of_acceptance_of_documents_from_suppliers = ""
 
@@ -336,6 +353,11 @@ async def accept_the_reason_provider(callback: CallbackQuery, state: FSMContext,
             select(Deals).where(Deals.deal_id == deal_id)
         )
         deals = deals.scalar_one_or_none()
+        if not deals:
+            await callback.answer("Сделка не найдена", show_alert=True)
+            return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} Брокер Отправил запрос на исправление документов авто по сделке {deal_id}")
         message_text = (
             f"Сделка №: {deals.deal_id}\n"
             f"Покупатель: {deals.buy_user}\n"
@@ -369,6 +391,11 @@ async def fixed_it_document_provider(callback: CallbackQuery, bot: Bot):
             select(Deals).where(deal_id == Deals.deal_id)
         )
         deals = deals.scalar_one_or_none()
+        if not deals:
+            await callback.answer("Сделка не найдена", show_alert=True)
+            return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} Брокер Получил уведомление об исправлении ошибок в документах авто по сделке {deal_id}")
         message_text = (
             f"Сделка №: {deals.deal_id}\n"
             f"Покупатель: {deals.buy_user}\n"

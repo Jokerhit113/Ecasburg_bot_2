@@ -8,6 +8,7 @@ from sqlalchemy import select
 from data_base.db_deals import deals_session, Deals
 from data_base.db_users import user_session, User
 from keyboard.inline_keyboard import kb_broker_main
+from settings import CHAT_LOG
 
 callback_end_deal_broker_router = Router()
 
@@ -64,8 +65,11 @@ async def end_deal_broker(callback: CallbackQuery, bot: Bot):
             select(Deals).where(Deals.deal_id == deal_id)
         )
         deal = deal.scalar_one_or_none()
-
-
+        if not deal:
+            await callback.answer("Сделка не найдена")
+            return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} Брокер Выбрал Завершить сделку {deal_id}")
 
         async with user_session() as u_session:
             users = await u_session.execute(

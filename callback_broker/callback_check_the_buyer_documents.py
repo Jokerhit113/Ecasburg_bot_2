@@ -59,7 +59,8 @@ async def send_media_chunks(
 
 
 @callback_check_the_buyer_documents_router.callback_query(F.data == "check_the_buyer_documents")
-async def check_the_documents_for_the_car_router(callback: CallbackQuery):
+async def check_the_documents_for_the_car_router(callback: CallbackQuery, bot: Bot):
+
     try:
         caption = callback.message.caption
         deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
@@ -75,6 +76,8 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery):
             if not deals:
                 await callback.answer("Сделка не найдена", show_alert=True)
                 return
+            await bot.send_message(chat_id=CHAT_LOG,
+                                   text=f"{callback.from_user.first_name} {callback.from_user.last_name} Выбрал проверить документы по сделке {deal_id}")
 
             # Проверка наличия документов
             has_documents = any([
@@ -271,6 +274,11 @@ async def accept_the_documents_buyer(callback: CallbackQuery, bot: Bot):
         deals = await session.execute(
             select(Deals).where(deal_id == Deals.deal_id)
         )
+        if not deals:
+            await callback.answer("Сделка не найдена")
+            return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} Принял документы по сделке {deal_id}")
         deals = deals.scalar_one_or_none()
 
         deals.confirmation_of_acceptance_of_documents_from_buyer = "Документы приняты"
@@ -297,7 +305,7 @@ async def accept_the_documents_buyer(callback: CallbackQuery, bot: Bot):
         )
 
 @callback_check_the_buyer_documents_router.callback_query(F.data == "reject_the_documents_buyer")
-async def reject_the_documents_buyer(callback: CallbackQuery, state: FSMContext):
+async def reject_the_documents_buyer(callback: CallbackQuery, state: FSMContext, bot: Bot):
     async with deals_session() as session:
         text = callback.message.text
         deal_id = int(text.split('\n')[0].split('Сделка №: ')[1])
@@ -305,6 +313,11 @@ async def reject_the_documents_buyer(callback: CallbackQuery, state: FSMContext)
             select(Deals).where(deal_id == Deals.deal_id)
         )
         deals = deals.scalar_one_or_none()
+        if not deals:
+            await callback.answer("Сделка не найдена")
+            return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} НЕ Принял документы по сделке {deal_id}")
 
         deals.confirmation_of_acceptance_of_documents_from_buyer = ""
 
@@ -347,6 +360,11 @@ async def accept_the_reason_buyer(callback: CallbackQuery, state: FSMContext, bo
             select(Deals).where(deal_id == Deals.deal_id)
         )
         deals = deals.scalar_one_or_none()
+        if not deals:
+            await callback.answer("Сделка не найдена")
+            return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} Отправил Покупателю запрос на исправление документов по сделке {deal_id}")
         message_text = (
             f"Сделка №: {deals.deal_id}\n"
             f"Покупатель: {deals.buy_user}\n"
@@ -381,6 +399,11 @@ async def fixed_it_document_buyer(callback: CallbackQuery, bot: Bot):
             select(Deals).where(deal_id == Deals.deal_id)
         )
         deals = deals.scalar_one_or_none()
+        if not deals:
+            await callback.answer("Сделка не найдена")
+            return
+        await bot.send_message(chat_id=CHAT_LOG,
+                               text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель подтвердил исправление документов по сделке {deal_id}")
         message_text = (
             f"Сделка №: {deals.deal_id}\n"
             f"Покупатель: {deals.buy_user}\n"

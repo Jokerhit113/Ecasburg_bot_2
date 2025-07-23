@@ -8,11 +8,14 @@ from sqlalchemy import select
 from data_base.db_deals import deals_session, Deals
 from data_base.db_users import user_session, User
 from keyboard.inline_keyboard import kb_broker_main
+from settings import CHAT_LOG
 
 callback_check_deals_broker_router = Router()
 
 @callback_check_deals_broker_router.callback_query(F.data == "check_deals_broker")
-async def check_deals_broker(callback: CallbackQuery):
+async def check_deals_broker(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Выбрал все сделки Брокера")
     async with deals_session() as session:
         deals = await session.execute(
             select(Deals).where(Deals.broker_id == callback.from_user.id)
@@ -33,7 +36,7 @@ async def check_deals_broker(callback: CallbackQuery):
 
 
 @callback_check_deals_broker_router.callback_query(F.data.startswith("list_broker_check_deal_"))
-async def show_deal_broker_list(callback: CallbackQuery):
+async def show_deal_broker_list(callback: CallbackQuery, bot: Bot):
     async with deals_session() as session:
         try:
             deal_id = callback.data.split("_")[-1]
@@ -45,6 +48,8 @@ async def show_deal_broker_list(callback: CallbackQuery):
             if not deal:
                 await callback.answer(text="Сделка не найдена")
                 return
+            await bot.send_message(chat_id=CHAT_LOG,
+                                   text=f"{callback.from_user.first_name} {callback.from_user.last_name} Выбрал сделку {deal_id}")
 
             if not deal.confirmation_of_acceptance_of_documents_from_suppliers:
                 check_the_documents_for_the_car_btn = "⚠️"  # Нет ни фото, ни видео
@@ -105,7 +110,9 @@ async def show_deal_broker_list(callback: CallbackQuery):
 
 
 @callback_check_deals_broker_router.callback_query(F.data == "back_to_main_menu_broker")
-async def back_to_main_menu_broker(callback: CallbackQuery):
+async def back_to_main_menu_broker(callback: CallbackQuery, bot: Bot):
+    await bot.send_message(chat_id=CHAT_LOG,
+                           text=f"{callback.from_user.first_name} {callback.from_user.last_name} Вернулся в меню Брокера")
     await callback.message.delete()
     await callback.message.answer(text="Добро пожаловать в меню Брокера E-CarsBurg.\n\n"
                                           "Воспользуйтесь кнопкой ниже для получения списка Ваших сделок.",
