@@ -179,14 +179,13 @@ async def callback_get_deals_check_status(callback: CallbackQuery, bot: Bot):
                 else:
                     car_payment_btn = "✅"
 
-                if not deal.passport_photos and not deal.passport_documents and not deal.buyer_driver_license_photo and not deal.buyer_driver_license_photo and not deal.foreign_currency_account_statement_photo and not deal.foreign_currency_account_statement_docs and not deal.cash_flow_statement_photos and not deal.cash_flow_statement_docs and deal.snils_buyer_photos and not deal.snils_buyer_docs and not deal.buyer_phone_number and not deal.elpts_registration_photo:
+                if not deal.passport_photos and not deal.passport_documents and not deal.buyer_driver_license_photo and not deal.buyer_driver_license_photo and not deal.foreign_currency_account_statement_photo and not deal.foreign_currency_account_statement_docs and not deal.cash_flow_statement_photos and not deal.cash_flow_statement_docs and not deal.snils_buyer_photos and not deal.snils_buyer_docs and not deal.buyer_phone_number and not deal.elpts_registration_photo:
                     load_buyer_doc_btn = "⚠️"
                 else:
                     load_buyer_doc_btn = "✅"
 
-
                 if deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
-                    car_redemption_btn = f"✅ Доставка до Поставщика - {deal.delivery_time_car_to_provider} "
+                    car_redemption_btn = f"✅ \nДоставка до Поставщика - {deal.delivery_time_car_to_provider}"
                 elif car_payment_btn == "✅":
                     car_redemption_btn = "⚠️"
                 else:
@@ -194,14 +193,13 @@ async def callback_get_deals_check_status(callback: CallbackQuery, bot: Bot):
 
                 if deal.provider_photo_car_before_border_id or deal.provider_video_car_before_border_id and deal.buy_car_provider_photo_id or deal.buy_car_provider_video_id:
                     car_awersome_buy_btn = "✅"
-                elif car_redemption_btn == "✅":
+                elif car_redemption_btn == f"✅ \nДоставка до Поставщика - {deal.delivery_time_car_to_provider}":
                     car_awersome_buy_btn = "⚠️"
-
                 else:
                     car_awersome_buy_btn = "❕"
 
                 if deal.provider_photo_car_before_border_id or deal.provider_video_car_before_border_id:
-                    car_go_to_border_btn = f"✅ Доставка до границы - {deal.delivery_time_car_to_border}"
+                    car_go_to_border_btn = f"✅ \nДоставка до границы - {deal.delivery_time_car_to_border}"
                 elif car_awersome_buy_btn == "✅":
                     car_go_to_border_btn = "⚠️"
                 else:
@@ -209,9 +207,8 @@ async def callback_get_deals_check_status(callback: CallbackQuery, bot: Bot):
 
                 if deal.provider_photo_car_border_id or deal.provider_video_car_border_id:
                     car_to_border_btn = f"✅"
-                elif car_go_to_border_btn == "✅":
+                elif car_go_to_border_btn == f"✅ \nДоставка до границы - {deal.delivery_time_car_to_border}":
                     car_to_border_btn = "⚠️"
-
                 else:
                     car_to_border_btn = "❕"
 
@@ -237,6 +234,11 @@ async def callback_get_deals_check_status(callback: CallbackQuery, bot: Bot):
                 else:
                     car_delivery_for_rf_btn = "❕"
 
+                if deal.car_is_ready_for_delivery:
+                    car_is_ready_for_delivery_btn = "✅"
+                else:
+                    car_is_ready_for_delivery_btn = "❕"
+
                 # Формируем текст сообщения
                 caption_text = (
                     f"ID: {deal.id}\n"
@@ -254,16 +256,16 @@ async def callback_get_deals_check_status(callback: CallbackQuery, bot: Bot):
                     f"Статус оплаты счёта Покупателем от Брокера: {deal.payment_document_invoice_to_buyer_yes_no}\n\n"
                     
                     f"Статус Заказа:\n"
-                    f"Оплата автомобиля {car_payment_btn}\n"
-                    f"Загрузка документов Покупателя {load_buyer_doc_btn}\n"
-                    f"Выкуп авто {car_redemption_btn} \n"
-                    f"Автомобиль у поставщика{car_awersome_buy_btn}\n"
-                    f"Автомобиль отправлен до границы {car_go_to_border_btn}\n"
-                    f"Автомобиль на пересечении границы {car_to_border_btn}\n"
-                    f"Таможенное оформление {car_from_border_btn}\n"
-                    f"Ожидание погрузки автомобиля на автовоз {car_waiting_for_delivery_btn}\n"
-                    f"Доставка по РФ {car_delivery_for_rf_btn}\n"
-                    f"Готов к выдаче\n\n"
+                    f"🔹1 Оплата автомобиля {car_payment_btn}\n"
+                    f"🔹2 Загрузка документов Покупателя {load_buyer_doc_btn}\n"
+                    f"🔹3 Выкуп авто {car_redemption_btn} \n"
+                    f"🔹4 Автомобиль у поставщика{car_awersome_buy_btn}\n"
+                    f"🔹5 Автомобиль отправлен до границы {car_go_to_border_btn}\n"
+                    f"🔹6 Автомобиль на пересечении границы {car_to_border_btn}\n"
+                    f"🔹7 Таможенное оформление {car_from_border_btn}\n"
+                    f"🔹8 Ожидание погрузки автомобиля на автовоз {car_waiting_for_delivery_btn}\n"
+                    f"🔹9 Доставка по РФ {car_delivery_for_rf_btn}\n"
+                    f"🔹10 Готов к выдаче {car_is_ready_for_delivery_btn}\n\n"
 
                     f"❕ - Ещё не начат\n"
                     f"⚠️ - В процессе выполнения\n"

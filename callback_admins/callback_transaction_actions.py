@@ -55,7 +55,7 @@ async def transaction_actions(callback: CallbackQuery, bot: Bot):
     else:
         add_additional_options_btn = "✅"  # Есть хотя бы что-то из этого
 
-    if not deal.photo_docs_car_carrier and deal.docs_docs_car_carrier:
+    if not deal.photo_docs_car_carrier and not deal.docs_docs_car_carrier:
         already_for_issue = "❌"  # Нет ни фото, ни видео
     else:
         already_for_issue = "✅"  # Есть хотя бы что-то из этого
