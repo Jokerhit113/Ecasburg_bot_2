@@ -22,7 +22,7 @@ async def confirmation_payment_buyer_provider(callback: CallbackQuery, bot: Bot)
             )
             deal = deal.scalar_one_or_none()
             if not deal:
-                await callback.answer("Сделка не найдена")
+                await callback.answer("The transaction was not found")
                 return
             await bot.send_message(chat_id=CHAT_LOG,
                                    text=f"{callback.from_user.first_name} {callback.from_user.last_name} Поставщик Подтвердил оплату автомобиля Покупателем по сделке {deal_id}")
@@ -30,10 +30,10 @@ async def confirmation_payment_buyer_provider(callback: CallbackQuery, bot: Bot)
             await session.commit()
 
             await bot.send_message(chat_id = deal.buyer_id, text="Поставщик подтвердил получение денежных средств ✅")
-            await callback.answer("Уведомление Покупателю отправлено! ✅")
+            await callback.answer("The notification has been sent to the Buyer! ✅")
             await callback.message.delete_reply_markup()
             await callback.message.edit_text(text=f"{callback.message.text}\n\n"
-                                                  f"Подтверждение отправлено! ✅")
+                                                  f"Confirmation has been sent! ✅")
 
     except Exception as e:
         logging.error(f"Error in confirmation_payment_buyer_provider: {e}", exc_info=True)

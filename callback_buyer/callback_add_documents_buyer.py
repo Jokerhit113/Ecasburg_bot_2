@@ -25,9 +25,10 @@ async def info_add_documents_buyer_info(callback: CallbackQuery, bot: Bot):
     builder.adjust(1)
     await callback.message.answer(text=text, reply_markup=builder.as_markup())
     media_group = MediaGroupBuilder()
-    media_group.add_video(media="BAACAgIAAxkBAAIzD2iA1hEuP3ow95XJkrLuzFJao6vpAALadQACxuUISHp94vCv29kYNgQ")
-    media_group.add_video(media="BAACAgIAAxkBAAIzEWiA1j4sfRlwIYXrLwFkk2iSnAYpAALjdQACxuUISJbEGlN6R2V2NgQ")
-    media_group.add_video(media="BAACAgIAAxkBAAIzE2iA1k_s23KRZ9Bq8upwaQZH-tRqAALGeAAC4XMISNty9t8ihCmHNgQ")
+    media_group.add_video(media="BAACAgIAAxkBAAI11miB_5G6flWMBeUubz10WFbJDaw4AAJTewACA6wJSNGTFKoeE8JLNgQ", caption="Инструкция: Как открыть счёт в Юанях в ВТБ приложении")
+    media_group.add_video(media="BAACAgIAAxkBAAI12GiB_7sYohZMbFET-1eS0IBsAQd2AAJUewACA6wJSNQuclG8a00QNgQ", caption="Конвертируем Рубли в Юани")
+    media_group.add_video(media="BAACAgIAAxkBAAI12miB__Cwp3B2ER5dZ62nNRzMjNzGAAIVfQACA6wJSBIEfEh_52hVNgQ", caption="Как оплачивать автомобиль")
+    media_group.add_video(media="BAACAgIAAxkBAAI1x2iB_ffuFenoqFbMZ7d_adCG5-PlAAI3bQACA6wRSCr2HqlHN_YPNgQ", caption="Инструкция: Как получить Справку и Выписку с валютного счёта")
     await callback.message.answer_media_group(media=media_group.build())
     await callback.answer()
 

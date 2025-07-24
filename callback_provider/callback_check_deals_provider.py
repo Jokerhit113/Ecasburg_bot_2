@@ -26,12 +26,12 @@ async def check_deals_provider(callback: CallbackQuery, bot: Bot):
             for deal in deals:
                 builder.button(text=f"{deal.deal_id} {deal.buy_user}",
                                callback_data=f"check_deal_{deal.deal_id}")
-            builder.button(text="Вернуться в меню", callback_data="back_to_main_menu_provider")
+            builder.button(text="Back to main menu", callback_data="back_to_main_menu_provider")
             builder.adjust(1)
-            await callback.message.edit_text(text="Выберете сделку:",
+            await callback.message.edit_text(text="Choose a deal:",
                                              reply_markup=builder.as_markup())
         else:
-            await callback.answer(text="У Вас пока что нет сделок!")
+            await callback.answer(text="You don't have any deals yet!")
 
 
 @callback_check_deals_provider_router.callback_query(F.data.startswith("check_deal_"))
@@ -48,7 +48,7 @@ async def show_deal_details(callback: CallbackQuery, state: FSMContext):
             deal = result.scalar_one_or_none()
 
             if not deal:
-                await callback.answer("Сделка не найдена", show_alert=True)
+                await callback.answer("The transaction was not found", show_alert=True)
                 return
 
             # Подтверждение выкупа автомобиля
@@ -102,13 +102,13 @@ async def show_deal_details(callback: CallbackQuery, state: FSMContext):
 
             # Создаем клавиатуру для возврата
             builder = InlineKeyboardBuilder()
-            builder.button(text=f"{payment_btn} Авто Выкуплен", callback_data=f"buy_car_provider")
-            builder.button(text=f"{video_car_before_btn} Отправка авто до границы", callback_data=f"media_car_before_border")
-            builder.button(text=f"{video_car_border_btn} Доставка авто на границу", callback_data=f"media_car_delivered_border")
-            builder.button(text=f"{docs_car_provider_btn} Документы по автомобилю", callback_data=f"load_docs_car_provider")
-            builder.button(text=f"{get_cmr_uin_btn} Запросить CMR и УИН у Брокера", callback_data=f"request_cmr_and_uin_from_the_broker")
-            builder.button(text=f"{car_go_to_rf_btn} Передача авто в РФ", callback_data=f"car_go_to_rf")
-            builder.button(text="⬅️ Назад к списку", callback_data="back_check_deals_provider")
+            builder.button(text=f"{payment_btn} The car was purchased", callback_data=f"buy_car_provider")
+            builder.button(text=f"{video_car_before_btn} Sending a car to the border", callback_data=f"media_car_before_border")
+            builder.button(text=f"{video_car_border_btn} Car delivery to the border", callback_data=f"media_car_delivered_border")
+            builder.button(text=f"{docs_car_provider_btn} Documents on the car", callback_data=f"load_docs_car_provider")
+            builder.button(text=f"{get_cmr_uin_btn} Request CMR and UIN from the Broker", callback_data=f"request_cmr_and_uin_from_the_broker")
+            builder.button(text=f"{car_go_to_rf_btn} Car transfer in the Russian", callback_data=f"car_go_to_rf")
+            builder.button(text="⬅️ Back to deals", callback_data="back_check_deals_provider")
             builder.adjust(1)
             await callback.message.delete()
 
@@ -133,7 +133,7 @@ async def request_crm_and_uin_from_the_broker(callback: CallbackQuery, bot: Bot,
                                 )
         deal = deal.scalar_one_or_none()
         if not deal.broker_id:
-            await callback.answer(text="Брокер сделки ещё не назначен", show_alert=True)
+            await callback.answer(text="The broker of the transaction has not yet been appointed", show_alert=True)
             return
         await bot.send_message(chat_id=CHAT_LOG,
                                text=f"{callback.from_user.first_name} {callback.from_user.last_name} Поставщик запросил проверку документов по сделке {deal_id}")
@@ -160,10 +160,10 @@ async def request_crm_and_uin_from_the_broker(callback: CallbackQuery, bot: Bot,
                 reply_markup=builder.as_markup()
             )
             await callback.answer()
-            await callback.message.answer("Запрос Брокеру на получение CMR и УИН Отправлен ✅")
+            await callback.message.answer("Request to the Broker for CMR and UIN Received ✅")
         else:
             await callback.answer(
-                text="Не все документы по автомобилю загружены",
+                text="Not all documents on the car have been uploaded",
                 show_alert=True)
             return
 
@@ -184,9 +184,9 @@ async def back_check_deals_provider(callback: CallbackQuery, bot: Bot):
             for deal in deals:
                 builder.button(text=f"{deal.deal_id} {deal.buy_user}",
                                callback_data=f"check_deal_{deal.deal_id}")
-            builder.button(text="Вернуться в меню", callback_data="back_to_main_menu_provider")
+            builder.button(text="Back to main menu", callback_data="back_to_main_menu_provider")
             builder.adjust(1)
-            await callback.message.answer(text="Выберете сделку:",
+            await callback.message.answer(text="Choose a deal:",
                                              reply_markup=builder.as_markup())
 
 @callback_check_deals_provider_router.callback_query(F.data == "back_to_main_menu_provider")
