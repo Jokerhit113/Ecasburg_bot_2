@@ -21,6 +21,7 @@ class Admin(StatesGroup):
     waiting_for_load_contract = State()
 
 class Buyer(StatesGroup):
+    waiting_for_feedback_buyer = State()
     waiting_for_upload_inn = State()
     waiting_for_question_call = State()
     waiting_for_upload_payment_document_invoice_to_buyer = State()

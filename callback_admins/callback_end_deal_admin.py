@@ -119,12 +119,18 @@ async def finally_end_deal_admin_apply(callback: CallbackQuery, state: FSMContex
                                       f"ДЕЙСТВИЯ СО СДЕЛКОЙ -> УДАЛИТЬ ЗАКАЗ",
                                       reply_markup=builder.as_markup())
         builder2 = InlineKeyboardBuilder()
-        builder2.button(text="❤️ ОСТАВИТЬ ОТЗЫВ", url="https://yandex.ru/profile/243636818139?lang=ru")
+        builder2.button(text="❤️ ОСТАВИТЬ ОТЗЫВ", callback_data="feedback_buyer")
         await bot.send_photo(
             chat_id=deal.buyer_id,
             photo=photo,
             caption=f"{message_text}\n\n"
-                    f"Благодарим Вас за то что выбрали именно нашу компанию НАПИШИТЕ БЛЯДЬ ОТЗЫВ НЕ БУДЬТЕ УЕБАНАМИ! Спасибо, с уважением команда ЕкарсБург",
+                    f"{deal.buy_user}! Надеемся, ваш {deal.march_model} уже приносит Вам радость за рулём! 🌟\n\n"  
+                    "Для нас важно, чтобы каждый клиент оставался доволен. Если у вас есть пара минут, поделитесь, "
+                    "пожалуйста, впечатлениями о нашей работе: что нам стоит улучшить или что понравилось особенно?\n\n"  
+                    "Нам важен любой отзыв — даже пара слов. 💬\n"
+                    "Заранее спасибо за честность! Ваше мнение поможет нам делать сервис ещё удобнее.\n\n" 
+                    "Хороших дорог!\n"
+                    "С Уважением команда E-CarsBurg 😎",
             reply_markup=builder2.as_markup()
         )
         deal.buyer_id = ""

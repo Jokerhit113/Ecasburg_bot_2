@@ -33,6 +33,7 @@ from callback_buyer.callback_call_manager import callback_call_manager_router
 from callback_buyer.callback_cash_flow_statement import callback_cash_flow_statement_router
 from callback_buyer.callback_check_deals_buyer import callback_check_deals_buyer_router
 from callback_buyer.callback_check_status_buyer import callback_check_status_buyer_router
+from callback_buyer.callback_feedback_buyer import callback_feedback_buyer_router
 from callback_buyer.callback_fill_out_the_questionnaire import callback_fill_out_the_questionnaire_router
 from callback_buyer.callback_foreign_currency_account_statement import \
     callback_foreign_currency_account_statement_router
@@ -117,6 +118,7 @@ async def main():
     dp.include_router(callback_get_all_data_deal_router)
     dp.include_router(callback_car_is_ready_for_delivery_router)
     dp.include_router(callback_end_deal_admin_router)
+    dp.include_router(callback_feedback_buyer_router)
 
     dp.include_router(get_video_id_router)
 
