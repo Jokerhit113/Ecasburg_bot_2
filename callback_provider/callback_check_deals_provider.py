@@ -127,7 +127,7 @@ async def request_crm_and_uin_from_the_broker(callback: CallbackQuery, bot: Bot,
 
     async with deals_session() as session:
         caption = callback.message.caption
-        deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
+        deal_id = caption.split('\n')[0].split('Сделка №: ')[1]
         deal = await session.execute(
             select(Deals).where(Deals.deal_id == deal_id)
                                 )

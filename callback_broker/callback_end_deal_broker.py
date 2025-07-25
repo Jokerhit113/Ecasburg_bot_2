@@ -59,7 +59,7 @@ async def send_media_chunks(
 async def end_deal_broker(callback: CallbackQuery, bot: Bot):
 
     text = callback.message.caption
-    deal_id = int(text.split('\n')[0].split('Сделка №: ')[1])
+    deal_id = text.split('\n')[0].split('Сделка №: ')[1]
     async with deals_session() as session:
         deal = await session.execute(
             select(Deals).where(Deals.deal_id == deal_id)

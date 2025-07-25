@@ -25,17 +25,17 @@ async def info_add_documents_buyer_info(callback: CallbackQuery, bot: Bot):
     builder.adjust(1)
     await callback.message.answer(text=text, reply_markup=builder.as_markup())
     media_group = MediaGroupBuilder()
-    media_group.add_video(media="BAACAgIAAxkBAAI11miB_5G6flWMBeUubz10WFbJDaw4AAJTewACA6wJSNGTFKoeE8JLNgQ", caption="Инструкция: Как открыть счёт в Юанях в ВТБ приложении")
-    media_group.add_video(media="BAACAgIAAxkBAAI12GiB_7sYohZMbFET-1eS0IBsAQd2AAJUewACA6wJSNQuclG8a00QNgQ", caption="Конвертируем Рубли в Юани")
-    media_group.add_video(media="BAACAgIAAxkBAAI12miB__Cwp3B2ER5dZ62nNRzMjNzGAAIVfQACA6wJSBIEfEh_52hVNgQ", caption="Как оплачивать автомобиль")
-    media_group.add_video(media="BAACAgIAAxkBAAI1x2iB_ffuFenoqFbMZ7d_adCG5-PlAAI3bQACA6wRSCr2HqlHN_YPNgQ", caption="Инструкция: Как получить Справку и Выписку с валютного счёта")
+    media_group.add_video(media="BAACAgIAAxkBAAMIaIOXxd3reHOI6u7GQdwikYxe1IwAAlN7AAIDrAlInMSMhvKpzww2BA", caption="Инструкция: Как открыть счёт в Юанях в ВТБ приложении")
+    media_group.add_video(media="BAACAgIAAxkBAAMKaIOX7ed_mE0uJYgFtjvJV3j7KUMAAlR7AAIDrAlILMyRyFX3-Ns2BA", caption="Конвертируем Рубли в Юани")
+    media_group.add_video(media="BAACAgIAAxkBAAMMaIOYFdIbyqm_mFgXcJMvflAMq3AAAhV9AAIDrAlIlTFHwK-y2CE2BA", caption="Как оплачивать автомобиль")
+    media_group.add_video(media="BAACAgIAAxkBAAMOaIOYNUoIkdS1EYjzMatc4bedZMcAAjdtAAIDrBFIGPJgjcWOJZ42BA", caption="Инструкция: Как получить Справку и Выписку с валютного счёта")
     await callback.message.answer_media_group(media=media_group.build())
     await callback.answer()
 
 @callback_add_documents_buyer_router.callback_query(F.data == "kb_menu_load_docs")
 async def kb_menu_load_docs(callback: CallbackQuery, state: FSMContext):
     caption = callback.message.caption
-    deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
+    deal_id = caption.split('\n')[0].split('Ваша Сделка №: ')[1]
     async with deals_session() as session:
         deal = await session.execute(
             select(Deals).where(Deals.deal_id == deal_id)

@@ -14,7 +14,7 @@ async def callback_check_status_buyer(callback: CallbackQuery, bot: Bot):
                            text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Проверить статус сделки")
 
     caption = callback.message.caption
-    deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
+    deal_id = caption.split('\n')[0].split('Ваша Сделка №: ')[1]
     async with deals_session() as session:
         deal = await session.execute(
             select(Deals).where(Deals.deal_id == deal_id)

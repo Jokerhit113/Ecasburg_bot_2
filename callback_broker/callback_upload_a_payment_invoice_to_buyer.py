@@ -17,7 +17,7 @@ callback_upload_a_payment_invoice_to_buyer_router = Router()
 @callback_upload_a_payment_invoice_to_buyer_router.callback_query(F.data == "upload_a_payment_invoice_to_buyer")
 async def upload_a_payment_invoice_to_buyer(callback: CallbackQuery, state: FSMContext, bot: Bot):
     caption = callback.message.caption
-    deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
+    deal_id = caption.split('\n')[0].split('Сделка №: ')[1]
     await bot.send_message(chat_id=CHAT_LOG,
                            text=f"{callback.from_user.first_name} {callback.from_user.last_name} Брокер Выбрал загрузить счёт на оплату таможни по сделке {deal_id}")
     await state.update_data(deal_id=deal_id)
@@ -174,7 +174,7 @@ async def get_payment_invoice_to_buyer(message: Message, state: FSMContext, bot:
 @callback_upload_a_payment_invoice_to_buyer_router.callback_query(F.data == "accept_payment_invoice_to_buyer")
 async def accept_payment_invoice_to_buyer(callback: CallbackQuery, state: FSMContext, bot: Bot):
     caption = callback.message.caption
-    deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
+    deal_id = caption.split('\n')[0].split('Сделка №: ')[1]
     await bot.send_message(chat_id=CHAT_LOG,
                            text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал оплатить счёт по Таможне по сделке {deal_id}")
     await state.update_data(deal_id=deal_id)
@@ -227,7 +227,7 @@ async def upload_payment_document_invoice_to_buyer(message: Message, state: FSMC
 @callback_upload_a_payment_invoice_to_buyer_router.callback_query(F.data == "accept_payment_document_invoice_to_buyer")
 async def accept_payment_document_invoice_to_buyer(callback: CallbackQuery, bot: Bot):
     caption = callback.message.caption
-    deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
+    deal_id = caption.split('\n')[0].split('Сделка №: ')[1]
     async with deals_session() as session:
         deal = await session.execute(
             select(Deals).where(Deals.deal_id == deal_id)

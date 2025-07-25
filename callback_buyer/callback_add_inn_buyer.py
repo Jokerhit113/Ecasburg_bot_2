@@ -18,7 +18,7 @@ async def inn_buyer(callback: CallbackQuery, state: FSMContext, bot: Bot):
                            text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Загрузить ИНН")
     """Обработчик начала процесса подтверждения оплаты"""
     caption = callback.message.caption
-    deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
+    deal_id = caption.split('\n')[0].split('Ваша Сделка №: ')[1]
     await state.update_data(deal_id=deal_id)
     try:
         builder = InlineKeyboardBuilder()

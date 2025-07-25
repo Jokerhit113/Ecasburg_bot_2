@@ -66,7 +66,7 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery, bot: B
 
     try:
         caption = callback.message.caption
-        deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
+        deal_id = caption.split('\n')[0].split('Сделка №: ')[1]
         async with deals_session() as session:
             builder = InlineKeyboardBuilder()
             builder.button(text="✅ Принять Документы", callback_data="accept_the_documents_car_provider")
@@ -150,7 +150,7 @@ async def check_the_documents_for_the_car_router(callback: CallbackQuery, bot: B
 async def accept_the_documents_car_provider(callback: CallbackQuery, state: FSMContext, bot: Bot):
     async with deals_session() as session:
         text = callback.message.text
-        deal_id = int(text.split('\n')[0].split('Сделка №: ')[1])
+        deal_id = text.split('\n')[0].split('Сделка №: ')[1]
         await state.update_data(deal_id=deal_id)
         deals = await session.execute(
             select(Deals).where(Deals.deal_id == deal_id)
@@ -301,7 +301,7 @@ async def waiting_for_uin_text(message: Message, state: FSMContext, bot: Bot):
 async def reject_the_documents_car_provider(callback: CallbackQuery, state: FSMContext, bot: Bot):
     async with deals_session() as session:
         text = callback.message.text
-        deal_id = int(text.split('\n')[0].split('Сделка №: ')[1])
+        deal_id = text.split('\n')[0].split('Сделка №: ')[1]
         deals = await session.execute(
             select(Deals).where(Deals.deal_id == deal_id)
         )
@@ -386,7 +386,7 @@ async def accept_the_reason_provider(callback: CallbackQuery, state: FSMContext,
 async def fixed_it_document_provider(callback: CallbackQuery, bot: Bot):
     async with deals_session() as session:
         text = callback.message.caption
-        deal_id = int(text.split('\n')[0].split('Сделка №: ')[1])
+        deal_id = text.split('\n')[0].split('Сделка №: ')[1]
         deals = await session.execute(
             select(Deals).where(deal_id == Deals.deal_id)
         )

@@ -15,7 +15,7 @@ class Deals(Base):
     __tablename__ = "deals"
     # Сделка
     id = Column(Integer, primary_key=True)  # ТОЛЬКО этот столбец должен быть primary_key
-    deal_id = Column(Integer, unique=True) # Номер сделки
+    deal_id = Column(String, unique=True) # Номер сделки
     buy_user = Column(String) # Назначеный покупатель администратором
     march_model = Column(String) # Марка, модель автомобиля
     vin_code = Column(String) # Вин код автомобиля
@@ -110,6 +110,7 @@ class Deals(Base):
 
     car_is_ready_for_delivery = Column(String) # Фото готового автомобиля к Выдаче
     finally_photo = Column(String)  # Фото выдачи автомобиля Покупателю
+    comments_carrier = Column(String) # Комментарии к получению автомобиля от перевозчика на границе
 
 
 async def init_deals_db():

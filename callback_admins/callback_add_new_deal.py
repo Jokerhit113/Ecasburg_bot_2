@@ -17,7 +17,7 @@ async def admin_new_order(callback: CallbackQuery, state: FSMContext, bot: Bot):
     await bot.send_message(chat_id=CHAT_LOG,
         text=f"{callback.from_user.first_name} {callback.from_user.last_name} выбрал: ")
     await callback.message.edit_text(
-        text="Напишите номер Новой сделки (Писать можно только цифры):",
+        text="Напишите номер Новой сделки:",
     reply_markup=kb_back_to_menu)
     await state.set_state(NewDeals.waiting_for_id_deal)
 

@@ -14,7 +14,7 @@ async def confirmation_payment_buyer_provider(callback: CallbackQuery, bot: Bot)
                            text=f"{callback.from_user.first_name} {callback.from_user.last_name} Поставщик Подтвердил оплату автомобиля Покупателем")
     try:
         caption = callback.message.text
-        deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
+        deal_id = caption.split('\n')[0].split('Сделка №: ')[1]
 
         async with deals_session() as session:
             deal = await session.execute(

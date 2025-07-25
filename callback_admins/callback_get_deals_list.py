@@ -46,7 +46,7 @@ async def callback_get_deals_list(callback: CallbackQuery, bot: Bot):
 @callback_get_deals_list_router.callback_query(F.data.startswith("deal_detail_"))
 async def callback_get_deals_switch(callback: CallbackQuery, bot: Bot):
     async with deals_session() as session:
-        deal_id = int(callback.data.split("_")[-1])
+        deal_id = callback.data.split("_")[-1]
         deal = await session.get(Deals, deal_id)
 
         if not deal:

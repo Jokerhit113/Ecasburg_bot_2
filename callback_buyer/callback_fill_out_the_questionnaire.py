@@ -25,7 +25,7 @@ async def fill_out_the_questionnaire(callback: CallbackQuery, state: FSMContext,
     await bot.send_message(chat_id=CHAT_LOG,
                            text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Заполнить Анкету")
     caption = callback.message.caption
-    deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
+    deal_id = caption.split('\n')[0].split('Ваша Сделка №: ')[1]
     await state.update_data(deal_id=deal_id)
     builder = InlineKeyboardBuilder()
     builder.button(text="⬅️ Назад в Меню", callback_data=f"deal_list_buyer_{deal_id}")
@@ -154,11 +154,11 @@ async def add_questionnaire_to_db(callback: CallbackQuery, state: FSMContext, bo
                                 )
                 except Exception as e:
                     logging.error(f"Error in add_questionnaire_to_db: {e}")
-                    await callback.answer("Произошла ошибка", show_alert=True)
+                    await callback.answer("Менеджер скоро с Вами свяжется.", show_alert=True)
 
 
             builder = InlineKeyboardBuilder()
-            builder.button(text="⬅️ Назад к списку Сделок", callback_data="check_deals_buyer")
+            builder.button(text="⬅️ Назад к Сделке", callback_data=f"deal_list_buyer_{deal_id}")
             builder.adjust(1)
             await callback.answer(text="Все данные успешно сохранены в базе данных")
             await callback.message.edit_text(text="Все данные успешно сохранены в базе данных",

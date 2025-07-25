@@ -24,7 +24,7 @@ async def request_check_docs_from_the_broker(callback: CallbackQuery, state: FSM
     fill_out_the_questionnaire_btn = data.get("fill_out_the_questionnaire_btn")
     get_elpts_registration_btn = data.get("get_elpts_registration_btn")
     caption = callback.message.caption
-    deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
+    deal_id = caption.split('\n')[0].split('Ваша Сделка №: ')[1]
 
     if payment_confirmation_buyer_btn and add_passport_btn and driver_license_load_buyer_btn and add_snils_buyer_btn and foreign_currency_account_statement_btn and cash_flow_statement_btn and fill_out_the_questionnaire_btn and get_elpts_registration_btn == "✅":
         async with deals_session() as session:

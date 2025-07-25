@@ -15,7 +15,7 @@ async def callback_load_docs_carrier(callback: CallbackQuery, state: FSMContext,
     await bot.send_message(chat_id=CHAT_LOG,
                            text=f"{callback.from_user.first_name} {callback.from_user.last_name} Перевозчик выбрал Загрузить документы")
     caption = callback.message.caption
-    deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
+    deal_id = caption.split('\n')[0].split('Сделка №: ')[1]
     await state.update_data(deal_id=deal_id)
     await state.update_data(photos = [])
     await state.update_data(docs = [])

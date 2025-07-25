@@ -19,7 +19,7 @@ async def payment_confirmation_buyer(callback: CallbackQuery, state: FSMContext,
                            text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Загрузить Квитанцию об оплате автомобиля")
     """Обработчик начала процесса подтверждения оплаты"""
     caption = callback.message.caption
-    deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
+    deal_id = caption.split('\n')[0].split('Ваша Сделка №: ')[1]
     await state.update_data(deal_id=deal_id)
     try:
         builder = InlineKeyboardBuilder()

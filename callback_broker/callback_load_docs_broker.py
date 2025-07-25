@@ -13,7 +13,7 @@ callback_load_docs_broker_router = Router()
 @callback_load_docs_broker_router.callback_query(F.data == "load_docs_broker")
 async def load_docs_broker(callback: CallbackQuery, state: FSMContext, bot: Bot):
     caption = callback.message.caption
-    deal_id = int(caption.split('\n')[0].split('Сделка №: ')[1])
+    deal_id = caption.split('\n')[0].split('Сделка №: ')[1]
     await bot.send_message(chat_id=CHAT_LOG,
                            text=f"{callback.from_user.first_name} {callback.from_user.last_name} Брокер Выбрал загрузить Документы по сделке {deal_id}")
     await state.update_data(deal_id=deal_id)

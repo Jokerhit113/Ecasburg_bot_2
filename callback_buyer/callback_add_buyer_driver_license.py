@@ -20,7 +20,7 @@ async def callback_driver_license(callback: CallbackQuery, state: FSMContext, bo
                            text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Загрузить Водительское Удостоверение")
     try:
         caption = callback.message.caption
-        deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
+        deal_id = caption.split('\n')[0].split('Ваша Сделка №: ')[1]
         await state.update_data(deal_id=deal_id)
         builder = InlineKeyboardBuilder()
         builder.button(text="⬅️ Назад в Меню", callback_data=f"deal_list_buyer_{deal_id}")
@@ -87,7 +87,7 @@ async def get_photo_or_doc_driver_license(message: Message, state: FSMContext):
                     deal.buyer_driver_license_docs = documents
                     await session.commit()
                     builder = InlineKeyboardBuilder()
-                    builder.button(text="Назад к списку Сделок", callback_data="check_deals_buyer")
+                    builder.button(text="Назад к Сделке", callback_data=f"deal_list_buyer_{deal_id}")
                     builder.adjust(1)
                     await message.answer(
                         text=f"✅ Успешно сохранено:\n"

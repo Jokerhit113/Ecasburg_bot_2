@@ -18,7 +18,7 @@ async def foreign_currency_account_statement(callback: CallbackQuery, state: FSM
     await bot.send_message(chat_id=CHAT_LOG,
                            text=f"{callback.from_user.first_name} {callback.from_user.last_name} Покупатель выбрал: Загрузить Фото Выписки по валютному счёту")
     caption = callback.message.caption
-    deal_id = int(caption.split('\n')[0].split('Ваша Сделка №: ')[1])
+    deal_id = caption.split('\n')[0].split('Ваша Сделка №: ')[1]
     await state.update_data(deal_id=deal_id)
     builder = InlineKeyboardBuilder()
     builder.button(text="⬅️ Назад в Меню", callback_data=f"deal_list_buyer_{deal_id}")
@@ -81,7 +81,7 @@ async def get_photo_or_doc_passport(message: Message, state: FSMContext):
                 deal.foreign_currency_account_statement_docs = documents
                 await session.commit()
                 builder = InlineKeyboardBuilder()
-                builder.button(text="⬅️ Назад к списку Сделок", callback_data="check_deals_buyer")
+                builder.button(text="⬅️ Назад к Сделке", callback_data=f"deal_list_buyer_{deal_id}")
                 builder.adjust(1)
                 await message.answer(
                     text=f"✅ Успешно сохранено:\n"

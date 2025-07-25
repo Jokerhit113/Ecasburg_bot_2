@@ -610,6 +610,7 @@ async def border_receive_10(callback: CallbackQuery, bot: Bot):
         if not has_documents:
             await callback.answer("Фото / Видео ещё не загружены")
 
+
         if deal.photo_car_get_border:
             await get_all_data_deal(
                 bot=callback.bot,
@@ -626,6 +627,9 @@ async def border_receive_10(callback: CallbackQuery, bot: Bot):
                 caption="Видео Получения Авто на границе:",
                 media_type="video"
             )
+        if  deal.comments_carrier:
+            await callback.message.answer(f"Комментарии от Перевозчика:\n\n"
+                                          f"{deal.comments_carrier}")
 
         await callback.answer("Фото/Видео Получения Авто на границе Получены")
 
